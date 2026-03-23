@@ -1,0 +1,30 @@
+# Compiled class files
+*.class
+
+# Maven target directory
+target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/settings.json
+.vscode/launch.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.swp
+
+# Database files (if any)
+*.db
+*.h2.db
+
+# Application properties overrides
+application-*.properties
