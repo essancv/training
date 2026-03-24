@@ -11,6 +11,7 @@ import com.example.tutorial.domain.user.event.UserUpdatedEvent;
 import com.example.tutorial.domain.user.port.UserWriteRepository;
 import com.example.tutorial.domain.user.event.UserEvent;
 import com.example.tutorial.domain.user.event.UserEventStore;
+import com.example.tutorial.domain.user.port.UserEventPublisher;
 
 import java.util.Optional;
 
@@ -20,13 +21,16 @@ import org.springframework.stereotype.Service;
 public class UserCommandService {
     private final UserWriteRepository repository;
     private final UserEventStore eventStore;
+    private final UserEventPublisher eventPublisher;    
 
-    public UserCommandService(UserWriteRepository repository, UserEventStore eventStore) {
+    public UserCommandService(UserWriteRepository repository, UserEventStore eventStore, UserEventPublisher eventPublisher) {
         this.repository = repository;
         this.eventStore = eventStore;
+        this.eventPublisher = eventPublisher;
     }
 
     public UserId create(CreateUserCommand command) {
+        System.out.println("********************REST INICIO");
         if (repository.existsByUsername(command.getUsername())) {
             throw new IllegalArgumentException("Ya existe un usuario con username: " + command.getUsername());
         }
@@ -39,8 +43,10 @@ public class UserCommandService {
 
         UserId generatedId = saved.getId();
         UserEvent created = new UserCreatedEvent(generatedId, saved);
-        eventStore.append(created);
+        System.out.println("************************ ANTES publisher");
 
+        eventPublisher.publishUserCreated((UserCreatedEvent) created);
+        System.out.println("************************+++ DESPUES publisher");
         return generatedId;
     }
 
@@ -55,6 +61,7 @@ public class UserCommandService {
 
         UserEvent event = new UserUpdatedEvent(command.getId(), updated);
         eventStore.append(event);
+        eventPublisher.publishUserUpdated((UserUpdatedEvent) event);
     }
 
     public void delete(DeleteUserCommand command) {
@@ -66,5 +73,6 @@ public class UserCommandService {
         repository.delete(command.getId());
         UserEvent event = new UserDeletedEvent(command.getId());
         eventStore.append(event);
+        eventPublisher.publishUserDeleted((UserDeletedEvent) event);    
     }
 }
