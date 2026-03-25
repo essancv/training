@@ -44,7 +44,7 @@ public class UserCommandService {
         UserId generatedId = saved.getId();
         UserEvent created = new UserCreatedEvent(generatedId, saved);
         System.out.println("************************ ANTES publisher");
-
+        eventStore.append(created);
         eventPublisher.publishUserCreated((UserCreatedEvent) created);
         System.out.println("************************+++ DESPUES publisher");
         return generatedId;
