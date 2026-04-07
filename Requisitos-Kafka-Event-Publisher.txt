@@ -1,0 +1,17 @@
+Se desarrollará un componente de arquitectura reutilizable (Spring Boot Starter) que permita la publicación automática y asíncrona de eventos en Kafka mediante anotaciones.
+
+Los métodos anotados con @PublishEvent(topic="...") publicarán automáticamente el valor de retorno del método en el topic indicado, siempre que el método finalice sin excepción.
+
+La serialización será siempre JSON.
+
+El envío será asíncrono y nunca bloqueará el hilo principal.
+
+El componente implementará reintentos automáticos configurables. Si tras los reintentos el mensaje no puede enviarse, se enviará a un dead‑letter topic configurable, incluyendo payload, topic original, causa del fallo y número de reintentos.
+
+El componente incluirá un proceso propio para reintentar el envío de mensajes del dead‑letter topic.
+
+Toda la configuración (bootstrap servers, reintentos, dead‑letter topic, logging) se obtendrá de application.properties.
+
+El componente tendrá un logger dedicado, con salida en consola y en un fichero específico, ambos configurables.
+
+La primera versión funcionará en modo best effort, sin integración con transacciones (sin patrón outbox).

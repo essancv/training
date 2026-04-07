@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>ATDD - Event Publisher Kafka</title>
+
+  <!-- Reutilizamos exactamente los mismos estilos que HU y SBE -->
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-soft: #1f2937;
+      --danger: #f97373;
+      --radius: 10px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      margin: 0 0 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      margin-bottom: 25px;
+      color: var(--text-soft);
+      font-size: 0.95rem;
+    }
+
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+    }
+
+    .tagline span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+    }
+
+    .table-wrapper {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+      border-radius: var(--radius);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .table-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%);
+      pointer-events: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      position: relative;
+      z-index: 1;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.9rem;
+    }
+
+    th {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      border-bottom: 1px solid var(--border-soft);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    tbody tr:nth-child(odd) {
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    tbody tr:hover {
+      background: rgba(30, 64, 175, 0.35);
+    }
+
+    td.id {
+      white-space: nowrap;
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+  </style>
+</head>
+
+<body>
+<div class="page">
+
+  <div class="tagline">
+    <span class="dot"></span>
+    COMPONENTE ARQUITECTURA · EVENT PUBLISHER KAFKA
+  </div>
+
+  <h1>ATDD — Acceptance Test Driven Development</h1>
+  <div class="subtitle">
+    Criterios de aceptación formales que definen el comportamiento verificable del componente.
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Historia Relacionada</th>
+        <th>Criterio de Aceptación</th>
+        <th>Resultado Esperado</th>
+      </tr>
+      </thead>
+
+      <tbody>
+
+      <!-- ATDD 1 -->
+      <tr>
+        <td class="id">ATDD-EP-001</td>
+        <td>HU-EP-001</td>
+        <td>
+          Cuando un método anotado con <code>@PublishEvent</code> finaliza sin excepción,
+          el valor de retorno debe publicarse automáticamente en el topic configurado.
+        </td>
+        <td>
+          El componente intercepta el método, serializa el retorno a JSON y lo envía
+          asíncronamente al topic indicado. El método no se bloquea.
+        </td>
+      </tr>
+
+      <!-- ATDD 2 -->
+      <tr>
+        <td class="id">ATDD-EP-002</td>
+        <td>HU-EP-001</td>
+        <td>
+          Si el método anotado devuelve <code>null</code>, no debe publicarse ningún evento.
+        </td>
+        <td>
+          El componente detecta retorno nulo y no ejecuta publicación ni reintentos.
+        </td>
+      </tr>
+
+      <!-- ATDD 3 -->
+      <tr>
+        <td class="id">ATDD-EP-003</td>
+        <td>HU-EP-001</td>
+        <td>
+          Si el método anotado lanza una excepción, no debe publicarse ningún evento.
+        </td>
+        <td>
+          El componente no publica nada y registra el error en el logger dedicado.
+        </td>
+      </tr>
+
+      <!-- ATDD 4 -->
+      <tr>
+        <td class="id">ATDD-EP-004</td>
+        <td>HU-EP-002</td>
+        <td>
+          La publicación debe ser siempre asíncrona y no bloquear el hilo del método anotado.
+        </td>
+        <td>
+          El método retorna inmediatamente. El envío se gestiona en un hilo independiente.
+        </td>
+      </tr>
+
+      <!-- ATDD 5 -->
+      <tr>
+        <td class="id">ATDD-EP-005</td>
+        <td>HU-EP-005</td>
+        <td>
+          Si el envío falla, el componente debe reintentarlo automáticamente el número de veces
+          configurado en <code>application.properties</code>.
+        </td>
+        <td>
+          El componente ejecuta reintentos asíncronos con backoff.  
+          Si uno de los reintentos tiene éxito, el evento se considera enviado.
+        </td>
+      </tr>
+
+      <!-- ATDD 6 -->
+      <tr>
+        <td class="id">ATDD-EP-006</td>
+        <td>HU-EP-006</td>
+        <td>
+          Si tras agotar los reintentos el evento no puede enviarse, debe enviarse al dead-letter topic.
+        </td>
+        <td>
+          El componente publica un mensaje JSON en el dead-letter topic con:  
+          payload original, topic original, número de reintentos, timestamp y causa del fallo.
+        </td>
+      </tr>
+
+      <!-- ATDD 7 -->
+      <tr>
+        <td class="id">ATDD-EP-007</td>
+        <td>HU-EP-007</td>
+        <td>
+          El componente debe incluir un proceso que consuma mensajes del dead-letter topic
+          y reintente enviarlos al topic original.
+        </td>
+        <td>
+          El proceso interno consume el mensaje, reintenta el envío y registra el resultado
+          en el logger dedicado.
+        </td>
+      </tr>
+
+      <!-- ATDD 8 -->
+      <tr>
+        <td class="id">ATDD-EP-008</td>
+        <td>HU-EP-008</td>
+        <td>
+          Toda la configuración del componente debe obtenerse de <code>application.properties</code>.
+        </td>
+        <td>
+          El componente lee bootstrap servers, reintentos, dead-letter topic, logger y fichero
+          desde propiedades sin necesidad de código adicional.
+        </td>
+      </tr>
+
+      <!-- ATDD 9 -->
+      <tr>
+        <td class="id">ATDD-EP-009</td>
+        <td>HU-EP-009</td>
+        <td>
+          El componente debe registrar logs en consola y en un fichero dedicado, en texto plano.
+        </td>
+        <td>
+          El logger escribe eventos enviados, reintentos, errores y envíos a dead-letter topic
+          en el fichero configurado.
+        </td>
+      </tr>
+
+      <!-- ATDD 10 -->
+      <tr>
+        <td class="id">ATDD-EP-010</td>
+        <td>HU-EP-010</td>
+        <td>
+          La publicación de eventos debe funcionar en modo best effort, sin transacciones.
+        </td>
+        <td>
+          El componente no coordina transacciones con bases de datos.  
+          El flujo de negocio no se ve afectado por fallos en Kafka.
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-note">
+    Estos criterios de aceptación permiten validar el comportamiento del componente antes de su implementación.
+  </div>
+
+</div>
+</body>
+</html>

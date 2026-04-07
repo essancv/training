@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Plan de Pruebas QA — Event Publisher Kafka</title>
+
+  <!-- Mismos estilos que HU / SBE / ATDD / BDD -->
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-soft: #1f2937;
+      --danger: #f97373;
+      --radius: 10px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      margin: 0 0 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      margin: 24px 0 10px;
+      color: var(--text-main);
+    }
+
+    .subtitle {
+      margin-bottom: 25px;
+      color: var(--text-soft);
+      font-size: 0.95rem;
+    }
+
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+    }
+
+    .tagline span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+    }
+
+    .table-wrapper {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+      border-radius: var(--radius);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .table-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%);
+      pointer-events: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      position: relative;
+      z-index: 1;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.9rem;
+    }
+
+    th {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      border-bottom: 1px solid var(--border-soft);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    tbody tr:nth-child(odd) {
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    tbody tr:hover {
+      background: rgba(30, 64, 175, 0.35);
+    }
+
+    td.id {
+      white-space: nowrap;
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    code {
+      color: #93c5fd;
+      font-size: 0.85rem;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .block {
+      margin-bottom: 24px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 0.9rem;
+    }
+
+    .block-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+
+    .block-content {
+      color: var(--text-main);
+    }
+
+    ul {
+      margin: 6px 0 0 18px;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 900px) {
+      th:nth-child(4), td:nth-child(4) {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="page">
+
+  <div class="tagline">
+    <span class="dot"></span>
+    QA · PLAN DE PRUEBAS · EVENT PUBLISHER KAFKA
+  </div>
+
+  <h1>Plan de Pruebas QA — Event Publisher Kafka</h1>
+  <div class="subtitle">
+    Plan de pruebas basado en los escenarios BDD definidos para el starter de publicación automática de eventos en Kafka.
+  </div>
+
+  <!-- Contexto general -->
+  <div class="block">
+    <div class="block-title">Contexto</div>
+    <div class="block-content">
+      El objetivo de este plan es validar el JAR del starter <strong>Event Publisher Kafka</strong> como un producto,
+      verificando su comportamiento real en un proyecto Spring Boot de prueba, siguiendo los escenarios BDD definidos.
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-title">Precondiciones generales</div>
+    <div class="block-content">
+      <ul>
+        <li>Kafka accesible (local o en contenedor) en <code>localhost:9092</code> o equivalente.</li>
+        <li>Proyecto Spring Boot de prueba con el starter incluido como dependencia.</li>
+        <li>Topics creados: <code>qa-topic</code> y <code>qa-dead-letter</code> (o los configurados en propiedades).</li>
+        <li>Servicio de prueba con métodos anotados con <code>@PublishEvent</code>.</li>
+        <li>Herramientas de observación: <code>kafka-console-consumer</code> y acceso a logs de la aplicación.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Tabla de casos de prueba -->
+  <h2>Casos de prueba basados en BDD</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Escenario BDD</th>
+        <th>Pasos de prueba (QA)</th>
+        <th>Resultado esperado</th>
+      </tr>
+      </thead>
+      <tbody>
+
+      <!-- TC 1 -->
+      <tr>
+        <td class="id">TC-EP-001</td>
+        <td>
+          <span class="pill">BDD-EP-001</span><br>
+          Método anotado finaliza correctamente.
+        </td>
+        <td>
+          <ul>
+            <li>Arrancar Kafka y la aplicación de prueba.</li>
+            <li>Invocar el método <code>okEvent()</code> anotado con <code>@PublishEvent(topic="qa-topic")</code>.</li>
+            <li>Escuchar el topic <code>qa-topic</code> con <code>kafka-console-consumer</code>.</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Se recibe un mensaje JSON en el topic <code>qa-topic</code>.</li>
+            <li>Los logs muestran:
+              <ul>
+                <li>Programación de publicación asíncrona.</li>
+                <li>Intento de publicación.</li>
+                <li>Confirmación de publicación correcta.</li>
+              </ul>
+            </li>
+            <li>El método retorna sin bloqueos apreciables.</li>
+          </ul>
+        </td>
+      </tr>
+
+      <!-- TC 2 -->
+      <tr>
+        <td class="id">TC-EP-002</td>
+        <td>
+          <span class="pill">BDD-EP-002</span><br>
+          Método anotado devuelve null.
+        </td>
+        <td>
+          <ul>
+            <li>Invocar el método <code>nullEvent()</code> anotado con <code>@PublishEvent(topic="qa-topic")</code>.</li>
+            <li>Escuchar el topic <code>qa-topic</code> durante unos segundos.</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>No se recibe ningún mensaje en <code>qa-topic</code>.</li>
+            <li>Los logs muestran que el método devolvió <code>null</code> y no se publicará evento.</li>
+            <li>No se registran reintentos.</li>
+          </ul>
+        </td>
+      </tr>
+
+      <!-- TC 3 -->
+      <tr>
+        <td class="id">TC-EP-003</td>
+        <td>
+          <span class="pill">BDD-EP-003</span><br>
+          Método anotado lanza excepción.
+        </td>
+        <td>
+          <ul>
+            <li>Invocar el método <code>exceptionEvent()</code> anotado con <code>@PublishEvent</code>.</li>
+            <li>Observar el comportamiento de la aplicación y los logs.</li>
+            <li>Escuchar el topic <code>qa-topic</code>.</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>El método lanza una excepción hacia el llamador.</li>
+            <li>No se publica ningún mensaje en <code>qa-topic</code>.</li>
+            <li>Los logs indican que el método lanzó excepción y no se publicará evento.</li>
+          </ul>
+        </td>
+      </tr>
+
+      <!-- TC 4 -->
+      <tr>
+        <td class="id">TC-EP-004</td>
+        <td>
+          <span class="pill">BDD-EP-004</span><br>
+          Error temporal al enviar evento (reintentos).
+        </td>
+        <td>
+          <ul>
+            <li>Configurar <code>event.publisher.retry.max-attempts=3</code>.</li>
+            <li>Simular fallo temporal de Kafka (por ejemplo, parar Kafka tras arrancar la app).</li>
+            <li>Invocar <code>okEvent()</code>.</li>
+            <li>Arrancar Kafka antes de que terminen todos los reintentos (opcional).</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Los logs muestran varios intentos de publicación (hasta 3).</li>
+            <li>Si Kafka se recupera antes del último intento, el mensaje acaba publicándose.</li>
+            <li>El método de negocio no se bloquea durante los reintentos (publicación asíncrona).</li>
+          </ul>
+        </td>
+      </tr>
+
+      <!-- TC 5 -->
+      <tr>
+        <td class="id">TC-EP-005</td>
+        <td>
+          <span class="pill">BDD-EP-005</span><br>
+          Error permanente → envío a dead-letter.
+        </td>
+        <td>
+          <ul>
+            <li>Configurar <code>event.publisher.dead-letter-topic=qa-dead-letter</code>.</li>
+            <li>Parar Kafka o usar un topic inaccesible.</li>
+            <li>Invocar <code>okEvent()</code>.</li>
+            <li>Escuchar el topic <code>qa-dead-letter</code> cuando Kafka esté disponible.</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Tras agotar los reintentos, no se publica en <code>qa-topic</code>.</li>
+            <li>Se publica un mensaje en <code>qa-dead-letter</code> con:
+              <ul>
+                <li>payload original</li>
+                <li>topic original</li>
+                <li>número de reintentos</li>
+                <li>timestamp</li>
+                <li>mensaje y tipo de error</li>
+              </ul>
+            </li>
+          </ul>
+        </td>
+      </tr>
+
+      <!-- TC 6 -->
+      <tr>
+        <td class="id">TC-EP-006</td>
+        <td>
+          <span class="pill">BDD-EP-006</span><br>
+          Reprocesar mensajes desde dead-letter.
+        </td>
+        <td>
+          <ul>
+            <li>Generar mensajes en <code>qa-dead-letter</code> (por ejemplo, con TC-EP-005).</li>
+            <li>Arrancar Kafka y la aplicación con el listener de dead-letter activo.</li>
+            <li>Observar logs y consumir mensajes de <code>qa-topic</code>.</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Los mensajes de <code>qa-dead-letter</code> se consumen y se reenvían a <code>qa-topic</code>.</li>
+            <li>Los logs muestran el reproceso y el resultado de cada mensaje.</li>
+          </ul>
+        </td>
+      </tr>
+
+      <!-- TC 7 -->
+      <tr>
+        <td class="id">TC-EP-007</td>
+        <td>
+          <span class="pill">BDD-EP-007</span><br>
+          Configuración externa desde application.properties.
+        </td>
+        <td>
+          <ul>
+            <li>Modificar propiedades de <code>event.publisher.*</code> (reintentos, dead-letter topic, logger).</li>
+            <li>Reiniciar la aplicación de prueba.</li>
+            <li>Repetir algunos casos de prueba (por ejemplo, TC-EP-001 y TC-EP-005).</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>El comportamiento del componente cambia según la configuración sin recompilar el JAR.</li>
+            <li>Los nuevos valores se reflejan en los logs y en los topics usados.</li>
+          </ul>
+        </td>
+      </tr>
+
+      <!-- TC 8 -->
+      <tr>
+        <td class="id">TC-EP-008</td>
+        <td>
+          <span class="pill">BDD-EP-008</span><br>
+          Logging dedicado en texto plano.
+        </td>
+        <td>
+          <ul>
+            <li>Configurar <code>event.publisher.logger.name</code> y el fichero de log en el sistema de logging.</li>
+            <li>Ejecutar varios métodos anotados (<code>okEvent</code>, <code>nullEvent</code>, <code>exceptionEvent</code>).</li>
+            <li>Revisar consola y fichero de log.</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Se generan entradas de log en consola y en el fichero dedicado.</li>
+            <li>Los mensajes están en texto plano, con información de:
+              <ul>
+                <li>eventos publicados</li>
+                <li>reintentos</li>
+                <li>errores</li>
+                <li>envíos a dead-letter</li>
+              </ul>
+            </li>
+          </ul>
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-note">
+    Este plan de pruebas puede ampliarse con automatización (JUnit + Testcontainers + Kafka) reutilizando los mismos casos.
+  </div>
+
+</div>
+</body>
+</html>

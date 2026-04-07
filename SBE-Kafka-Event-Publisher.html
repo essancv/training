@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>SBE - Event Publisher Kafka</title>
+
+  <!-- Reutilizamos los mismos estilos que las HU -->
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-soft: #1f2937;
+      --danger: #f97373;
+      --radius: 10px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
+      max-width: 1201200px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      margin: 0 0 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      margin-bottom: 25px;
+      color: var(--text-soft);
+      font-size: 0.95rem;
+    }
+
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+    }
+
+    .tagline span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+    }
+
+    .table-wrapper {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+      border-radius: var(--radius);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .table-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%);
+      pointer-events: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      position: relative;
+      z-index: 1;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.9rem;
+    }
+
+    th {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      border-bottom: 1px solid var(--border-soft);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    tbody tr:nth-child(odd) {
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    tbody tr:hover {
+      background: rgba(30, 64, 175, 0.35);
+    }
+
+    td.id {
+      white-space: nowrap;
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+  </style>
+</head>
+
+<body>
+<div class="page">
+
+  <div class="tagline">
+    <span class="dot"></span>
+    COMPONENTE ARQUITECTURA · EVENT PUBLISHER KAFKA
+  </div>
+
+  <h1>SBE — Specification by Example</h1>
+  <div class="subtitle">
+    Casos de ejemplo que definen el comportamiento esperado del componente de publicación automática de eventos Kafka.
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Contexto</th>
+        <th>Ejemplo</th>
+        <th>Resultado Esperado</th>
+      </tr>
+      </thead>
+
+      <tbody>
+
+      <!-- SBE 1 -->
+      <tr>
+        <td class="id">SBE-EP-001</td>
+        <td>Método anotado finaliza correctamente</td>
+        <td>
+          Método:<br>
+          <code>@PublishEvent(topic="alta-solicitada")</code><br>
+          Retorno:<br>
+          <code>new AltaEvent("USR-1")</code>
+        </td>
+        <td>
+          El componente serializa el objeto a JSON y lo publica en el topic
+          <strong>alta-solicitada</strong> de forma asíncrona.
+        </td>
+      </tr>
+
+      <!-- SBE 2 -->
+      <tr>
+        <td class="id">SBE-EP-002</td>
+        <td>Método anotado devuelve null</td>
+        <td>
+          Método:<br>
+          <code>@PublishEvent(topic="alta-solicitada")</code><br>
+          Retorno:<br>
+          <code>null</code>
+        </td>
+        <td>
+          No se publica ningún evento. No se generan reintentos.
+        </td>
+      </tr>
+
+      <!-- SBE 3 -->
+      <tr>
+        <td class="id">SBE-EP-003</td>
+        <td>Método anotado lanza excepción</td>
+        <td>
+          Método:<br>
+          <code>@PublishEvent(topic="alta-solicitada")</code><br>
+          Excepción:<br>
+          <code>RuntimeException</code>
+        </td>
+        <td>
+          No se publica ningún evento. No se generan reintentos.  
+          El componente registra el error en el logger dedicado.
+        </td>
+      </tr>
+
+      <!-- SBE 4 -->
+      <tr>
+        <td class="id">SBE-EP-004</td>
+        <td>Error temporal al enviar evento</td>
+        <td>
+          Evento válido, envío falla por timeout.<br>
+          Reintentos configurados: <strong>3</strong>
+        </td>
+        <td>
+          El componente reintenta el envío 3 veces de forma asíncrona.  
+          Si finalmente se envía, se registra éxito en el logger.
+        </td>
+      </tr>
+
+      <!-- SBE 5 -->
+      <tr>
+        <td class="id">SBE-EP-005</td>
+        <td>Error permanente al enviar evento</td>
+        <td>
+          Evento válido, Kafka no disponible.<br>
+          Reintentos configurados: <strong>3</strong>
+        </td>
+        <td>
+          Tras agotar los reintentos, el evento se envía al dead-letter topic con:<br>
+          - payload original<br>
+          - topic original<br>
+          - número de reintentos<br>
+          - timestamp<br>
+          - causa del fallo
+        </td>
+      </tr>
+
+      <!-- SBE 6 -->
+      <tr>
+        <td class="id">SBE-EP-006</td>
+        <td>Proceso de reintentos desde dead-letter topic</td>
+        <td>
+          Mensaje en dead-letter topic:<br>
+          <code>{ payload, topicOriginal, causa }</code>
+        </td>
+        <td>
+          El componente consume el mensaje y reintenta enviarlo al topic original.  
+          Si tiene éxito, registra el resultado en el logger dedicado.
+        </td>
+      </tr>
+
+      <!-- SBE 7 -->
+      <tr>
+        <td class="id">SBE-EP-007</td>
+        <td>Configuración externa</td>
+        <td>
+          <code>event.publisher.retry.max-attempts=5</code><br>
+          <code>event.publisher.dead-letter-topic=eventos-no-enviados</code>
+        </td>
+        <td>
+          El componente aplica la configuración sin necesidad de código adicional en el proyecto.
+        </td>
+      </tr>
+
+      <!-- SBE 8 -->
+      <tr>
+        <td class="id">SBE-EP-008</td>
+        <td>Logging dedicado</td>
+        <td>
+          <code>event.publisher.logger.file=event-publisher.log</code><br>
+          <code>event.publisher.logger.level=DEBUG</code>
+        </td>
+        <td>
+          El componente escribe logs en consola y en el fichero indicado, en texto plano.
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-note">
+    Estos ejemplos sirven como base para derivar ATDD y BDD del componente Event Publisher Kafka.
+  </div>
+
+</div>
+</body>
+</html>

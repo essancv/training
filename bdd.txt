@@ -1,0 +1,325 @@
+Feature: US-001 Solicitud de alta de usuario
+  Como persona interesada en usar el Simulador de Jubilación
+  Quiero enviar una solicitud de alta
+  Para poder recibir mis credenciales
+
+  Scenario: Solicitud válida
+    Given que el usuario introduce datos personales válidos
+    When envía la solicitud de alta
+    Then el sistema registra la solicitud
+    And devuelve un identificador único
+    And se emite el evento "alta-solicitada"
+
+  Scenario: Usuario de acceso duplicado
+    Given que existe un usuario con usuarioAcceso "ana80"
+    When se envía una solicitud con usuarioAcceso "ana80"
+    Then la solicitud es rechazada
+    And se envía un email indicando que el usuario de acceso ya existe
+
+
+Feature: US-002 Activación automática de usuario
+  Como sistema de gestión de solicitudes
+  Quiero procesar solicitudes recibidas
+  Para dar de alta usuarios en estado ACTIVO
+
+  Scenario: Activación correcta
+    Given que existe una solicitud pendiente con ID "REQ-123"
+    When el servicio de solicitudes la procesa
+    Then se crea un usuario en estado ACTIVO
+    And se genera una password aleatoria de 8 caracteres
+    And se envía un email con credenciales y URL
+
+  Scenario: Usuario de acceso duplicado
+    Given que existe una solicitud con usuarioAcceso ya existente
+    When el servicio de solicitudes la procesa
+    Then la solicitud se rechaza
+    And se envía un email de rechazo
+
+Feature: US-003 Acceso a la aplicación (Login)
+  Como usuario ACTIVO
+  Quiero acceder con usuario y password
+  Para usar la aplicación
+
+  Scenario: Login correcto
+    Given que existe un usuario ACTIVO con password correcta
+    When introduce credenciales válidas
+    Then el sistema devuelve un JWT válido
+
+  Scenario: Usuario inactivo
+    Given que existe un usuario INACTIVO
+    When intenta iniciar sesión
+    Then el sistema devuelve 403
+    And no se genera token
+
+  Scenario: Usuario bloqueado
+    Given que existe un usuario BLOQUEADO
+    When intenta iniciar sesión
+    Then el sistema devuelve 403
+    And no se genera token
+
+  Scenario: Password incorrecta
+    Given que existe un usuario ACTIVO
+    When introduce una password incorrecta
+    Then el sistema devuelve 401
+
+
+Feature: US-004 Bloqueo automático por intentos fallidos
+  Como sistema de autenticación
+  Quiero bloquear al usuario tras 3 fallos
+  Para proteger la seguridad
+
+  Scenario: Primer intento fallido
+    Given que el usuario tiene 0 intentos fallidos
+    When introduce una password incorrecta
+    Then los intentos fallidos pasan a 1
+
+  Scenario: Segundo intento fallido
+    Given que el usuario tiene 1 intento fallido
+    When introduce una password incorrecta
+    Then los intentos fallidos pasan a 2
+
+  Scenario: Tercer intento fallido
+    Given que el usuario tiene 2 intentos fallidos
+    When introduce una password incorrecta
+    Then el usuario pasa a estado BLOQUEADO
+
+Feature: US-005 Solicitud de desbloqueo
+  Como usuario bloqueado
+  Quiero solicitar desbloqueo
+  Para volver a acceder
+
+  Scenario: Solicitud válida
+    Given que el usuario está BLOQUEADO
+    When envía el formulario de desbloqueo
+    Then se emite el evento "desbloqueo-solicitado"
+    And se muestra mensaje de confirmación
+
+  Scenario: Usuario no bloqueado
+    Given que el usuario está ACTIVO
+    When intenta solicitar desbloqueo
+    Then se muestra mensaje "Su cuenta no está bloqueada"
+
+Feature: US-006 Desbloqueo por operaciones
+  Como departamento de operaciones
+  Quiero procesar solicitudes de desbloqueo
+  Para reactivar usuarios
+
+  Scenario: Desbloqueo correcto
+    Given que existe un usuario BLOQUEADO
+    And se recibe el evento "desbloqueo-solicitado"
+    When operaciones aprueba el desbloqueo
+    Then el usuario pasa a estado ACTIVO
+
+  Scenario: Usuario inexistente
+    Given que se recibe un evento de desbloqueo para un usuario inexistente
+    When operaciones intenta desbloquearlo
+    Then no se realizan cambios
+
+Feature: US-007 Recuperación de password
+  Como usuario
+  Quiero solicitar una nueva password
+  Para acceder de nuevo
+
+  Scenario: Recuperación válida
+    Given que existe un usuario registrado
+    When invoca el endpoint de recuperación
+    Then se emite el evento "passrecovery-solicitada"
+    And el proceso externo envía un email con nueva password
+
+  Scenario: Usuario inactivo
+    Given que existe un usuario INACTIVO
+    When solicita recuperación
+    Then se emite el evento "passrecovery-solicitada"
+    And se envía email con nueva password
+
+Feature: US-008 Modificación de datos personales
+  Como usuario autenticado
+  Quiero modificar mis datos
+  Para mantenerlos actualizados
+
+  Scenario: Cambio de email
+    Given que el usuario está autenticado
+    When modifica su email
+    Then el sistema actualiza el dato
+
+  Scenario: Cambio de password
+    Given que el usuario está autenticado
+    When modifica su password
+    Then el sistema actualiza la password
+    And el usuario debe iniciar sesión con la nueva password
+
+  Scenario: Intento de cambiar usuario de acceso
+    Given que el usuario está autenticado
+    When intenta cambiar su usuario de acceso
+    Then el sistema rechaza la operación
+
+Feature: US-009 Carga de bases de cotización
+  Como usuario autenticado
+  Quiero cargar mis cotizaciones
+  Para realizar simulaciones precisas
+
+  Scenario: Fichero válido
+    Given que el usuario tiene un fichero válido
+    When lo carga en la aplicación
+    Then las cotizaciones se almacenan correctamente
+
+  Scenario: Fichero con errores
+    Given que el fichero contiene líneas inválidas
+    When el usuario intenta cargarlo
+    Then se muestran errores
+    And las líneas inválidas no se cargan
+
+
+Feature: US-010 Modificación de cotizaciones individuales
+  Como usuario autenticado
+  Quiero modificar cotizaciones concretas
+  Para corregir errores
+
+  Scenario: Modificación válida
+    Given que existe una cotización para 01/2020
+    When el usuario cambia su valor
+    Then la cotización se actualiza
+
+  Scenario: Cotización inexistente
+    Given que no existe cotización para 12/1990
+    When el usuario intenta modificarla
+    Then se muestra un error
+
+
+Feature: US-011 Ejecución de simulaciones de jubilación
+  Como usuario autenticado
+  Quiero ejecutar simulaciones
+  Para conocer mi pensión estimada
+
+  Scenario: Simulación con datos completos
+    Given que el usuario tiene cotizaciones reales cargadas
+    When ejecuta una simulación
+    Then se calcula la pensión estimada
+    And la simulación se guarda
+
+  Scenario: Simulación sin cotizaciones reales
+    Given que el usuario no tiene cotizaciones cargadas
+    When ejecuta una simulación
+    Then se calcula la pensión usando solo cotizaciones simuladas
+    And la simulación se guarda
+
+
+Feature: US-012 Gestión de usuarios (ADMIN)
+  Como ADMIN
+  Quiero gestionar usuarios
+  Para administrar el sistema
+
+  Scenario: Dar de baja usuario
+    Given que existe un usuario ACTIVO
+    When el ADMIN lo marca como INACTIVO
+    Then el usuario no puede acceder
+
+  Scenario: Modificar datos básicos
+    Given que existe un usuario
+    When el ADMIN modifica su teléfono
+    Then los datos se actualizan
+
+  Scenario: Intento de ver cotizaciones
+    Given que el ADMIN está autenticado
+    When intenta ver cotizaciones de un usuario
+    Then el sistema devuelve 403
+
+
+Feature: US-013 Configuración del cálculo de pensión (ADMIN)
+  Como ADMIN
+  Quiero modificar parámetros de cálculo
+  Para ajustar el sistema a normativa
+
+  Scenario: Cambio de años para cálculo
+    Given que el ADMIN está autenticado
+    When cambia los años para cálculo
+    Then las nuevas simulaciones usan el nuevo valor
+
+  Scenario: Cambio de base mínima
+    Given que el ADMIN está autenticado
+    When cambia la base mínima
+    Then las nuevas simulaciones aplican la nueva base
+
+Feature: US-014 Seguridad JWT
+  Como sistema
+  Quiero generar y validar tokens
+  Para asegurar las APIs
+
+  Scenario: Token válido
+    Given que el usuario inicia sesión correctamente
+    When accede a un endpoint protegido
+    Then el acceso es permitido
+
+  Scenario: Token expirado
+    Given que el token ha expirado
+    When el usuario accede a un endpoint protegido
+    Then el sistema devuelve 401
+
+  Scenario: Usuario USER accede a endpoint ADMIN
+    Given que el usuario tiene rol USER
+    When accede a un endpoint ADMIN
+    Then el sistema devuelve 403
+
+
+Feature: US-015 Persistencia de mensajes no consumidos
+  Como sistema de mensajería
+  Quiero persistir mensajes fallidos
+  Para garantizar consistencia
+
+  Scenario: Error temporal
+    Given que un consumidor falla temporalmente
+    When procesa un evento
+    Then el mensaje se guarda en BD
+    And el servicio de reintentos lo procesa más tarde
+
+  Scenario: Error permanente
+    Given que un mensaje falla repetidamente
+    When el servicio de reintentos lo procesa
+    Then se marca como no procesable
+
+Feature: US-016 CQRS
+  Como sistema
+  Quiero separar lectura y escritura
+  Para mejorar rendimiento
+
+  Scenario: Escritura en BD de comandos
+    When se crea un usuario
+    Then la operación se realiza en la BD de escritura
+
+  Scenario: Lectura desde BD de lectura
+    When se consulta un usuario
+    Then los datos provienen de la BD de lectura
+
+
+Feature: US-017 SPA React
+  Como usuario final
+  Quiero una interfaz fluida
+  Para tener buena experiencia
+
+  Scenario: Login desde SPA
+    Given que el usuario introduce credenciales válidas
+    When la SPA llama al backend
+    Then se recibe un JWT
+    And la SPA navega al panel principal
+
+  Scenario: Validación en cliente
+    Given que el usuario deja campos vacíos
+    When intenta enviar el formulario
+    Then la SPA muestra errores sin llamar al backend
+
+
+
+Feature: US-018 Backend Spring Boot
+  Como sistema
+  Quiero exponer APIs REST seguras
+  Para soportar la SPA y procesos externos
+
+  Scenario: Endpoint de alta
+    When se invoca POST /simujub/user/register
+    Then el backend valida datos
+    And devuelve ID de solicitud
+
+  Scenario: Endpoint de simulación
+    When se invoca POST /simujub/simulation/run
+    Then el backend calcula la pensión
+    And devuelve el resultado

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>SBE - Simulador de Jubilación</title>
+</head>
+<body>
+
+  <h1>Specification by Example - Simulador de Jubilación</h1>
+
+  <!-- US-001 -->
+  <h2>US-001 — Solicitud de alta de usuario</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Caso</th>
+        <th>Nombre</th>
+        <th>Apellidos</th>
+        <th>Teléfono</th>
+        <th>Fecha nacimiento</th>
+        <th>Email</th>
+        <th>Usuario acceso</th>
+        <th>Resultado</th>
+        <th>Respuesta al usuario</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 - Solicitud válida</td>
+        <td>Ana</td>
+        <td>Pérez López</td>
+        <td>600111222</td>
+        <td>1980-05-10</td>
+        <td>ana@example.com</td>
+        <td>ana80</td>
+        <td>Solicitud registrada</td>
+        <td>Se muestra ID de solicitud y mensaje de confirmación</td>
+      </tr>
+      <tr>
+        <td>2 - Usuario acceso duplicado</td>
+        <td>Carlos</td>
+        <td>García Ruiz</td>
+        <td>600333444</td>
+        <td>1975-03-20</td>
+        <td>carlos@example.com</td>
+        <td>ana80</td>
+        <td>Solicitud rechazada</td>
+        <td>Se envía email indicando que el usuario de acceso ya existe</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- US-002 -->
+  <h2>US-002 — Activación automática de usuario</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Caso</th>
+        <th>ID solicitud</th>
+        <th>Estado solicitud</th>
+        <th>Acción servicio solicitudes</th>
+        <th>Estado usuario</th>
+        <th>Password generada</th>
+        <th>Email enviado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 - Solicitud aceptada</td>
+        <td>REQ-123</td>
+        <td>Pendiente</td>
+        <td>Aceptar</td>
+        <td>ACTIVO</td>
+        <td>8 caracteres aleatorios</td>
+        <td>Contiene usuario acceso, password y URL</td>
+      </tr>
+      <tr>
+        <td>2 - Usuario acceso duplicado detectado</td>
+        <td>REQ-124</td>
+        <td>Pendiente</td>
+        <td>Rechazar por usuario duplicado</td>
+        <td>No creado</td>
+        <td>No aplica</td>
+        <td>Email indicando rechazo por usuario ya existente</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- US-003 -->
+  <h2>US-003 — Acceso a la aplicación (Login)</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Caso</th>
+        <th>Usuario acceso</th>
+        <th>Estado usuario</th>
+        <th>Password introducida</th>
+        <th>Intentos previos</th>
+        <th>Resultado</th>
+        <th>JWT devuelto</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 - Login correcto</td>
+        <td>ana80</td>
+        <td>ACTIVO</td>
+        <td>correcta</td>
+        <td>0</td>
+        <td>Acceso permitido</td>
+        <td>Token JWT con rol USER</td>
+      </tr>
+      <tr>
+        <td>2 - Usuario inactivo</td>
+        <td>juan75</td>
+        <td>INACTIVO</td>
+        <td>correcta</td>
+        <td>0</td>
+        <td>Acceso denegado</td>
+        <td>No se genera token</td>
+      </tr>
+      <tr>
+        <td>3 - Usuario bloqueado</td>
+        <td>luis70</td>
+        <td>BLOQUEADO</td>
+        <td>correcta</td>
+        <td>3</td>
+        <td>Acceso denegado</td>
+        <td>No se genera token</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- US-004 -->
+  <h2>US-004 — Bloqueo automático por intentos fallidos</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Caso</th>
+        <th>Usuario acceso</th>
+        <th>Estado inicial</th>
+        <th>Intentos previos</th>
+        <th>Password introducida</th>
+        <th>Intentos finales</th>
+        <th>Estado final</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 - Primer fallo</td>
+        <td>ana80</td>
+        <td>ACTIVO</td>
+        <td>0</td>
+        <td>incorrecta</td>
+        <td>1</td>
+        <td>ACTIVO</td>
+      </tr>
+      <tr>
+        <td>2 - Segundo fallo</td>
+        <td>ana80</td>
+        <td>ACTIVO</td>
+        <td>1</td>
+        <td>incorrecta</td>
+        <td>2</td>
+        <td>ACTIVO</td>
+      </tr>
+      <tr>
+        <td>3 - Tercer fallo (bloqueo)</td>
+        <td>ana80</td>
+        <td>ACTIVO</td>
+        <td>2</td>
+        <td>incorrecta</td>
+        <td>3</td>
+        <td>BLOQUEADO</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- US-005 -->
+  <h2>US-005 — Solicitud de desbloqueo</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Caso</th>
+        <th>Usuario acceso</th>
+        <th>Estado usuario</th>
+        <th>Acción usuario</th>
+        <th>Evento emitido</th>
+        <th>Respuesta UI</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 - Usuario bloqueado solicita desbloqueo</td>
+        <td>ana80</td>
+        <td>BLOQUEADO</td>
+        <td>Rellena formulario de desbloqueo</td>
+        <td>desbloqueo-solicitado</td>
+        <td>Mensaje: "Solicitud de desbloqueo enviada"</td>
+      </tr>
+      <tr>
+        <td>2 - Usuario activo intenta solicitar desbloqueo</td>
+        <td>juan75</td>
+        <td>ACTIVO</td>
+        <td>Accede al formulario de desbloqueo</td>
+        <td>No se emite evento</td>
+        <td>Mensaje: "Su cuenta no está bloqueada"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- US-006 -->
+  <h2>US-006 — Desbloqueo por operaciones</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Caso</th>
+        <th>Usuario acceso</th>
+        <th>Estado inicial</th>
+        <th>Evento recibido</th>
+        <th>Acción operaciones</th>
+        <th>Estado final</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 - Desbloqueo correcto</td>
+        <td>ana80</td>
+        <td>BLOQUEADO</td>
+        <td>desbloqueo-solicitado</td>
+        <td>Operaciones aprueba desbloqueo</td>
+        <td>ACTIVO</td>
+      </tr>
+      <tr>
+        <td>2 - Solicitud de desbloqueo inexistente</td>
+        <td>usuarioX</td>
+        <td>No existe</td>
+        <td>desbloqueo-solicitado</td>
+        <td>Operaciones no encuentra usuario</td>
+        <td>Sin cambios</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- US-007 -->
+  <h2>US-007 — Recuperación de password</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Caso</th>
+        <th>Usuario acceso</th>
+        <th>Estado usuario</th>
+        <th>Acción</th>
+        <th>Evento emitido</th>
+        <th>Email enviado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 - Recuperación para usuario activo</td>
+        <td>ana80</td>
+        <td>ACTIVO</td>
+        <td>Invoca /passrecovery</td>
+        <td>passrecovery-solicitada</td>
+        <td>Email con nueva password</td>
+      </tr>
+      <tr>
+        <td>2 - Recuperación para usuario inactivo</td>
+        <td>juan75</td>
+        <td>INACTIVO</td>
+        <td>Invoca /passrecovery</td>
+        <td>passrecovery-solicitada</td>
+        <td>Email con nueva password (no cambia estado)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- US-008 -->
+  <h2>US-008 — Modificación de datos personales</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Caso</th>
+        <th>Usuario acceso</th>
+        <th>Campo modificado</th>
+        <th>Valor anterior</th>
+        <th>Valor nuevo</th>
+        <th>Resultado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 - Cambio de email</td>
+        <td>ana80</td>
+        <td>Email</td>
+        <td>ana@example.com</td>
+        <td>ana.nuevo@example.com</td>
+        <td>Datos actualizados correctamente</td>
+      </tr>
+      <tr>
+        <td>2 - Cambio de password</td>
+        <td>ana80</td>
+        <td>Password</td>
+        <td>oldPass123</td>
+        <td>newPass456</td>
+        <td>Datos actualizados, se requiere nuevo login con la nueva password</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- US-009 -->
+  <h2>US-009 — Carga de bases de cotización</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Caso</th>
+        <th>Usuario acceso</th>
+        <th>Formato fichero</th>
+        <th>Contenido</th>
+        <th>Resultado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 - Fichero válido</td>
+        <td>ana80</td>
+        <td>Texto (formato soportado)</td>
+        <td>Mes/Año/Cotización correctos</td>
+        <td>Cotizaciones cargadas y visibles en la aplicación</td>
+      </tr>
+      <tr>
+        <td>2 - Fichero con errores</td>
+        <td>ana80</td>
+        <td>Texto</td>
+        <td>Líneas con formato incorrecto</td>
+        <td>Se informa de errores y no se cargan las líneas inválidas</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- US-010 -->

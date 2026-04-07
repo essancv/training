@@ -1,0 +1,83 @@
+Vamos a desarrollar una aplicación nueva "Simulador de Jubilación". Los usaurios podrán acceder a ella
+y simular jubilaciones futurar en base a distintos criterios.
+
+Estos son los requisitos de la aplicación:
+
+1. Para que un usuario tenga acceso a la aplicación tendrá que ,incialmente, rellenar un formulario de
+   solicitud indicando su : nombre, apellidos, teléfono, fecha de nacimiento, email y usuario de acceso. 
+   Al enviar la solicitud el usuario recibirá confirmación de que se ha enviado su sulicitud y un 
+   identificador único de la misma.
+   Esta solicitud llegará a un servicio de solicitudes que , inicialmente, admitirá todas ellas y dará de 
+   alta al usuario en el sistema como ACTIVO. Le asignará un password aleatorio de 8 dígitos. Este 
+   departamento devolverá un email automático al usuario indicando que su sulicitud ha sido aceptada , 
+   el usuario de acceso (indicado en la solicitud), el password aleatorio que se le ha asignado 
+   y la dirección de acceso a la aplicación.
+2. Un usuario podrá acceder a la aplicación con el usuario y password y siempre que esté en estado ACTIVO.
+3. Un usuario quedará bloqueado si tras tres intentos no accede a la aplicación. El usuario se 
+   desbloqueará siguiendo el 'procedimiento de desbloqueo' (aún por definir)
+4. Un usuario podrá recuperar su password siguiendo el "procedimiento de recuperación de password" (aún
+   por decidir)
+5. Una vez que ha accedido a la aplicación , el usuario podrá:
+   5.1 - Modificar sus datos (excepto su usuario de acceso) (No podrá ver el dato de si está activo,inactivo o bloqueado)
+   5.2 - Cargar sus bases de cotización desde un fichero en su PC local. 
+         Cada cotización vendrá dada por (mes,año, cotización)
+   5.3 - Modificar sus cotizaciones individuales
+   5.4 - Ejecutar simulaciones de jubilación. En estas simulaciones el usuario podrá añadir cotizaciones
+         simuladas, desde la fecha actual hasta su fecha de jubilación.
+6. Existirá un usuario especial ,ADMIN, que podrá acceder a la aplicación para:
+   6.1 - Dar de alta /baja /modificar usuarios 
+   6.2 - Cambiar los datos de configuración para el cálculo de la pensión :
+       - Años para calculo de la cotización
+       - Base mínima de cotización
+
+7. Requisitos técnicos: 
+   7.1 - La aplicación SPA se desarrollará con REACT
+   7.2 - El front se desarrollará en Spring-boot con APIs REST
+   7.3 - Todos los apis han de estar securizados con JWT , con tiempo de expiración parametrizable
+   7.4 - Vamos a usar KAFKA como broker de mensajería y queremos que sea event driven 
+   7.5 - Se ha de seguir CQRS fielmente
+   7.6 - Los mensajes que no se puedan consumir se persistirán para procesarlos más tarde,
+   7.5 - Vamos a utilizar para el desarrollo arquitectura hexagonal y DDD
+   7.5 - El porcentaje de pruebas unitarias ha de ser superior al 75% de cobertura del código
+   7.5 - Vamos a utilizar metodología agil: Historias de usuario, sbe,atdd,bdd
+   7.6 - Usaremos behave para automatizar pruebas
+
+   Aclaraciones:
+   - El servicio de solicitudes es un proceso externo. Se conectará via SSE para recibir las 
+     solicitudes pendientes. Lo definiremos más tarde
+   - Los estados son ACTIVO,INACTIVO y BLOQUEADO . 
+        * ACTIVO - Estado inicial tras el alta 
+        * INACTIVO - El usuario ADMIN puede camnbiar a INACTIVO. En este estado, aunque el
+          usuario introduzaca bien el password , no podrá acceder
+        * BLOQUEADO - Cuando el usuario intenta el acceso más veces de las permitidas
+    - La BAJA (lógica) , significa poner al usuario en estado INACTIVO
+    - Procedimiento de debloqueo: El usuario rellenará un formulario solicitando el desbloqueo.
+      Esta solicitud llegará al operaciones que procederá a su desbloqueo
+    - El servicio de operaciones es un proceso externo. Se conectará via SSE para recibir las 
+     operaciones pendientes. Lo definiremos más tarde
+    - Procedimiento de recuperación de password: El sistema mandará un email al usuario con la 
+     nueva password.
+    - Carga de bases de cotización: Inicialmente un fichero de texto (habrá distintos cargadores 
+      dependiendo del formato)
+    - Simulación de jubilación - El algoritmo se definirá más adelante
+    - CQRS , dos bases de datos y servicios separados
+    - Event driven con KAFKA: 
+      * alta-solicitada (cuando el usuario envía el formulario)
+      * debloqueo-solicitado (cuando el usuario quiere desbloquar su password)
+    - Mensajes no consumidos: BD relacional + servicio de reintentos
+    - Seguridad JWT : roles:USER,ADMIN
+    - Configuración JWT por entorno 
+    - La SPA se comunica sólo con las apis de spring-boot
+    - Entorno QA : ataca a las apis ya desarrolladas (ha de probar las APIs y el front)
+    - Formato fichero carga: json con estructura [{month:3,year=2026,amount=560.4}]
+
+
+    - algoritmo: Se guarda la simulación y los parámetros. Le pasaremos la fecha de nacimiento y 
+      las cotizaciones. El resultado será la pension estimada de jubilación.
+    - Api desbloqueo : /simujub/user/unlock/<userid> 
+    - Api recuperación de password: /simujub/user/passrecovery/zuserid>  Un proceso estará
+      atento a passrecovery-solicitada para enviar el email correspondiente
+    - Un usuario ADMIN no puede ver coticaciones,ni simular jubilaciones ni cambiar password de usaurios
+    - El usuario puede cambiar su email , telefono, fecha de nacimiento y password desde la SPA
+    - El usario de acceso es único. Si dos solicitudes tienen el mismo usuario de acceso , se rechaza por 
+      email.

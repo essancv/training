@@ -1,0 +1,89 @@
+US-001 — Solicitud de alta de usuario
+Como persona interesada en usar el Simulador de Jubilación
+Quiero enviar una solicitud de alta con mis datos personales
+Para poder recibir mis credenciales y acceder a la aplicación
+
+US-002 — Activación automática de usuario
+Como sistema de gestión de solicitudes
+Quiero procesar automáticamente las solicitudes recibidas
+Para dar de alta usuarios en estado ACTIVO y enviarles sus credenciales
+
+US-003 — Acceso a la aplicación (Login)
+Como usuario ACTIVO
+Quiero acceder a la aplicación con mi usuario y password
+Para poder utilizar el simulador de jubilación
+
+US-004 — Bloqueo automático por intentos fallidos
+Como sistema de autenticación
+Quiero bloquear al usuario tras tres intentos fallidos
+Para proteger la seguridad de la aplicación
+
+US-005 — Solicitud de desbloqueo
+Como usuario bloqueado
+Quiero solicitar el desbloqueo de mi cuenta
+Para poder volver a acceder a la aplicación
+
+US-006 — Desbloqueo por operaciones
+Como departamento de operaciones
+Quiero recibir solicitudes de desbloqueo y procesarlas
+Para reactivar el acceso de los usuarios bloqueados
+
+US-007 — Recuperación de password
+Como usuario que ha olvidado su password
+Quiero solicitar una nueva
+Para poder acceder de nuevo a la aplicación
+
+US-008 — Modificación de datos personales
+Como usuario autenticado
+Quiero modificar mis datos personales (email, teléfono, fecha de nacimiento y password)
+Para mantener mi información actualizada
+
+US-009 — Carga de bases de cotización
+Como usuario autenticado
+Quiero cargar mis bases de cotización desde un fichero
+Para poder realizar simulaciones precisas de jubilación
+
+US-010 — Modificación de cotizaciones individuales
+Como usuario autenticado
+Quiero modificar cotizaciones concretas
+Para corregir errores o ajustar mis datos
+
+US-011 — Ejecución de simulaciones de jubilación
+Como usuario autenticado
+Quiero ejecutar simulaciones de jubilación con mis cotizaciones reales y simuladas
+Para conocer mi pensión estimada
+
+US-012 — Gestión de usuarios (ADMIN)
+Como usuario ADMIN
+Quiero dar de alta, baja o modificar usuarios
+Para gestionar el acceso a la aplicación
+
+US-013 — Configuración del cálculo de pensión (ADMIN)
+Como usuario ADMIN
+Quiero modificar los parámetros de cálculo (años de cotización, base mínima)
+Para ajustar el sistema a la normativa vigente
+
+US-014 — Seguridad JWT
+Como sistema
+Quiero generar y validar tokens JWT con roles USER y ADMIN
+Para asegurar el acceso a las APIs
+
+US-015 — Persistencia de mensajes no consumidos
+Como sistema de mensajería
+Quiero persistir los mensajes no consumidos y reintentarlos
+Para garantizar la consistencia del sistema event-driven
+
+US-016 — CQRS (lectura/escritura separadas)
+Como sistema
+Quiero separar los modelos de lectura y escritura
+Para mejorar el rendimiento y la escalabilidad
+
+US-017 — SPA React
+Como usuario final
+Quiero interactuar con una interfaz moderna y fluida
+Para tener una experiencia de uso óptima
+
+US-018 — Backend Spring Boot
+Como sistema
+Quiero exponer APIs REST seguras y robustas
+Para soportar la SPA y los procesos externos

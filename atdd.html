@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>ATDD - Simulador de Jubilación</title>
+</head>
+<body>
+
+<h1>ATDD - Simulador de Jubilación</h1>
+
+<!-- US-001 -->
+<h2>US-001 — Solicitud de alta de usuario</h2>
+<ul>
+  <li>CA1: Cuando el usuario envía una solicitud válida, el sistema debe registrar la solicitud y devolver un identificador único.</li>
+  <li>CA2: Si el usuario de acceso ya existe, la solicitud debe ser rechazada y debe enviarse un email informando del rechazo.</li>
+  <li>CA3: El sistema debe emitir el evento <strong>alta-solicitada</strong> en Kafka con los datos de la solicitud.</li>
+</ul>
+
+<!-- US-002 -->
+<h2>US-002 — Activación automática de usuario</h2>
+<ul>
+  <li>CA1: Cuando el servicio de solicitudes recibe una solicitud válida, debe crear el usuario en estado ACTIVO.</li>
+  <li>CA2: El sistema debe generar una password aleatoria de 8 caracteres.</li>
+  <li>CA3: Debe enviarse un email al usuario con usuario de acceso, password y URL de acceso.</li>
+  <li>CA4: Si el usuario de acceso ya existe, debe enviarse un email de rechazo.</li>
+</ul>
+
+<!-- US-003 -->
+<h2>US-003 — Acceso a la aplicación (Login)</h2>
+<ul>
+  <li>CA1: Un usuario ACTIVO con credenciales correctas debe recibir un JWT válido.</li>
+  <li>CA2: Un usuario INACTIVO debe recibir error 403 sin token.</li>
+  <li>CA3: Un usuario BLOQUEADO debe recibir error 403 sin token.</li>
+  <li>CA4: Un usuario con password incorrecta debe recibir error 401.</li>
+</ul>
+
+<!-- US-004 -->
+<h2>US-004 — Bloqueo automático por intentos fallidos</h2>
+<ul>
+  <li>CA1: Tras un intento fallido, el contador de intentos debe incrementarse.</li>
+  <li>CA2: Tras tres intentos fallidos consecutivos, el usuario debe pasar a estado BLOQUEADO.</li>
+  <li>CA3: Un usuario bloqueado no debe poder iniciar sesión aunque introduzca la password correcta.</li>
+</ul>
+
+<!-- US-005 -->
+<h2>US-005 — Solicitud de desbloqueo</h2>
+<ul>
+  <li>CA1: Un usuario BLOQUEADO debe poder enviar una solicitud de desbloqueo.</li>
+  <li>CA2: El sistema debe emitir el evento <strong>desbloqueo-solicitado</strong> en Kafka.</li>
+  <li>CA3: El usuario debe recibir confirmación de que la solicitud ha sido enviada.</li>
+  <li>CA4: Un usuario no bloqueado no debe poder solicitar desbloqueo.</li>
+</ul>
+
+<!-- US-006 -->
+<h2>US-006 — Desbloqueo por operaciones</h2>
+<ul>
+  <li>CA1: Cuando operaciones recibe un evento <strong>desbloqueo-solicitado</strong>, debe desbloquear al usuario.</li>
+  <li>CA2: El usuario debe pasar de BLOQUEADO a ACTIVO.</li>
+  <li>CA3: Si el usuario no existe, operaciones debe registrar el error sin modificar estados.</li>
+</ul>
+
+<!-- US-007 -->
+<h2>US-007 — Recuperación de password</h2>
+<ul>
+  <li>CA1: El usuario debe poder solicitar recuperación de password mediante el endpoint correspondiente.</li>
+  <li>CA2: El sistema debe emitir el evento <strong>passrecovery-solicitada</strong>

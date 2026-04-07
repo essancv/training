@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>BDD (Gherkin) - Event Publisher Kafka</title>
+
+  <!-- Reutilizamos exactamente los mismos estilos que HU, SBE y ATDD -->
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-soft: #1f2937;
+      --danger: #f97373;
+      --radius: 10px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      margin: 0 0 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      margin-bottom: 25px;
+      color: var(--text-soft);
+      font-size: 0.95rem;
+    }
+
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+    }
+
+    .tagline span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+    }
+
+    .table-wrapper {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+      border-radius: var(--radius);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .table-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%);
+      pointer-events: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      position: relative;
+      z-index: 1;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.9rem;
+    }
+
+    th {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      border-bottom: 1px solid var(--border-soft);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    tbody tr:nth-child(odd) {
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    tbody tr:hover {
+      background: rgba(30, 64, 175, 0.35);
+    }
+
+    td.id {
+      white-space: nowrap;
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+
+    code {
+      color: #93c5fd;
+      font-size: 0.85rem;
+    }
+
+    pre {
+      background: rgba(15, 23, 42, 0.7);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.4rem;
+      color: #e2e8f0;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+  </style>
+</head>
+
+<body>
+<div class="page">
+
+  <div class="tagline">
+    <span class="dot"></span>
+    COMPONENTE ARQUITECTURA · EVENT PUBLISHER KAFKA
+  </div>
+
+  <h1>BDD — Escenarios Gherkin</h1>
+  <div class="subtitle">
+    Escenarios de comportamiento expresados en Gherkin para validar el componente de publicación automática de eventos Kafka.
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Escenario (Gherkin)</th>
+      </tr>
+      </thead>
+
+      <tbody>
+
+      <!-- BDD 1 -->
+      <tr>
+        <td class="id">BDD-EP-001</td>
+        <td>
+          <pre>
+Feature: Publicación automática de eventos Kafka
+
+  Scenario: Método anotado finaliza correctamente
+    Given un método anotado con @PublishEvent(topic="alta-solicitada")
+    And el método devuelve un objeto válido
+    When el método finaliza sin lanzar excepción
+    Then el componente debe serializar el objeto a JSON
+    And debe publicarlo asíncronamente en el topic "alta-solicitada"
+    And el hilo del método no debe bloquearse
+          </pre>
+        </td>
+      </tr>
+
+      <!-- BDD 2 -->
+      <tr>
+        <td class="id">BDD-EP-002</td>
+        <td>
+          <pre>
+  Scenario: Método anotado devuelve null
+    Given un método anotado con @PublishEvent(topic="alta-solicitada")
+    And el método devuelve null
+    When el método finaliza correctamente
+    Then no debe publicarse ningún evento
+    And no deben generarse reintentos
+          </pre>
+        </td>
+      </tr>
+
+      <!-- BDD 3 -->
+      <tr>
+        <td class="id">BDD-EP-003</td>
+        <td>
+          <pre>
+  Scenario: Método anotado lanza excepción
+    Given un método anotado con @PublishEvent(topic="alta-solicitada")
+    And el método lanza una excepción
+    When el componente intercepta la ejecución
+    Then no debe publicarse ningún evento
+    And el error debe registrarse en el logger dedicado
+          </pre>
+        </td>
+      </tr>
+
+      <!-- BDD 4 -->
+      <tr>
+        <td class="id">BDD-EP-004</td>
+        <td>
+          <pre>
+  Scenario: Error temporal al enviar evento
+    Given un evento válido que debe enviarse a Kafka
+    And el envío falla temporalmente
+    And el número de reintentos configurado es 3
+    When el componente intenta enviar el evento
+    Then debe reintentarlo 3 veces de forma asíncrona
+    And si uno de los reintentos tiene éxito
+    Then el evento debe considerarse enviado correctamente
+          </pre>
+        </td>
+      </tr>
+
+      <!-- BDD 5 -->
+      <tr>
+        <td class="id">BDD-EP-005</td>
+        <td>
+          <pre>
+  Scenario: Error permanente tras agotar reintentos
+    Given un evento válido que debe enviarse a Kafka
+    And el envío falla en todos los reintentos
+    And el dead-letter topic está configurado
+    When se agotan los reintentos
+    Then el evento debe enviarse al dead-letter topic
+    And el mensaje debe incluir payload original, topic original, número de reintentos, timestamp y causa del fallo
+          </pre>
+        </td>
+      </tr>
+
+      <!-- BDD 6 -->
+      <tr>
+        <td class="id">BDD-EP-006</td>
+        <td>
+          <pre>
+  Scenario: Reintento desde dead-letter topic
+    Given un mensaje almacenado en el dead-letter topic
+    And el proceso de reintentos está activo
+    When el componente consume el mensaje
+    Then debe intentar reenviarlo al topic original
+    And debe registrar el resultado en el logger dedicado
+          </pre>
+        </td>
+      </tr>
+
+      <!-- BDD 7 -->
+      <tr>
+        <td class="id">BDD-EP-007</td>
+        <td>
+          <pre>
+  Scenario: Configuración externa desde application.properties
+    Given un proyecto que usa el componente
+    And existen propiedades definidas en application.properties
+    When el componente arranca
+    Then debe cargar bootstrap servers, reintentos, dead-letter topic y configuración de logging
+    And no debe requerir configuración adicional en código
+          </pre>
+        </td>
+      </tr>
+
+      <!-- BDD 8 -->
+      <tr>
+        <td class="id">BDD-EP-008</td>
+        <td>
+          <pre>
+  Scenario: Logging dedicado
+    Given el componente está configurado con un fichero de log específico
+    And el nivel de log está definido en application.properties
+    When se publica un evento, se reintenta o se produce un error
+    Then el componente debe escribir un log en texto plano en el fichero configurado
+    And también debe escribir en consola
+          </pre>
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-note">
+    Estos escenarios BDD pueden usarse directamente para automatizar pruebas de aceptación del componente.
+  </div>
+
+</div>
+</body>
+</html>

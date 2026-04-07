@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Historias de Usuario - Componente Publicación Kafka</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-soft: #1f2937;
+      --danger: #f97373;
+      --radius: 10px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      margin: 0 0 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      margin-bottom: 25px;
+      color: var(--text-soft);
+      font-size: 0.95rem;
+    }
+
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+    }
+
+    .tagline span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+    }
+
+    .table-wrapper {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+      border-radius: var(--radius);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .table-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%);
+      pointer-events: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      position: relative;
+      z-index: 1;
+    }
+
+    thead {
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.98));
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.9rem;
+    }
+
+    th {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      border-bottom: 1px solid var(--border-soft);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    tbody tr:nth-child(odd) {
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    tbody tr:hover {
+      background: rgba(30, 64, 175, 0.35);
+    }
+
+    td.id {
+      white-space: nowrap;
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+
+    td.rol {
+      white-space: nowrap;
+      color: var(--text-soft);
+      font-size: 0.85rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .impact {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .impact strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .priority {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .priority-alta {
+      color: #fecaca;
+      background: rgba(248, 113, 113, 0.12);
+      border: 1px solid rgba(248, 113, 113, 0.5);
+    }
+
+    .priority-media {
+      color: #fde68a;
+      background: rgba(234, 179, 8, 0.12);
+      border: 1px solid rgba(234, 179, 8, 0.5);
+    }
+
+    .priority-baja {
+      color: #bbf7d0;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.5);
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    @media (max-width: 900px) {
+      th:nth-child(5), td:nth-child(5),
+      th:nth-child(6), td:nth-child(6) {
+        display: none;
+      }
+    }
+
+    @media (max-width: 700px) {
+      th:nth-child(4), td:nth-child(4) {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="tagline">
+    <span class="dot"></span>
+    COMPONENTE ARQUITECTURA · EVENT PUBLISHER KAFKA
+  </div>
+  <h1>Historias de Usuario — Event Publisher Kafka</h1>
+  <div class="subtitle">
+    Backlog funcional del componente reutilizable de publicación automática de eventos en Kafka,
+    pensado para equipos de desarrollo y plataforma.
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Rol</th>
+        <th>Historia</th>
+        <th>Descripción / Alcance</th>
+        <th>Impacto</th>
+        <th>Prioridad</th>
+      </tr>
+      </thead>
+      <tbody>
+
+      <tr>
+        <td class="id">HU-EP-001</td>
+        <td class="rol"><span class="pill">Desarrollador</span></td>
+        <td>
+          Como desarrollador<br>
+          quiero publicar eventos Kafka usando una anotación<br>
+          para no tener que escribir código Kafka en cada proyecto.
+        </td>
+        <td>
+          El componente debe exponer una anotación <code>@PublishEvent(topic="...")</code> que,
+          aplicada sobre un método, publique automáticamente el valor de retorno en el topic indicado
+          cuando el método finalice sin excepción. Si el método devuelve <code>null</code> o lanza
+          una excepción, no se publicará ningún evento.
+        </td>
+        <td class="impact">
+          <strong>Impacto:</strong> elimina boilerplate de integración con Kafka y reduce errores
+          de implementación en proyectos de negocio.
+        </td>
+        <td><span class="priority priority-alta">ALTA</span></td>
+      </tr>
+
+      <tr>
+        <td class="id">HU-EP-002</td>
+        <td class="rol"><span class="pill">Desarrollador</span></td>
+        <td>
+          Como desarrollador<br>
+          quiero que la publicación de eventos sea asíncrona<br>
+          para que el flujo de negocio no se bloquee por problemas de Kafka.
+        </td>
+        <td>
+          El componente debe enviar los eventos a Kafka de forma asíncrona, sin bloquear el hilo
+          del método anotado. El método debe devolver su resultado inmediatamente, independientemente
+          del éxito o fallo del envío. La gestión de reintentos y errores será responsabilidad interna
+          del componente.
+        </td>
+        <td class="impact">
+          <strong>Impacto:</strong> protege el rendimiento y la experiencia de usuario de los servicios
+          de negocio ante latencias o caídas de Kafka.
+        </td>
+        <td><span class="priority priority-alta">ALTA</span></td>
+      </tr>
+
+      <tr>
+        <td class="id">HU-EP-003</td>
+        <td class="rol"><span class="pill">Arquitecto</span></td>
+        <td>
+          Como arquitecto<br>
+          quiero que el componente se integre como un starter auto-configurable<br>
+          para que los equipos solo tengan que añadir una dependencia.
+        </td>
+        <td>
+          El componente debe empaquetarse como un Spring Boot Starter, con auto-configuración
+          basada en la presencia de Kafka y propiedades en <code>application.properties</code>.
+          No debe requerir configuración manual adicional en cada proyecto, más allá de las
+          propiedades de entorno.
+        </td>
+        <td class="impact">
+          <strong>Impacto:</strong> facilita la adopción masiva del componente y reduce la
+          variabilidad entre proyectos.
+        </td>
+        <td><span class="priority priority-alta">ALTA</span></td>
+      </tr>
+
+      <tr>
+        <td class="id">HU-EP-004</td>
+        <td class="rol"><span class="pill">Equipo Plataforma</span></td>
+        <td>
+          Como equipo de plataforma<br>
+          quiero que todos los eventos se serialicen en JSON de forma estándar<br>
+          para garantizar consistencia entre servicios.
+        </td>
+        <td>
+          El componente debe serializar todos los eventos a JSON usando un <code>ObjectMapper</code>
+          interno, con configuración estándar. La estructura del JSON debe ser estable y homogénea
+          para todos los proyectos que usen el componente.
+        </td>
+        <td class="impact">
+          <strong>Impacto:</strong> simplifica la interoperabilidad entre servicios y el análisis
+          de eventos en herramientas externas.
+        </td>
+        <td><span class="priority priority-media">MEDIA</span></td>
+      </tr>
+
+      <tr>
+        <td class="id">HU-EP-005</td>
+        <td class="rol"><span class="pill">Equipo Plataforma</span></td>
+        <td>
+          Como equipo de plataforma<br>
+          quiero que el componente implemente reintentos automáticos de envío<br>
+          para reducir la pérdida de eventos ante fallos temporales.
+        </td>
+        <td>
+          El componente debe reintentar el envío de eventos fallidos de forma asíncrona, un número
+          de veces configurable desde <code>application.properties</code>. Los reintentos no deben
+          bloquear el flujo de negocio y deben estar desacoplados del método anotado.
+        </td>
+        <td class="impact">
+          <strong>Impacto:</strong> mejora la resiliencia frente a fallos puntuales de infraestructura
+          sin complejidad adicional en los servicios de negocio.
+        </td>
+        <td><span class="priority priority-alta">ALTA</span></td>
+      </tr>
+
+      <tr>
+        <td class="id">HU-EP-006</td>
+        <td class="rol"><span class="pill">Equipo Plataforma</span></td>
+        <td>
+          Como equipo de plataforma<br>
+          quiero que los eventos no entregados se envíen a un dead-letter topic<br>
+          para poder analizarlos y reprocesarlos posteriormente.
+        </td>
+        <td>
+          Si tras agotar los reintentos un evento no puede enviarse al topic original, el componente
+          debe publicarlo en un dead-letter topic configurable. El mensaje debe incluir payload original,
+          topic original, número de reintentos, timestamp y causa del fallo.
+        </td>
+        <td class="impact">
+          <strong>Impacto:</strong> permite trazabilidad y recuperación de eventos problemáticos sin
+          perder información crítica.
+        </td>
+        <td><span class="priority priority-alta">ALTA</span></td>
+      </tr>
+
+      <tr>
+        <td class="id">HU-EP-007</td>
+        <td class="rol"><span class="pill">Equipo Plataforma</span></td>
+        <td>
+          Como equipo de plataforma<br>
+          quiero que el componente incluya un proceso de reintentos desde el dead-letter topic<br>
+          para poder reintentar la entrega de eventos fallidos.
+        </td>
+        <td>
+          El componente debe incluir un consumidor propio que lea del dead-letter topic y reintente
+          enviar los mensajes al topic original. Este proceso será asíncrono, configurable y formará
+          parte del mismo componente de arquitectura.
+        </td>
+        <td class="impact">
+          <strong>Impacto:</strong> habilita estrategias de recuperación sin necesidad de desarrollar
+          procesos ad hoc en cada proyecto.
+        </td>
+        <td><span class="priority priority-media">MEDIA</span></td>
+      </tr>
+
+      <tr>
+        <td class="id">HU-EP-008</td>
+        <td class="rol"><span class="pill">Arquitecto</span></td>
+        <td>
+          Como arquitecto<br>
+          quiero que toda la configuración del componente se gestione desde application.properties<br>
+          para centralizar la gestión por entorno.
+        </td>
+        <td>
+          El componente debe obtener toda su configuración (bootstrap servers, número de reintentos,
+          backoff, dead-letter topic, logger, fichero de log, nivel de log) desde
+          <code>application.properties</code> o equivalentes por entorno, sin requerir código adicional.
+        </td>
+        <td class="impact">
+          <strong>Impacto:</strong> facilita la operación en múltiples entornos (dev, pre, pro) y
+          reduce el riesgo de configuraciones divergentes.
+        </td>
+        <td><span class="priority priority-media">MEDIA</span></td>
+      </tr>
+
+      <tr>
+        <td class="id">HU-EP-009</td>
+        <td class="rol"><span class="pill">Equipo Plataforma</span></td>
+        <td>
+          Como equipo de plataforma<br>
+          quiero que el componente tenga un logger dedicado en texto plano<br>
+          para poder auditar fácilmente la actividad de publicación de eventos.
+        </td>
+        <td>
+          El componente debe usar un logger propio, con nombre configurable, que escriba en consola
+          y en un fichero específico. El formato será texto plano y el nivel de log será configurable
+          desde propiedades. Debe registrar eventos publicados, reintentos, errores y envíos a
+          dead-letter topic.
+        </td>
+        <td class="impact">
+          <strong>Impacto:</strong> mejora la observabilidad y facilita el diagnóstico de problemas
+          relacionados con la mensajería.
+        </td>
+        <td><span class="priority priority-media">MEDIA</span></td>
+      </tr>
+
+      <tr>
+        <td class="id">HU-EP-010</td>
+        <td class="rol"><span class="pill">Arquitecto</span></td>
+        <td>
+          Como arquitecto<br>
+          quiero que el componente funcione en modo best effort sin transacciones<br>
+          para simplificar la primera versión y reducir complejidad inicial.
+        </td>
+        <td>
+          La primera versión del componente no estará integrada con transacciones de base de datos
+          ni implementará el patrón outbox. La publicación de eventos será best effort: el flujo de
+          negocio no se verá bloqueado ni revertido por fallos en Kafka.
+        </td>
+        <td class="impact">
+          <strong>Impacto:</strong> permite entregar valor rápido con un componente usable, dejando
+          la integración transaccional para una evolución posterior.
+        </td>
+        <td><span class="priority priority-baja">BAJA</span></td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-note">
+    Estas historias de usuario pueden servir como base para derivar SBE, ATDD y BDD del componente
+    de publicación de eventos Kafka.
+  </div>
+</div>
+</body>
+</html>
