@@ -1,5 +1,0 @@
-com\qa\eventpublisher\service\QaTestService$QaTestEvent.class
-com\qa\eventpublisher\web\QaTestController.class
-com\qa\eventpublisher\QaEventPublisherTestApplication.class
-com\qa\eventpublisher\service\QaTestService.class
-com\qa\eventpublisher\config\KafkaConfig.class
