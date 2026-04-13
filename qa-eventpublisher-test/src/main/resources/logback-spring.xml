@@ -21,14 +21,14 @@
     </appender>
 
     <!-- Logger dedicado del componente -->
-    <logger name="qa-event-publisher" level="DEBUG" additivity="false">
+    <logger name="event-publisher" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="EVENT_PUBLISHER_FILE"/>
     </logger>
-    <logger name="event-publisher" level="INFO" additivity="false">
+    <!--logger name="event-publisher" level="INFO" additivity="false">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="EVENT_PUBLISHER_FILE"/>
-    </logger>
+    </logger-->
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>

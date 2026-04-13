@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Arquitectura y Diseño - Infraestructura de Eventos</title>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: #f4f6fa;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 {
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      margin-top: 2rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin-top: 1.2rem;
+    }
+
+    .section {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      border: 1px solid #e5e7eb;
+    }
+
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.9rem;
+    }
+
+    code {
+      background: #e5e7eb;
+      padding: 0.15rem 0.35rem;
+      border-radius: 0.35rem;
+      font-size: 0.9rem;
+    }
+
+    ul {
+      margin-left: 1.2rem;
+    }
+
+    .highlight {
+      background: #dbeafe;
+      padding: 0.5rem 0.75rem;
+      border-left: 4px solid #2563eb;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Arquitectura, Diseño de Componentes y Estructura de Directorios</h1>
+
+  <div class="section">
+    <h2>1. Arquitectura Propuesta (Clean Architecture aplicada a eventos)</h2>
+
+    <p>La arquitectura se divide en 4 capas bien definidas, desacopladas y orientadas a la extensibilidad:</p>
+
+    <div class="highlight">
+      <strong>Objetivo:</strong> Crear una infraestructura genérica para publicar y consumir eventos mediante anotaciones, sin acoplarse al broker ni a Spring.
+    </div>
+
+    <h3>🟦 Capa de Dominio</h3>
+    <ul>
+      <li>Entidades de dominio</li>
+      <li>Eventos de dominio (POJOs)</li>
+      <li>Interfaces de contratos de publicación y consumo</li>
+    </ul>
+
+    <h3>🟩 Capa de Aplicación</h3>
+    <ul>
+      <li>Casos de uso</li>
+      <li>Servicios de orquestación</li>
+      <li>Puertos de entrada y salida</li>
+    </ul>
+
+    <h3>🟧 Capa de Infraestructura</h3>
+    <ul>
+      <li>Anotaciones <code>@PublishEvent</code> y <code>@ConsumeEvent</code></li>
+      <li>Aspectos AOP</li>
+      <li>Escáner de anotaciones</li>
+      <li>Registro de consumidores</li>
+      <li>Adaptadores del broker (Kafka/Redpanda)</li>
+      <li>Serialización y deserialización</li>
+    </ul>
+
+    <h3>🟫 Capa de Adaptadores</h3>
+    <ul>
+      <li>Controladores REST</li>
+      <li>Beans que publican eventos</li>
+      <li>Beans que consumen eventos</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>2. Diseño de Componentes</h2>
+
+    <h3>📌 A. Anotación <code>@PublishEvent</code></h3>
+    <pre><code>@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface PublishEvent {
+    String topic();
+}</code></pre>
+
+    <p><strong>Componente asociado:</strong> <em>PublishEventAspect</em></p>
+    <ul>
+      <li>Intercepta métodos anotados</li>
+      <li>Obtiene el retorno</li>
+      <li>Serializa y publica el evento</li>
+    </ul>
+
+    <h3>📌 B. Anotación <code>@ConsumeEvent</code></h3>
+    <pre><code>@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ConsumeEvent {
+    String topic();
+    Class&lt;?&gt; eventType();
+}</code></pre>
+
+    <p><strong>Componentes asociados:</strong></p>
+    <ul>
+      <li><strong>ConsumeEventScanner</strong> – detecta métodos anotados</li>
+      <li><strong>ConsumerRegistry</strong> – registra consumidores por topic</li>
+      <li><strong>EventListenerContainer</strong> – gestiona listeners y concurrencia</li>
+      <li><strong>KafkaEventListener</strong> – recibe mensajes del broker</li>
+    </ul>
+
+    <h3>📌 C. Adaptadores del Broker</h3>
+    <ul>
+      <li><strong>KafkaEventPublisher</strong> implementa <code>EventPublisher</code></li>
+      <li><strong>KafkaEventListener</strong> recibe mensajes y los delega</li>
+    </ul>
+
+    <h3>📌 D. Serialización</h3>
+    <ul>
+      <li><strong>EventSerializer</strong></li>
+      <li><strong>EventDeserializer</strong></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>3. Estructura de Directorios (Clean Architecture + Spring Boot)</h2>
+
+    <pre><code>src/main/java/com/tuempresa/eventframework/
+│
+├── domain/
+│   ├── event/
+│   │   ├── DomainEvent.java
+│   │   └── QaTestEvent.java
+│   └── service/
+│       └── EventConsumerHandler.java
+│
+├── application/
+│   ├── port/
+│   │   ├── in/
+│   │   │   └── EventConsumerHandler.java
+│   │   └── out/
+│   │       └── EventPublisher.java
+│   └── service/
+│       └── (casos de uso)
+│
+├── infrastructure/
+│   ├── annotation/
+│   │   ├── PublishEvent.java
+│   │   └── ConsumeEvent.java
+│   │
+│   ├── publisher/
+│   │   ├── PublishEventAspect.java
+│   │   └── KafkaEventPublisher.java
+│   │
+│   ├── consumer/
+│   │   ├── ConsumeEventScanner.java
+│   │   ├── ConsumerRegistry.java
+│   │   ├── EventListenerContainer.java
+│   │   └── KafkaEventListener.java
+│   │
+│   ├── serialization/
+│   │   ├── EventSerializer.java
+│   │   └── EventDeserializer.java
+│   │
+│   └── config/
+│       └── EventFrameworkConfig.java
+│
+└── adapter/
+    ├── in/
+    │   └── rest/
+    │       └── QaController.java
+    └── out/
+        └── event/
+            └── QaEventProducer.java
+</code></pre>
+  </div>
+
+  <div class="section">
+    <h2>4. Flujo Completo</h2>
+
+    <h3>📤 Publicación</h3>
+    <ul>
+      <li>Método anotado con <code>@PublishEvent</code></li>
+      <li>Aspecto intercepta</li>
+      <li>Serializa retorno</li>
+      <li>Publica en el broker</li>
+    </ul>
+
+    <h3>📥 Consumo</h3>
+    <ul>
+      <li>Escáner detecta métodos con <code>@ConsumeEvent</code></li>
+      <li>Registry los registra</li>
+      <li>Listener escucha topic</li>
+      <li>Deserializa mensaje</li>
+      <li>Invoca método consumidor en un hilo del pool</li>
+    </ul>
+  </div>
+
+</body>
+</html>

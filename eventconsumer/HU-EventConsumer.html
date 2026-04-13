@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Historias de Usuario - Componente @ConsumeEvent</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: #f5f7fb;
+      color: #1f2933;
+    }
+
+    h1, h2 {
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-top: 2rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: #e0f2fe;
+      color: #0369a1;
+      margin-left: 0.5rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 0.75rem;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #e5e7eb;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+    }
+
+    th, td {
+      padding: 0.75rem 0.9rem;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #f3f4f6;
+      color: #111827;
+      font-weight: 600;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    td {
+      background: #ffffff;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .hu {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .criteria p {
+      margin: 0 0 0.35rem 0;
+      line-height: 1.4;
+    }
+
+    .criteria p span {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: #4b5563;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Historias de Usuario - Componente <code>@ConsumeEvent</code></h1>
+  <p class="subtitle">
+    Conjunto de historias de usuario para la infraestructura de consumo de eventos asíncronos en Spring Boot,
+    basada en anotaciones y procesamiento paralelo de mensajes desde un broker.
+  </p>
+
+  <!-- 1 -->
+  <div class="card">
+    <div class="section-header">
+      <h2>1. Definir anotación <code>@ConsumeEvent</code></h2>
+      <span class="tag">Infraestructura</span>
+    </div>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como desarrollador de la plataforma, quiero disponer de una anotación
+          <code>@ConsumeEvent(topic="...")</code> para que pueda declarar métodos que consuman mensajes
+          de un topic sin escribir código repetitivo.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> que existe un método anotado con <code>@ConsumeEvent(topic="qa-topic")</code></p>
+          <p><span>Cuando</span> la aplicación arranca</p>
+          <p><span>Entonces</span> el método debe registrarse automáticamente como consumidor del topic indicado.</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 2 -->
+  <div class="card">
+    <div class="section-header">
+      <h2>2. Detección automática de beans con <code>@ConsumeEvent</code></h2>
+      <span class="tag">Infraestructura</span>
+    </div>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como desarrollador, quiero que el framework detecte automáticamente todos los métodos anotados
+          con <code>@ConsumeEvent</code> para que no tenga que configurar consumidores manualmente.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> un bean con un método anotado con <code>@ConsumeEvent</code></p>
+          <p><span>Cuando</span> el contexto de Spring se inicializa</p>
+          <p><span>Entonces</span> el componente de infraestructura debe escanear y registrar todos los consumidores.</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 3 -->
+  <div class="card">
+    <div class="section-header">
+      <h2>3. Consumo asíncrono y paralelo de mensajes</h2>
+      <span class="tag">Concurrencia</span>
+    </div>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como sistema de mensajería, quiero consumir mensajes del topic de forma asíncrona para que múltiples
+          mensajes puedan procesarse en paralelo.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> que llegan varios mensajes al topic</p>
+          <p><span>Cuando</span> el consumidor los recibe</p>
+          <p><span>Entonces</span> cada mensaje debe procesarse en un hilo independiente sin bloquear a los demás.</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 4 -->
+  <div class="card">
+    <div class="section-header">
+      <h2>4. Invocar el método anotado con el mensaje deserializado</h2>
+      <span class="tag">Dominio</span>
+    </div>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como desarrollador, quiero que el método anotado reciba automáticamente el mensaje deserializado
+          para que pueda trabajar directamente con el objeto de dominio.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> un mensaje válido en el topic</p>
+          <p><span>Cuando</span> el consumidor lo procesa</p>
+          <p><span>Entonces</span> debe deserializarlo al tipo esperado y pasarlo como parámetro al método anotado.</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 5 -->
+  <div class="card">
+    <div class="section-header">
+      <h2>5. Manejo de errores de deserialización y procesamiento</h2>
+      <span class="tag">Robustez</span>
+    </div>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como plataforma, quiero manejar errores de deserialización o ejecución para que el sistema no falle
+          y pueda registrar el error o reenviar el mensaje.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> un mensaje mal formado o un error en el método consumidor</p>
+          <p><span>Cuando</span> el sistema intenta procesarlo</p>
+          <p><span>Entonces</span> debe capturar la excepción, registrar el error y continuar con el resto de mensajes.</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 6 -->
+  <div class="card">
+    <div class="section-header">
+      <h2>6. Configuración de concurrencia y número de hilos</h2>
+      <span class="tag">Configuración</span>
+    </div>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como administrador del sistema, quiero configurar el número de hilos o consumidores concurrentes
+          para que pueda ajustar el rendimiento según la carga.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> una configuración de concurrencia (por ejemplo, <code>consume.concurrency=5</code>)</p>
+          <p><span>Cuando</span> el componente arranca</p>
+          <p><span>Entonces</span> debe crear el número configurado de consumidores paralelos.</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 7 -->
+  <div class="card">
+    <div class="section-header">
+      <h2>7. Confirmación de offset tras procesamiento correcto</h2>
+      <span class="tag">Fiabilidad</span>
+    </div>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como sistema de mensajería, quiero confirmar el offset solo tras procesar correctamente el mensaje
+          para que no se pierdan eventos en caso de error.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> un mensaje recibido</p>
+          <p><span>Cuando</span> el método anotado finaliza sin errores</p>
+          <p><span>Entonces</span> el offset debe confirmarse.</p>
+          <p><span>Y cuando</span> ocurre un error</p>
+          <p><span>Entonces</span> el offset no debe confirmarse.</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 8 -->
+  <div class="card">
+    <div class="section-header">
+      <h2>8. Filtros o validaciones previas al procesamiento</h2>
+      <span class="tag">Validación</span>
+    </div>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como desarrollador, quiero poder aplicar filtros previos (por ejemplo, validar cabeceras o tipo de evento)
+          para que solo se procesen mensajes válidos.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> un mensaje recibido</p>
+          <p><span>Cuando</span> el filtro lo evalúa</p>
+          <p><span>Entonces</span> si no cumple las reglas, el método anotado no debe ejecutarse.</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 9 -->
+  <div class="card">
+    <div class="section-header">
+      <h2>9. Exposición de métricas del consumidor</h2>
+      <span class="tag">Observabilidad</span>
+    </div>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como equipo de observabilidad, quiero métricas del consumidor (mensajes procesados, errores, latencia)
+          para que pueda monitorizar el rendimiento del sistema.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> que el consumidor está activo</p>
+          <p><span>Cuando</span> procesa mensajes</p>
+          <p><span>Entonces</span> debe actualizar métricas accesibles vía Actuator o Micrometer.</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 10 -->
+  <div class="card">
+    <div class="section-header">
+      <h2>10. Múltiples consumidores para un mismo topic</h2>
+      <span class="tag">Escalabilidad</span>
+    </div>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como desarrollador, quiero que varios métodos puedan consumir el mismo topic para que pueda implementar
+          patrones como fan-out o listeners especializados.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> dos métodos anotados con el mismo topic</p>
+          <p><span>Cuando</span> llega un mensaje</p>
+          <p><span>Entonces</span> ambos métodos deben ejecutarse de forma independiente.</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

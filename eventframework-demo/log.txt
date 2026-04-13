@@ -1,0 +1,75 @@
+[[33;1mWARNING[0m] Unable to find the root directory. Create a .mvn directory in the root directory or add the root="true" attribute on the root project's model to identify it.
+[[34;1mINFO[0m] Scanning for projects...
+[[34;1mINFO[0m] Loaded 22524 auto-discovered prefixes for remote repository central (prefixes-central.txt)
+[[33;1mWARNING[0m] 
+[[33;1mWARNING[0m] 1 problem was encountered while building the effective model for 'com.example:eventframework-demo:jar:1.0.0' (use -e to see details)
+[[33;1mWARNING[0m] 
+[[33;1mWARNING[0m] Total model problems reported: 1
+[[33;1mWARNING[0m] 
+[[33;1mWARNING[0m] It is highly recommended to fix these problems because they threaten the stability of your build.
+[[33;1mWARNING[0m] 
+[[33;1mWARNING[0m] For this reason, future Maven versions might no longer support building such malformed projects.
+[[33;1mWARNING[0m] 
+[[34;1mINFO[0m] 
+[[34;1mINFO[0m] [1m---------------------< [36;22mcom.example:eventframework-demo[39;1m >----------------------[0m
+[[34;1mINFO[0m] [1mBuilding eventframework-demo 1.0.0[0m
+[[34;1mINFO[0m]   from pom.xml
+[[34;1mINFO[0m] [1m-----------------------------------[ jar ]------------------------------------[0m
+[[34;1mINFO[0m] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots-c1d4c55f9308e5ac18a4069bed41dca64d85c515.txt)
+[[34;1mINFO[0m] 
+[[34;1mINFO[0m] [1m>>> [32;22mspring-boot:4.1.0-M4:run[0m [1m(default-cli) > test-compile[0m @ [36meventframework-demo[39;1m >>>[0m
+[[34;1mINFO[0m] 
+[[34;1mINFO[0m] [1m--- [32;22mresources:3.3.1:resources[0m [1m(default-resources)[0m @ [36meventframework-demo[39;1m ---[0m
+[[34;1mINFO[0m] Copying 1 resource from src/main/resources to target/classes
+[[34;1mINFO[0m] 
+[[34;1mINFO[0m] [1m--- [32;22mcompiler:3.11.0:compile[0m [1m(default-compile)[0m @ [36meventframework-demo[39;1m ---[0m
+[[34;1mINFO[0m] Nothing to compile - all classes are up to date
+[[34;1mINFO[0m] 
+[[34;1mINFO[0m] [1m--- [32;22mresources:3.3.1:testResources[0m [1m(default-testResources)[0m @ [36meventframework-demo[39;1m ---[0m
+[[34;1mINFO[0m] skip non existing resourceDirectory /workspaces/training/eventframework-demo/src/test/resources
+[[34;1mINFO[0m] 
+[[34;1mINFO[0m] [1m--- [32;22mcompiler:3.11.0:testCompile[0m [1m(default-testCompile)[0m @ [36meventframework-demo[39;1m ---[0m
+[[34;1mINFO[0m] No sources to compile
+[[34;1mINFO[0m] 
+[[34;1mINFO[0m] [1m<<< [32;22mspring-boot:4.1.0-M4:run[0m [1m(default-cli) < test-compile[0m @ [36meventframework-demo[39;1m <<<[0m
+[[34;1mINFO[0m] 
+[[34;1mINFO[0m] 
+[[34;1mINFO[0m] [1m--- [32;22mspring-boot:4.1.0-M4:run[0m [1m(default-cli)[0m @ [36meventframework-demo[39;1m ---[0m
+[[34;1mINFO[0m] Loaded 50 auto-discovered prefixes for remote repository ow2-snapshot (prefixes-ow2-snapshot-40669f8efefaadb4c1705a2585cefc8851f735ac.txt)
+[[34;1mINFO[0m] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.0)
+
+2026-04-10T09:33:06.034Z  INFO 45519 --- [           main] com.example.demo.DemoApplication         : Starting DemoApplication using Java 25.0.1 with PID 45519 (/workspaces/training/eventframework-demo/target/classes started by codespace in /workspaces/training/eventframework-demo)
+2026-04-10T09:33:06.039Z  INFO 45519 --- [           main] com.example.demo.DemoApplication         : No active profile set, falling back to 1 default profile: "default"
+2026-04-10T09:33:06.724Z  WARN 45519 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'consumerRegistry' of type [com.viewnext.eventframework.infrastructure.consumer.ConsumerRegistry] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [consumeEventScanner]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-04-10T09:33:06.728Z  WARN 45519 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'eventTypeRegistry' of type [com.viewnext.eventframework.infrastructure.serialization.EventTypeRegistry] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [eventTypeRegistrar]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.apache.tomcat.jni.Library in an unnamed module (file:/home/codespace/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.16/tomcat-embed-core-10.1.16.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-04-10T09:33:06.925Z  INFO 45519 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-04-10T09:33:06.932Z  INFO 45519 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-10T09:33:06.932Z  INFO 45519 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-04-10T09:33:06.972Z  INFO 45519 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-04-10T09:33:06.973Z  INFO 45519 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 840 ms
+2026-04-10T09:33:07.325Z  INFO 45519 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+2026-04-10T09:33:07.331Z  INFO 45519 --- [           main] com.example.demo.DemoApplication         : Started DemoApplication in 1.688 seconds (process running for 1.96)
+>>> CONTEXTO CARGADO <<<
+Beans cargados:
+eventPublisher
+publishEventUseCase
+>>> ¿Existe EventFrameworkConfig? false
+[[34;1mINFO[0m] [1m------------------------------------------------------------------------------[0m
+[[34;1mINFO[0m] [32;1mBUILD SUCCESS[0m
+[[34;1mINFO[0m] [1m------------------------------------------------------------------------------[0m
+[[34;1mINFO[0m] Total time:  8.575 s
+[[34;1mINFO[0m] Finished at: 2026-04-10T09:33:11Z
+[[34;1mINFO[0m] [1m------------------------------------------------------------------------------[0m

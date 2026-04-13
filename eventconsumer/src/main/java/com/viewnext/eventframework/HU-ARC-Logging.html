@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Historias de Usuario y Arquitectura - Infraestructura de Eventos</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: #f4f6fa;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 {
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      margin-top: 2rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin-top: 1.2rem;
+    }
+
+    .section {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      border: 1px solid #e5e7eb;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 0.75rem 0.9rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f3f4f6;
+      color: #111827;
+      font-weight: 600;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    td {
+      background: #ffffff;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .hu {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .criteria p {
+      margin: 0 0 0.35rem 0;
+      line-height: 1.4;
+    }
+
+    .criteria p span {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: #e0f2fe;
+      color: #0369a1;
+      margin-left: 0.5rem;
+    }
+
+    .decision {
+      background: #ecfdf5;
+      border-left: 4px solid #10b981;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 0.25rem;
+      font-size: 0.9rem;
+    }
+
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.9rem;
+    }
+
+    code {
+      background: #e5e7eb;
+      padding: 0.15rem 0.35rem;
+      border-radius: 0.35rem;
+      font-size: 0.9rem;
+    }
+
+    ul {
+      margin-left: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Historias de Usuario y Arquitectura - Infraestructura de Eventos</h1>
+
+  <!-- HISTORIAS DE USUARIO -->
+  <div class="section">
+    <h2>1. Historias de Usuario del Componente de Eventos</h2>
+
+    <!-- Logging publicación -->
+    <div class="card">
+      <h3>1. Logging de publicación de eventos<span class="tag">Logging</span></h3>
+      <table>
+        <tr>
+          <th>Historia de usuario</th>
+          <th>Criterios de aceptación</th>
+        </tr>
+        <tr>
+          <td class="hu">
+            Como desarrollador o equipo de observabilidad, quiero que el componente registre trazas detalladas
+            al publicar eventos para que pueda monitorizar, depurar y auditar el comportamiento del sistema.
+          </td>
+          <td class="criteria">
+            <p><span>Dado</span> que se publica un evento</p>
+            <p><span>Cuando</span> comienza la publicación</p>
+            <p><span>Entonces</span> debe registrarse el tipo del evento y su payload (o payload enmascarado si está activado el flag).</p>
+            <p><span>Dado</span> que la publicación finaliza correctamente</p>
+            <p><span>Cuando</span> el evento se envía al broker</p>
+            <p><span>Entonces</span> debe registrarse una traza de éxito.</p>
+            <p><span>Dado</span> que ocurre un error durante la publicación</p>
+            <p><span>Cuando</span> se lanza una excepción</p>
+            <p><span>Entonces</span> debe registrarse una traza de error con detalles del fallo.</p>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Logging consumo -->
+    <div class="card">
+      <h3>2. Logging de consumo de eventos<span class="tag">Logging</span></h3>
+      <table>
+        <tr>
+          <th>Historia de usuario</th>
+          <th>Criterios de aceptación</th>
+        </tr>
+        <tr>
+          <td class="hu">
+            Como desarrollador o equipo de observabilidad, quiero que el componente registre trazas detalladas
+            al consumir eventos para que pueda monitorizar, depurar y auditar el comportamiento del sistema.
+          </td>
+          <td class="criteria">
+            <p><span>Dado</span> que se recibe un evento desde Kafka</p>
+            <p><span>Cuando</span> comienza su procesamiento</p>
+            <p><span>Entonces</span> debe registrarse el tipo del evento y su payload (o payload enmascarado).</p>
+            <p><span>Dado</span> que el evento se procesa correctamente</p>
+            <p><span>Cuando</span> el método consumidor finaliza</p>
+            <p><span>Entonces</span> debe registrarse una traza de éxito.</p>
+            <p><span>Dado</span> que ocurre un error durante el consumo</p>
+            <p><span>Cuando</span> se lanza una excepción</p>
+            <p><span>Entonces</span> debe registrarse una traza de error y activarse la lógica de reintentos o DLQ.</p>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Configuración logging -->
+    <div class="card">
+      <h3>3. Configuración del logging<span class="tag">Configuración</span></h3>
+      <table>
+        <tr>
+          <th>Historia de usuario</th>
+          <th>Criterios de aceptación</th>
+        </tr>
+        <tr>
+          <td class="hu">
+            Como aplicación que usa el componente, quiero poder configurar el nivel de detalle del logging
+            y si el payload debe enmascararse para que pueda cumplir requisitos de seguridad y auditoría.
+          </td>
+          <td class="criteria">
+            <p><span>Dado</span> un archivo de configuración de la aplicación</p>
+            <p><span>Cuando</span> se define <code>eventframework.logging.mask-payload=true</code></p>
+            <p><span>Entonces</span> el componente debe ocultar el contenido del payload en logs.</p>
+            <p><span>Dado</span> que no se define ninguna configuración</p>
+            <p><span>Entonces</span> el componente debe usar valores por defecto seguros.</p>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Puedes añadir aquí el resto de historias ya definidas (anotaciones, concurrencia, DLQ, etc.) con el mismo formato -->
+  </div>
+
+  <!-- ARQUITECTURA -->
+  <div class="section">
+    <h2>2. Decisiones de Arquitectura</h2>
+
+    <div class="decision">
+      <strong>Framework:</strong> Spring Boot  
+      <br>Motivo: integración natural con Kafka, AOP, DI y configuración.
+    </div>
+
+    <div class="decision">
+      <strong>Broker inicial:</strong> Kafka  
+      <br>Motivo: estándar de la industria, soporte nativo en Spring, alto rendimiento.  
+      <br>Nota: la arquitectura sigue desacoplada para permitir otros brokers en el futuro.
+    </div>
+
+    <div class="decision">
+      <strong>Serialización:</strong> JSON con Jackson  
+      <br>Motivo: estándar en Spring, flexible, soporta polimorfismo.
+    </div>
+
+    <div class="decision">
+      <strong>Deserialización:</strong> Basada en campo <code>type</code> dentro del mensaje  
+      <br>Ejemplo JSON:
+      <pre>{
+  "type": "SystemStatusEvent",
+  "version": 1,
+  "status": "OK",
+  "message": "Todo correcto"
+}</pre>
+      Motivo: permite múltiples tipos de eventos en un mismo topic.
+    </div>
+
+    <div class="decision">
+      <strong>Concurrencia:</strong> Thread pool propio  
+      <br>Motivo: desacoplar la ejecución del consumidor del listener de Kafka y permitir paralelismo configurable.
+    </div>
+
+    <div class="decision">
+      <strong>Gestión de errores:</strong> DLQ + reintentos configurables  
+      <br>Motivo: resiliencia, trazabilidad y control de fallos.
+    </div>
+
+    <div class="decision">
+      <strong>Versionado de eventos:</strong> Campo <code>version</code> en cada evento  
+      <br>Motivo: permite evolución del modelo sin romper consumidores antiguos.
+    </div>
+
+    <div class="decision">
+      <strong>Logging del componente:</strong> Logging propio y configurable  
+      <br>Motivo: separar claramente las trazas de la infraestructura de eventos de las trazas de la aplicación.
+      <br>Incluye:
+      <ul>
+        <li>Inicio y fin de publicación de eventos</li>
+        <li>Inicio y fin de consumo de eventos</li>
+        <li>Errores en publicación y consumo</li>
+        <li>Flag para enmascarar payload</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>3. Arquitectura General</h2>
+
+    <h3>🟦 Capa de Dominio</h3>
+    <ul>
+      <li>Entidades de dominio</li>
+      <li>Eventos de dominio (POJOs con campo <code>version</code>)</li>
+      <li>Interfaces de contratos de publicación y consumo</li>
+    </ul>
+
+    <h3>🟩 Capa de Aplicación</h3>
+    <ul>
+      <li>Casos de uso</li>
+      <li>Servicios de orquestación</li>
+      <li>Puertos de entrada y salida</li>
+    </ul>
+
+    <h3>🟧 Capa de Infraestructura</h3>
+    <ul>
+      <li>Anotaciones <code>@PublishEvent</code> y <code>@ConsumeEvent</code></li>
+      <li>Aspectos AOP</li>
+      <li>Escáner de anotaciones</li>
+      <li>Registro de consumidores</li>
+      <li>Adaptadores Kafka (producer/consumer)</li>
+      <li>Thread pool propio para ejecución paralela</li>
+      <li>Serialización/deserialización JSON con Jackson</li>
+      <li>DLQ + reintentos</li>
+      <li>Logging propio del componente (publicación y consumo)</li>
+    </ul>
+
+    <h3>🟫 Capa de Adaptadores</h3>
+    <ul>
+      <li>Controladores REST</li>
+      <li>Beans que publican eventos</li>
+      <li>Beans que consumen eventos</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>4. Estructura de Directorios</h2>
+    <pre><code>src/main/java/com/tuempresa/eventframework/
+│
+├── domain/
+│   ├── event/
+│   │   ├── DomainEvent.java
+│   │   └── SystemStatusEvent.java
+│   └── service/
+│       └── EventConsumerHandler.java
+│
+├── application/
+│   ├── port/
+│   │   ├── in/
+│   │   │   └── EventConsumerHandler.java
+│   │   └── out/
+│   │       └── EventPublisher.java
+│   └── service/
+│       └── (casos de uso)
+│
+├── infrastructure/
+│   ├── annotation/
+│   │   ├── PublishEvent.java
+│   │   └── ConsumeEvent.java
+│   │
+│   ├── publisher/
+│   │   ├── PublishEventAspect.java
+│   │   └── KafkaEventPublisher.java
+│   │
+│   ├── consumer/
+│   │   ├── ConsumeEventScanner.java
+│   │   ├── ConsumerRegistry.java
+│   │   ├── EventListenerContainer.java
+│   │   └── KafkaEventListener.java
+│   │
+│   ├── serialization/
+│   │   ├── EventSerializer.java
+│   │   └── EventDeserializer.java
+│   │
+│   ├── logging/
+│   │   ├── EventLogger.java
+│   │   ├── LoggingConfigProperties.java
+│   │   └── PayloadMasker.java
+│   │
+│   └── config/
+│       └── EventFrameworkConfig.java
+│
+└── adapter/
+    ├── in/
+    │   └── rest/
+    │       └── SystemStatusController.java
+    └── out/
+        └── event/
+            └── SystemStatusEventProducer.java
+</code></pre>
+  </div>
+
+</body>
+</html>

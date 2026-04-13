@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Framework de Eventos - Documentación Final</title>
+  <style>
+    :root {
+      --bg: #f4f6fa;
+      --card-bg: #ffffff;
+      --border: #e5e7eb;
+      --text-main: #111827;
+      --text-muted: #4b5563;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --accent-strong: #1d4ed8;
+      --code-bg: #111827;
+      --code-text: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 2rem 4vw;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+    h1, h2, h3, h4 {
+      margin: 0 0 0.5rem 0;
+      color: var(--text-main);
+    }
+    h1 { font-size: 2rem; margin-bottom: 1.5rem; }
+    h2 { font-size: 1.4rem; margin-top: 2rem; }
+    h3 { font-size: 1.15rem; margin-top: 1.2rem; }
+    h4 { font-size: 1rem; margin-top: 1rem; }
+    p { margin: 0 0 0.5rem 0; color: var(--text-muted); }
+    .section {
+      background: var(--card-bg);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 25px rgba(15,23,42,0.06);
+    }
+    .tag {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      margin-left: 0.5rem;
+    }
+    .pill {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: #e5e7eb;
+      color: #374151;
+      margin-right: 0.35rem;
+      margin-bottom: 0.25rem;
+    }
+    .decision {
+      background: #ecfdf5;
+      border-left: 4px solid #10b981;
+      padding: 0.75rem 0.9rem;
+      border-radius: 0.35rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+    }
+    .decision strong { color: #065f46; }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.9rem;
+      margin: 0.75rem 0;
+    }
+    code {
+      background: #e5e7eb;
+      padding: 0.1rem 0.35rem;
+      border-radius: 0.35rem;
+      font-size: 0.9rem;
+    }
+    ul { margin: 0.25rem 0 0.5rem 1.2rem; padding: 0; }
+    li { margin-bottom: 0.25rem; color: var(--text-muted); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 0.6rem 0.75rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f3f4f6;
+      border-bottom: 1px solid #e5e7eb;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    td {
+      background: #ffffff;
+      border-bottom: 1px solid #f3f4f6;
+      color: var(--text-muted);
+    }
+    tr:last-child td { border-bottom: none; }
+    .hu { font-weight: 600; color: var(--text-main); }
+    .criteria p { margin: 0 0 0.3rem 0; }
+    .criteria span { font-weight: 600; color: var(--text-main); }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(0,1.2fr) minmax(0,1fr);
+      gap: 1rem;
+    }
+    .small { font-size: 0.85rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <h1>Framework de Eventos - Documentación Final</h1>
+
+  <!-- 1. Visión general -->
+  <div class="section">
+    <h2>1. Visión general</h2>
+    <p>
+      Este framework proporciona una infraestructura de eventos basada en <strong>Kafka</strong>, diseñada con
+      <strong>Clean Architecture</strong> y <strong>SOLID</strong>, que permite:
+    </p>
+    <ul>
+      <li>Publicar eventos de dominio sin acoplarse a Kafka ni a la infraestructura.</li>
+      <li>Consumir eventos mediante anotaciones declarativas.</li>
+      <li>Registrar trazas detalladas de publicación y consumo.</li>
+      <li>Configurar enmascaramiento de payloads sensibles.</li>
+      <li>Gestionar reintentos y envío a DLQ.</li>
+      <li>Serializar y deserializar eventos con soporte polimórfico mediante el campo <code>type</code>.</li>
+    </ul>
+    <p>
+      El objetivo es que las aplicaciones de negocio trabajen con <strong>POJOs de dominio</strong> y
+      <strong>casos de uso</strong>, mientras la infraestructura se encarga de Kafka, logging, concurrencia y resiliencia.
+    </p>
+  </div>
+
+  <!-- 2. Historias de usuario clave -->
+  <div class="section">
+    <h2>2. Historias de usuario clave</h2>
+
+    <h3>2.1 Logging de publicación de eventos<span class="tag">Logging</span></h3>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como desarrollador o equipo de observabilidad, quiero que el componente registre trazas detalladas
+          al publicar eventos para poder monitorizar, depurar y auditar el comportamiento del sistema.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> que se publica un evento</p>
+          <p><span>Cuando</span> comienza la publicación</p>
+          <p><span>Entonces</span> se registra el tipo del evento y su payload (o enmascarado).</p>
+          <p><span>Dado</span> que la publicación finaliza correctamente</p>
+          <p><span>Cuando</span> el evento se envía al broker</p>
+          <p><span>Entonces</span> se registra una traza de éxito.</p>
+          <p><span>Dado</span> que ocurre un error durante la publicación</p>
+          <p><span>Cuando</span> se lanza una excepción</p>
+          <p><span>Entonces</span> se registra una traza de error con detalles del fallo.</p>
+        </td>
+      </tr>
+    </table>
+
+    <h3>2.2 Logging de consumo de eventos<span class="tag">Logging</span></h3>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como desarrollador o equipo de observabilidad, quiero que el componente registre trazas detalladas
+          al consumir eventos para poder monitorizar, depurar y auditar el comportamiento del sistema.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> que se recibe un evento desde Kafka</p>
+          <p><span>Cuando</span> comienza su procesamiento</p>
+          <p><span>Entonces</span> se registra el tipo del evento y su payload (o enmascarado).</p>
+          <p><span>Dado</span> que el evento se procesa correctamente</p>
+          <p><span>Cuando</span> el método consumidor finaliza</p>
+          <p><span>Entonces</span> se registra una traza de éxito.</p>
+          <p><span>Dado</span> que ocurre un error durante el consumo</p>
+          <p><span>Cuando</span> se lanza una excepción</p>
+          <p><span>Entonces</span> se registra una traza de error y se aplican reintentos o DLQ.</p>
+        </td>
+      </tr>
+    </table>
+
+    <h3>2.3 Configuración del logging<span class="tag">Configuración</span></h3>
+    <table>
+      <tr>
+        <th>Historia de usuario</th>
+        <th>Criterios de aceptación</th>
+      </tr>
+      <tr>
+        <td class="hu">
+          Como aplicación que usa el componente, quiero poder configurar el nivel de detalle del logging
+          y si el payload debe enmascararse para cumplir requisitos de seguridad y auditoría.
+        </td>
+        <td class="criteria">
+          <p><span>Dado</span> un archivo de configuración</p>
+          <p><span>Cuando</span> se define <code>eventframework.logging.mask-payload=true</code></p>
+          <p><span>Entonces</span> el componente oculta el contenido del payload en logs.</p>
+          <p><span>Dado</span> que no se define ninguna configuración</p>
+          <p><span>Entonces</span> el componente usa valores por defecto seguros.</p>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 3. Decisiones de arquitectura -->
+  <div class="section">
+    <h2>3. Decisiones de arquitectura</h2>
+
+    <div class="decision">
+      <strong>Framework base:</strong> Spring Boot  
+      <br>Integración natural con Kafka, AOP, DI y configuración externa.
+    </div>
+
+    <div class="decision">
+      <strong>Broker inicial:</strong> Kafka  
+      <br>Estándar de la industria, soporte nativo en Spring, alto rendimiento.  
+      <span class="small">La arquitectura se mantiene desacoplada para permitir otros brokers.</span>
+    </div>
+
+    <div class="decision">
+      <strong>Serialización:</strong> JSON con Jackson  
+      <br>Se añade el campo <code>type</code> para soportar deserialización polimórfica.
+      <pre>{
+  "type": "SystemStatusEvent",
+  "version": 1,
+  "status": "OK",
+  "message": "Todo correcto"
+}</pre>
+    </div>
+
+    <div class="decision">
+      <strong>Concurrencia:</strong> Thread pool propio en <code>EventListenerContainer</code>  
+      <br>Permite paralelismo configurable y desacopla el listener de Kafka del procesamiento real.
+    </div>
+
+    <div class="decision">
+      <strong>Gestión de errores:</strong> Reintentos + DLQ  
+      <br>Reintentos configurables y envío a un topic de DLQ mediante <code>KafkaDlqPublisher</code>.
+    </div>
+
+    <div class="decision">
+      <strong>Logging:</strong> Componente centralizado <code>EventLogger</code>  
+      <br>Registra inicio/fin de publicación y consumo, errores y permite enmascarar payloads.
+    </div>
+
+    <div class="decision">
+      <strong>Registro de tipos de eventos:</strong> <code>EventTypeRegistry</code>  
+      <br>Permite resolver el tipo de evento a partir del campo <code>type</code> del JSON.
+    </div>
+  </div>
+
+  <!-- 4. Arquitectura por capas -->
+  <div class="section">
+    <h2>4. Arquitectura por capas</h2>
+
+    <div class="grid-2">
+      <div>
+        <h3>4.1 Dominio</h3>
+        <span class="pill">DomainEvent</span>
+        <span class="pill">SystemStatusEvent</span>
+        <span class="pill">EventConsumerHandler</span>
+        <p>Contiene los eventos de dominio y contratos puros, sin dependencias de infraestructura.</p>
+        <ul>
+          <li><code>DomainEvent</code>: interfaz base de eventos.</li>
+          <li><code>SystemStatusEvent</code>: ejemplo de evento de estado.</li>
+          <li><code>EventConsumerHandler&lt;T&gt;</code>: contrato para manejadores de eventos.</li>
+        </ul>
+
+        <h3>4.2 Aplicación</h3>
+        <span class="pill">EventPublisher</span>
+        <span class="pill">PublishEventUseCase</span>
+        <span class="pill">ProcessConsumedEventUseCase</span>
+        <p>Orquesta la lógica de publicación y procesamiento de eventos.</p>
+        <ul>
+          <li><code>EventPublisher</code>: puerto de salida para publicar eventos.</li>
+          <li><code>PublishEventUseCase</code>: caso de uso para publicar eventos.</li>
+          <li><code>ProcessConsumedEventUseCase</code>: caso de uso para procesar eventos consumidos.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>4.3 Infraestructura</h3>
+        <span class="pill">@PublishEvent</span>
+        <span class="pill">@ConsumeEvent</span>
+        <span class="pill">PublishEventAspect</span>
+        <span class="pill">ConsumeEventScanner</span>
+        <span class="pill">ConsumerRegistry</span>
+        <span class="pill">KafkaEventPublisher</span>
+        <span class="pill">KafkaEventListener</span>
+        <span class="pill">EventListenerContainer</span>
+        <span class="pill">EventSerializer</span>
+        <span class="pill">EventDeserializer</span>
+        <span class="pill">EventLogger</span>
+        <span class="pill">KafkaDlqPublisher</span>
+        <p>Implementa la integración con Kafka, logging, concurrencia y serialización.</p>
+
+        <h3>4.4 Configuración</h3>
+        <span class="pill">EventFrameworkConfig</span>
+        <span class="pill">LoggingConfigProperties</span>
+        <span class="pill">EventTypeRegistry</span>
+        <p>Ensamblan todos los componentes en el contexto Spring.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Flujo de publicación y consumo -->
+  <div class="section">
+    <h2>5. Flujo de publicación y consumo</h2>
+
+    <h3>5.1 Publicación de eventos</h3>
+    <ol>
+      <li>Método de aplicación anotado con <code>@PublishEvent(topic = "...")</code>.</li>
+      <li><code>PublishEventAspect</code> intercepta el método.</li>
+      <li>Se obtiene el <code>DomainEvent</code> devuelto.</li>
+      <li><code>EventLogger</code> registra <strong>EVENT-PUBLISH-START</strong>.</li>
+      <li><code>PublishEventUseCase</code> delega en <code>EventPublisher</code>.</li>
+      <li><code>KafkaEventPublisher</code> serializa con <code>EventSerializer</code> e incluye <code>type</code>.</li>
+      <li>Se envía el mensaje a Kafka.</li>
+      <li><code>EventLogger</code> registra <strong>EVENT-PUBLISH-SUCCESS</strong> o <strong>EVENT-PUBLISH-ERROR</strong>.</li>
+    </ol>
+
+    <h3>5.2 Consumo de eventos</h3>
+    <ol>
+      <li>Kafka entrega un <code>ConsumerRecord</code> al contenedor.</li>
+      <li><code>EventListenerContainer</code> lo envía a un thread del pool.</li>
+      <li><code>KafkaEventListener</code> obtiene los consumidores del <code>ConsumerRegistry</code>.</li>
+      <li>Se parsea el JSON y se lee el campo <code>type</code>.</li>
+      <li><code>EventDeserializer</code> o <code>ObjectMapper</code> crean el <code>DomainEvent</code> correcto.</li>
+      <li><code>EventLogger</code> registra <strong>EVENT-CONSUME-START</strong>.</li>
+      <li><code>ProcessConsumedEventUseCase</code> aplica lógica transversal y llama al método consumidor.</li>
+      <li><code>EventLogger</code> registra <strong>EVENT-CONSUME-SUCCESS</strong> o <strong>EVENT-CONSUME-ERROR</strong>.</li>
+      <li>Si hay errores, <code>EventListenerContainer</code> aplica reintentos y, si se agotan, envía a DLQ con <code>KafkaDlqPublisher</code>.</li>
+    </ol>
+  </div>
+
+  <!-- 6. Estructura de directorios -->
+  <div class="section">
+    <h2>6. Estructura de directorios</h2>
+    <pre><code>src/main/java/com/tuempresa/eventframework/
+│
+├── domain/
+│   ├── event/
+│   │   ├── DomainEvent.java
+│   │   └── SystemStatusEvent.java
+│   └── service/
+│       └── EventConsumerHandler.java
+│
+├── application/
+│   ├── port/
+│   │   ├── in/
+│   │   │   └── EventConsumerHandler.java
+│   │   └── out/
+│   │       └── EventPublisher.java
+│   └── service/
+│       ├── PublishEventUseCase.java
+│       └── ProcessConsumedEventUseCase.java
+│
+├── infrastructure/
+│   ├── annotation/
+│   │   ├── PublishEvent.java
+│   │   └── ConsumeEvent.java
+│   │
+│   ├── publisher/
+│   │   ├── PublishEventAspect.java
+│   │   └── KafkaEventPublisher.java
+│   │
+│   ├── consumer/
+│   │   ├── ConsumeEventScanner.java
+│   │   ├── ConsumerRegistry.java
+│   │   ├── KafkaEventListener.java
+│   │   ├── EventListenerContainer.java
+│   │   └── KafkaDlqPublisher.java
+│   │
+│   ├── serialization/
+│   │   ├── EventSerializer.java
+│   │   ├── EventDeserializer.java
+│   │   ├── EventTypeRegistry.java
+│   │   └── EventTypeRegistrar.java
+│   │
+│   ├── logging/
+│   │   ├── EventLogger.java
+│   │   ├── LoggingConfigProperties.java
+│   │   └── PayloadMasker.java
+│   │
+│   └── config/
+│       └── EventFrameworkConfig.java
+│
+└── adapter/
+    ├── in/
+    │   └── rest/
+    │       └── SystemStatusController.java
+    └── out/
+        └── event/
+            └── SystemStatusEventProducer.java
+</code></pre>
+  </div>
+
+</body>
+</html>

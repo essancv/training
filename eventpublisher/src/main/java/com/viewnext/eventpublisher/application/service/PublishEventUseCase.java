@@ -49,10 +49,10 @@ public class PublishEventUseCase {
         try {
             String json = objectMapper.writeValueAsString(value);
             OutboundEvent event = new OutboundEvent(topic, json, 1, Instant.now());
-            logger.info("Programando publicación asíncrona en topic '%s'", topic);
+            logger.info("Programando publicación asíncrona en topic {%s}", topic);
             executorService.submit(() -> eventPublishingService.publishWithRetry(event));
         } catch (JsonProcessingException e) {
-            logger.error("Error serializando evento para topic '%s': %s", topic, e.getMessage(), e);
+            logger.error("Error serializando evento para topic '{%s}': {%s}", topic, e.getMessage(), e);
         }
     }
 }

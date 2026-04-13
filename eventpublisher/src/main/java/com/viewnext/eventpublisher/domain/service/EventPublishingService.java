@@ -48,12 +48,12 @@ public class EventPublishingService {
         OutboundEvent current = event;
         while (true) {
             try {
-                logger.info("Publicando evento en topic '%s', intento %d", current.getTopic(), current.getAttempt());
+                logger.info("Publicando evento en topic {}, intento {}", current.getTopic(), current.getAttempt());
                 eventPublisherPort.publish(current);
-                logger.info("Evento publicado correctamente en topic '%s'", current.getTopic());
+                logger.info("Evento publicado correctamente en topic '{}'", current.getTopic());
                 return;
             } catch (Exception ex) {
-                logger.error("Error al publicar evento en topic '%s' (intento %d): %s",
+                logger.error("Error al publicar evento en topic '{}' (intento {}): {}",
                         current.getTopic(), current.getAttempt(), ex.getMessage(), ex);
 
                 if (retryPolicy.canRetry(current.getAttempt())) {
@@ -61,13 +61,13 @@ public class EventPublishingService {
                         Thread.sleep(retryPolicy.getBackoff().toMillis());
                     } catch (InterruptedException ie) {
                         Thread.currentThread().interrupt();
-                        logger.error("Hilo de reintentos interrumpido para topic '%s'", current.getTopic(), ie);
+                        logger.error("Hilo de reintentos interrumpido para topic '{}'", current.getTopic(), ie);
                         sendToDeadLetter(current, ex);
                         return;
                     }
                     current = current.nextAttempt();
                 } else {
-                    logger.warn("Agotados reintentos para topic '%s'. Enviando a dead-letter.", current.getTopic());
+                    logger.warn("Agotados reintentos para topic '{}'. Enviando a dead-letter.", current.getTopic());
                     sendToDeadLetter(current, ex);
                     return;
                 }
