@@ -1,0 +1,19 @@
+cd examples/vanilla
+npm init -y
+npm install event-client-sdk
+
+# instalar servidor simple
+npm install -g serve
+
+# en la carpeta del proyecto
+serve .
+
+Abrir: http://localhost.3000
+
+
+# npm create vite@latest vanilla-app
+cd vanilla-app
+npm install
+npm install event-client-sdk
+npm run dev
+

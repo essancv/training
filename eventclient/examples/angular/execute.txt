@@ -1,0 +1,14 @@
+# crear proyecto
+npm install -g @angular/cli
+ng new my-app
+cd my-app
+
+# instalar SDK
+npm install event-client-sdk
+
+# añadir servicio y componente
+
+# ejecutar
+ng serve
+
+http://localhost:4200

@@ -1,0 +1,38 @@
+# Construir SDK
+cd eventclient
+npm run build
+
+# Construir aplicación de prueba
+cd examples/js-vite 
+rm -rf node_modules package-lock.json
+npm install
+npm run dev
+
+// Construir framework
+cd eventconsumer
+mvn clean install
+
+
+# Arrancar docker redpanda
+docker stop redpanda
+docker start redpanda
+
+//* Arrancar demo (con framework)
+cd eventframework-demo 
+mvn spring-boot:run
+
+/* Arrancar cliente
+
+cd eventclient
+cd examples/js-vite
+npm run dev
+
+# Arrrancar client web (websocket )
+
+https://glowing-space-engine-7x49gjrp95gcp57g-5173.app.github.dev/
+
+# Enviar un mensaje para publicar en un topic (demo-topic)
+
+curl http://localhost:8080/publish (https://glowing-space-engine-7x49gjrp95gcp57g-8080.app.github.dev/)
+
+

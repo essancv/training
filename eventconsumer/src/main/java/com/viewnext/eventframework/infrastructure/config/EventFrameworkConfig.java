@@ -25,6 +25,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import com.viewnext.eventframework.application.service.SubscriptionRegistry;
+import com.viewnext.eventframework.application.service.ExternalEventDispatcher;
 
 import java.util.Map;
 
@@ -46,8 +48,18 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * <p>Todos los beans pueden ser sobrescritos por la aplicación cliente
  * simplemente declarando un bean del mismo tipo.</p>
  */
+import org.springframework.context.annotation.ComponentScan;
+import com.viewnext.eventframework.infrastructure.security.PermitAllAuthorizationProvider;
+import com.viewnext.eventframework.infrastructure.security.NoAuthProvider;
+import com.viewnext.eventframework.application.port.in.security.AuthorizationProvider;
+import com.viewnext.eventframework.application.port.in.security.AuthProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+
+
+
 @AutoConfiguration
 @EnableAspectJAutoProxy
+@ComponentScan("com.viewnext.eventframework")
 public class EventFrameworkConfig {
 
     // -------------------------------------------------------------------------
@@ -125,10 +137,6 @@ public class EventFrameworkConfig {
         return new ConsumeEventScanner(registry);
     }
 
-    @Bean
-    public ProcessConsumedEventUseCase processConsumedEventUseCase() {
-        return new ProcessConsumedEventUseCase();
-    }
 
     @Bean
     public KafkaEventListener kafkaEventListener(
@@ -199,31 +207,82 @@ public EventListenerContainer eventListenerContainer(
 
 }
 
-@Bean
-public PublishEventAspect publishEventAspect(
-        PublishEventUseCase publishEventUseCase,
-        EventLogger logger
-) {
-    return new PublishEventAspect(publishEventUseCase, logger);
-}
+    @Bean
+    public PublishEventAspect publishEventAspect(
+            PublishEventUseCase publishEventUseCase,
+            EventLogger logger
+    ) {
+        return new PublishEventAspect(publishEventUseCase, logger);
+    }
 
-@Bean
-public KafkaPollingService kafkaPollingService(
-        KafkaConsumer<String, String> consumer,
-        EventListenerContainer container,
-        ConsumerRegistry registry
-) {
-    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>> Topics en registry al crear KafkaPollingService: " + registry.getAllTopics());
-    return new KafkaPollingService(
-            consumer,
-            container,
-            registry.getAllTopics() // debes añadir este método si no existe
-    );
-}
-@Bean
-public KafkaConsumer<String, String> kafkaConsumer(
-        org.springframework.kafka.core.ConsumerFactory<String, String> consumerFactory
-) {
-    return (KafkaConsumer<String, String>) consumerFactory.createConsumer();
-}
+    @Bean
+    public KafkaPollingService kafkaPollingService(
+            KafkaConsumer<String, String> consumer,
+            EventListenerContainer container,
+            ConsumerRegistry registry
+    ) {
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>> Topics en registry al crear KafkaPollingService: " + registry.getAllTopics());
+        return new KafkaPollingService(
+                consumer,
+                container,
+                registry.getAllTopics() // debes añadir este método si no existe
+        );
+    }
+    @Bean
+    public KafkaConsumer<String, String> kafkaConsumer(
+            org.springframework.kafka.core.ConsumerFactory<String, String> consumerFactory
+    ) {
+        return (KafkaConsumer<String, String>) consumerFactory.createConsumer();
+    }
+
+    @Bean
+    public SubscriptionRegistry subscriptionRegistry() {
+        return new SubscriptionRegistry();
+    }
+
+    @Bean
+    public ExternalEventDispatcher externalEventDispatcher(SubscriptionRegistry registry ,AuthorizationProvider authorizationProvider) {
+        return new ExternalEventDispatcher(registry,authorizationProvider);
+    }
+    @Bean
+    public ProcessConsumedEventUseCase processConsumedEventUseCase(ExternalEventDispatcher externalEventDispatcher) {
+        return new ProcessConsumedEventUseCase(externalEventDispatcher);
+    }
+
+
+ // ---------------------------------------------------------------------
+    // 🔐 AUTHENTICATION
+    // ---------------------------------------------------------------------
+
+    /**
+     * Proveedor de autenticación por defecto.
+     *
+     * <p>
+     * Si la aplicación no define uno, se utilizará un proveedor que no aplica
+     * autenticación (usuario anónimo).
+     * </p>
+     */
+    @Bean
+    @ConditionalOnMissingBean(AuthProvider.class)
+    public AuthProvider authProvider() {
+        return new NoAuthProvider();
+    }
+
+    // ---------------------------------------------------------------------
+    // 🔐 AUTHORIZATION
+    // ---------------------------------------------------------------------
+
+    /**
+     * Proveedor de autorización por defecto.
+     *
+     * <p>
+     * Permite todas las operaciones (suscripción y recepción de eventos).
+     * </p>
+     */
+    @Bean
+    @ConditionalOnMissingBean(AuthorizationProvider.class)
+    public AuthorizationProvider authorizationProvider() {
+        return new PermitAllAuthorizationProvider();
+    }
+
 }

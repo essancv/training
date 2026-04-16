@@ -1,0 +1,10 @@
+npx create-react-app my-app
+cd my-app
+
+# instalar SDK (local o npm)
+npm install event-client-sdk
+
+# sustituir App.tsx
+
+# ejecutar
+npm start

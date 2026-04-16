@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Event Client</title>
+</head>
+<body>
+  <h1>Eventos Orders</h1>
+  <ul id="list"></ul>
+
+  <script type="module">
+    import { EventClient } from './node_modules/event-client-sdk/dist/index.js';
+
+    const client = new EventClient({
+      url: 'ws://localhost:8080/events',
+      transport: 'websocket'
+    });
+
+    const list = document.getElementById('list');
+
+    client.connect();
+
+    (async () => {
+      for await (const event of client.stream('orders')) {
+        const li = document.createElement('li');
+        li.textContent = JSON.stringify(event);
+        list.appendChild(li);
+      }
+    })();
+  </script>
+</body>
+</html>

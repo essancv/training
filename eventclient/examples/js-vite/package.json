@@ -1,0 +1,20 @@
+{
+  "name": "js-vite-example",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+
+  "dependencies": {
+    "event-client-sdk": "file:../.."
+  },
+
+  "devDependencies": {
+    "vite": "^8.0.0"
+  }
+}

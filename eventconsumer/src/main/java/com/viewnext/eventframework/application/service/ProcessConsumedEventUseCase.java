@@ -97,6 +97,18 @@ import com.viewnext.eventframework.domain.event.DomainEvent;
  */
 public class ProcessConsumedEventUseCase {
 
+    private final ExternalEventDispatcher dispatcher;
+
+    /**
+     * Constructor con inyección del dispatcher de eventos externos.
+     *
+     * @param dispatcher componente encargado de enviar eventos a clientes
+     */
+    public ProcessConsumedEventUseCase(ExternalEventDispatcher dispatcher) {
+        this.dispatcher = dispatcher;
+    }
+
+
     /**
      * Procesa un evento consumido aplicando tareas transversales antes
      * de delegar en el manejador de eventos.
@@ -105,7 +117,7 @@ public class ProcessConsumedEventUseCase {
      * @param handler Manejador específico para el tipo de evento.
      * @param <T>     Tipo concreto del evento.
      */
-    public <T extends DomainEvent> void process(T event, EventConsumerHandler<T> handler) {
+    public <T extends DomainEvent> void process(String topic,T event, EventConsumerHandler<T> handler) {
 
         // ---------------------------------------------------------------------
         // 1. Validaciones previas (si se requieren)
@@ -132,7 +144,14 @@ public class ProcessConsumedEventUseCase {
         handler.handle(event);
 
         // ---------------------------------------------------------------------
-        // 5. Post-procesamiento (si se requiere)
+        // 5. Post-procesamiento: distribución a clientes externos
+        // ---------------------------------------------------------------------
+        // 🔥 NUEVO: enviar el evento a WebSocket / SSE
+        dispatcher.dispatch(topic, event);
+
+
+        // ---------------------------------------------------------------------
+        // 6. Post-procesamiento (si se requiere)
         //    - Registrar métricas
         //    - Registrar logs adicionales
         //    - Generar eventos derivados

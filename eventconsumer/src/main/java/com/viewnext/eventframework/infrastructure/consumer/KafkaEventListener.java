@@ -104,7 +104,7 @@ public class KafkaEventListener {
                     Object bean = consumer.bean();
 
                     // Invocamos el caso de uso, que a su vez invoca el handler
-                    processUseCase.process(event, e -> {
+                    processUseCase.process(topic, event, e -> {
                         try {
                             method.invoke(bean, e);
                         } catch (Exception ex) {

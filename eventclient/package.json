@@ -1,0 +1,39 @@
+{
+  "name": "event-client-sdk",
+  "version": "1.0.0",
+  "description": "Framework-agnostic event client SDK (SSE + WebSocket)",
+  "author": "Tu nombre",
+  "license": "MIT",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"add tests\""
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0"
+  },
+  "keywords": [
+    "events",
+    "sse",
+    "websocket",
+    "realtime",
+    "sdk"
+  ],
+  "dependencies": {
+  }
+}
