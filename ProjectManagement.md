@@ -1,3 +1,5 @@
+# Fase inicial del proyecto
+
 | Artefacto (acrónimo) | Descripción breve                              |   SMALL |  MEDIUM | COMPLEX | Destino principal |
 | -------------------- | ---------------------------------------------- | ------: | ------: | ------: | ----------------- |
 | **OVR**              | Overview funcional / alcance                   | **OBL** | **OBL** | **OBL** | GitHub            |
@@ -21,3 +23,32 @@
 | **ENAB**             | Enablers técnicos                              |       — |     OPT | **OBL** | Jira              |
 | **TEST**             | Estrategia inicial pruebas                     |     OPT | **OBL** | **OBL** | GitHub / Jira     |
 | **OPENQ**            | Preguntas abiertas                             | **OBL** | **OBL** | **OBL** | GitHub / Jira     |
+
+# Leyenda
+OBL = Obligatorio
+OPT = Opcional (si aplica)
+— = No recomendado normalmente
+
+ ## Artefactos de Delivery & Quality
+
+| Acrónimo          | Nombre                                             | Tipo                   | Momento natural            |
+| ----------------- | -------------------------------------------------- | ---------------------- | -------------------------- |
+| **TDD**           | Test Driven Development specs/tests                | Calidad técnica        | Desarrollo                 |
+| **SBE**           | Specification by Example                           | Refinamiento funcional | Análisis / Story detailing |
+| **ATDD**          | Acceptance Test Driven Development                 | Validación negocio     | Antes de implementar       |
+| **DoD**           | Definition of Done                                 | Gobernanza entrega     | Global proyecto            |
+| **DoR** *(añado)* | Definition of Ready                                | Preparación backlog    | Refinamiento               |
+| **DoC**           | Definition of Code Complete / Completion Criteria* | Cierre técnico         | Dev / QA                   |
+
+## Asociados a los tipos de proyectos
+
+| Artefacto      | SMALL | MEDIUM | COMPLEX | Destino principal   |
+| -------------- | ----: | -----: | ------: | ------------------- |
+| **DoD**        |   OBL |    OBL |     OBL | GitHub / Wiki       |
+| **DoR**        |   OPT |    OBL |     OBL | GitHub / Jira       |
+| **SBE**        |   OPT |    OBL |     OBL | GitHub / Jira Story |
+| **ATDD**       |   OPT |    OBL |     OBL | GitHub / Jira       |
+| **TDD**        |   OPT |    OBL |     OBL | Repo código         |
+| **DoC**        |   OPT |    OPT |     OBL | GitHub / Wiki       |
+| **TEST-STRAT** |   OPT |    OBL |     OBL | GitHub              |
+
