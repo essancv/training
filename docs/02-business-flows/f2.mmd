@@ -1,0 +1,1 @@
+flowchart LR; A[Client]-->B[POST Analyze]; B-->C{Sync?}; C--Yes-->D[Worker]; C--No-->E[Queue]; E-->D; D-->F[Store Run]; F-->G[Return Result]
