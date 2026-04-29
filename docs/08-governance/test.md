@@ -1,0 +1,1 @@
+{'strategy': 'Pirámide de pruebas: unitarias, integración GitHub/LLM mock, e2e con repos demo, performance workers, seguridad OWASP.', 'acceptance_model': 'BDD por historias con criterios automáticos y quality gates CI'}
