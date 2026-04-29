@@ -1,112 +1,125 @@
 # Business Flows
 
 ## 1. Introducción
-Este documento describe los principales flujos de negocio del sistema de revisión automática de código basado en inteligencia artificial, derivado de los requisitos funcionales (DOC1) y los dominios funcionales (DOC2). Los flujos representan las interacciones principales entre actores, sistemas externos y el motor de análisis.
+Este documento describe los principales flujos de negocio del sistema de revisión automática de código basado en inteligencia artificial, derivados de DOC1 y los dominios funcionales de DOC2.
 
 ## 2. Flujos de negocio
 
 ### FLOW-001: Análisis automático de Pull Request
-**Actor principal:** Git Provider (GitHub) / CI/CD System  
-**Objetivo:** Ejecutar análisis automático de código cuando se crea o actualiza un Pull Request  
-**Descripción:** Flujo principal de análisis de código basado en eventos de Pull Request integrados con Git.
+**Actor principal:** Git Provider (GitHub) / CI CD System
+**Objetivo:** Ejecutar análisis automático de código en Pull Requests
+**Descripción:** Flujo principal de análisis automático activado por eventos de Pull Request
+**Flujo principal:**
+1. Se crea o actualiza Pull Request
+2. Git Provider envía evento al sistema
+3. Se obtiene diff del Pull Request
+4. Se construye prompt de análisis
+5. Se invoca servicio de IA
+6. Se genera informe de análisis
+7. Se publica comentario en Pull Request
+**Flujos alternativos:**
+- Fallo en obtención de diff -> registro de error y finalización
+- Fallo en IA -> reintento o error controlado
+- Coste excedido -> bloqueo de ejecución
+**Eventos clave:**
+- PR Created/Updated
+- Analysis Started
+- Analysis Completed
+- Analysis Failed
 
-**Flujo principal:**  
-1. Se crea o actualiza un Pull Request en el repositorio  
-2. Git Provider envía evento al sistema  
-3. El sistema recupera el diff del Pull Request  
-4. Se construye el prompt mediante el motor de prompts  
-5. Se invoca el proveedor de IA para análisis  
-6. Se generan resultados de análisis (calidad, seguridad, feedback)  
-7. Se publica comentario en el Pull Request con los resultados  
-
-**Flujos alternativos:**  
-- Fallo en obtención de diff → se registra error en observabilidad y se aborta análisis  
-- Fallo en proveedor de IA → reintento o fallback según configuración  
-- Coste excedido → bloqueo del análisis por DOMAIN-008  
-
-**Eventos clave:**  
-- Pull Request Created/Updated  
-- Analysis Started  
-- Analysis Completed  
-- Analysis Failed  
-
----
+`mermaid
+flowchart TD
+A[Pull Request Created/Updated] --> B[Git Provider Event]
+B --> C[Fetch Diff]
+C --> D[Build Prompt]
+D --> E[Call AI Service]
+E --> F[Generate Analysis Report]
+F --> G[Post Comment in PR]
+`
 
 ### FLOW-002: Análisis vía API REST
-**Actor principal:** Developer / External Client  
-**Objetivo:** Permitir ejecución de análisis fuera del flujo CI/CD  
-**Descripción:** Exposición de análisis mediante API REST para uso manual o integración externa.
+**Actor principal:** Developer / External Client
+**Objetivo:** Permitir análisis bajo demanda mediante API
+**Descripción:** Flujo de ejecución de análisis mediante llamada REST
+**Flujo principal:**
+1. Cliente envía request a API
+2. Validación de API key
+3. Construcción de prompt
+4. Invocación de IA
+5. Generación de informe
+6. Respuesta al cliente
+**Flujos alternativos:**
+- API key inválida -> rechazo
+- Request inválido -> error de validación
+- Timeout IA -> error controlado
+**Eventos clave:**
+- API Request Received
+- Authentication Success/Failure
+- Response Generated
 
-**Flujo principal:**  
-1. Cliente envía request de análisis a la API  
-2. Sistema valida API key y autenticación  
-3. Se construye prompt con el contenido proporcionado  
-4. Se invoca el motor de IA  
-5. Se genera informe de análisis  
-6. Se devuelve respuesta al cliente  
+`mermaid
+flowchart TD
+A[Client Request] --> B[API Gateway]
+B --> C[Validate API Key]
+C --> D[Build Prompt]
+D --> E[Call AI Service]
+E --> F[Return Response]
+`
 
-**Flujos alternativos:**  
-- API key inválida → rechazo de request  
-- Payload inválido → error de validación  
-- Timeout IA → respuesta de error controlado  
+### FLOW-003: Publicación de resultados y feedback
+**Actor principal:** Developer / Repository Admin
+**Objetivo:** Publicar resultados y capturar feedback
+**Descripción:** Gestión de resultados de análisis y retroalimentación
+**Flujo principal:**
+1. Se genera resultado de análisis
+2. Se publica comentario en PR
+3. Usuario revisa resultado
+4. Usuario envía feedback
+5. Se almacena feedback
+**Flujos alternativos:**
+- Error publicación -> reintento
+- Sin feedback -> cierre de flujo
+**Eventos clave:**
+- Result Published
+- Feedback Submitted
+- Feedback Stored
 
-**Eventos clave:**  
-- API Request Received  
-- Authentication Success/Failure  
-- Analysis Response Generated  
+`mermaid
+flowchart TD
+A[Analysis Result Generated] --> B[Post Comment in PR]
+B --> C[User Reviews]
+C --> D[Submit Feedback]
+D --> E[Store Feedback]
+`
 
----
+### FLOW-004: Control de costes y activación
+**Actor principal:** Organization Admin
+**Objetivo:** Controlar uso y costes del sistema
+**Descripción:** Validación de límites antes de ejecutar análisis
+**Flujo principal:**
+1. Admin configura límites
+2. Se recibe solicitud de análisis
+3. Se valida cuota disponible
+4. Se autoriza o bloquea ejecución
+**Flujos alternativos:**
+- Sin cuota -> bloqueo
+- Configuración inválida -> valores por defecto
+**Eventos clave:**
+- Cost Configured
+- Cost Checked
+- Execution Allowed/Blocked
 
-### FLOW-003: Publicación de resultados y feedback de calidad
-**Actor principal:** Developer / Repository Administrator  
-**Objetivo:** Publicar resultados del análisis y capturar feedback para mejora del sistema  
-**Descripción:** Flujo que gestiona la entrega de resultados al usuario y la retroalimentación posterior.
-
-**Flujo principal:**  
-1. Se genera resultado de análisis  
-2. Se publica comentario en Pull Request  
-3. Usuario revisa resultados  
-4. Usuario proporciona feedback (issues o validación)  
-5. Sistema almacena feedback para mejora de prompts  
-
-**Flujos alternativos:**  
-- Fallo en publicación en Git → reintento o registro de error  
-- Feedback no proporcionado → flujo finaliza sin almacenamiento  
-
-**Eventos clave:**  
-- Result Published  
-- Feedback Submitted  
-- Feedback Stored  
-
----
-
-### FLOW-004: Control de costes y activación de análisis
-**Actor principal:** Organization Admin / Repository Administrator  
-**Objetivo:** Controlar uso de IA y evitar sobrecostes  
-**Descripción:** Flujo de gobernanza que valida si un análisis puede ejecutarse según límites configurados.
-
-**Flujo principal:**  
-1. Admin configura límites de uso y coste por repositorio  
-2. Se inicia solicitud de análisis (PR o API)  
-3. Sistema valida disponibilidad de cuota  
-4. Si hay cuota disponible, se permite ejecución  
-5. Si no hay cuota, se bloquea análisis  
-
-**Flujos alternativos:**  
-- Cuota agotada → análisis bloqueado  
-- Configuración inválida → uso de valores por defecto  
-
-**Eventos clave:**  
-- Cost Limit Configured  
-- Cost Validation Executed  
-- Analysis Blocked/Allowed  
-
----
+`mermaid
+flowchart TD
+A[Analysis Request] --> B[Check Cost Limits]
+B --> C{Quota Available?}
+C -->|Yes| D[Execute Analysis]
+C -->|No| E[Block Execution]
+`
 
 ## 3. Resumen de dependencias
-
-- FLOW-001 depende de DOMAIN-001, DOMAIN-002, DOMAIN-004, DOMAIN-008
-- FLOW-002 depende de DOMAIN-005, DOMAIN-012, DOMAIN-004
-- FLOW-003 depende de DOMAIN-006, DOMAIN-010
-- FLOW-004 depende de DOMAIN-008, DOMAIN-007
-- Todos los flujos dependen transversalmente de DOMAIN-010 (Observabilidad)
+- FLOW-001 depende de Git Integration, AI Engine, Cost Management
+- FLOW-002 depende de API Layer, Security, AI Engine
+- FLOW-003 depende de Git Integration y Observability
+- FLOW-004 depende de Cost Management y Configuration
+- Todos los flujos dependen de Observability y Error Handling
