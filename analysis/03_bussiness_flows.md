@@ -27,7 +27,7 @@ Este documento describe los principales flujos de negocio del sistema de revisi�
 - Analysis Completed
 - Analysis Failed
 
-`mermaid
+mermaid
 flowchart TD
 A[Pull Request Created/Updated] --> B[Git Provider Event]
 B --> C[Fetch Diff]
@@ -35,7 +35,7 @@ C --> D[Build Prompt]
 D --> E[Call AI Service]
 E --> F[Generate Analysis Report]
 F --> G[Post Comment in PR]
-`
+
 
 ### FLOW-002: Análisis vía API REST
 **Actor principal:** Developer / External Client
@@ -57,14 +57,14 @@ F --> G[Post Comment in PR]
 - Authentication Success/Failure
 - Response Generated
 
-`mermaid
+mermaid
 flowchart TD
 A[Client Request] --> B[API Gateway]
 B --> C[Validate API Key]
 C --> D[Build Prompt]
 D --> E[Call AI Service]
 E --> F[Return Response]
-`
+
 
 ### FLOW-003: Publicación de resultados y feedback
 **Actor principal:** Developer / Repository Admin
@@ -84,13 +84,13 @@ E --> F[Return Response]
 - Feedback Submitted
 - Feedback Stored
 
-`mermaid
+mermaid
 flowchart TD
 A[Analysis Result Generated] --> B[Post Comment in PR]
 B --> C[User Reviews]
 C --> D[Submit Feedback]
 D --> E[Store Feedback]
-`
+
 
 ### FLOW-004: Control de costes y activación
 **Actor principal:** Organization Admin
