@@ -1,0 +1,1 @@
+[{'id': 'Q1', 'question': 'Se requiere soporte multi-modelo LLM en fase inicial?'}, {'id': 'Q2', 'question': 'Debe soportar análisis en repositorios privados enterprise desde MVP?'}]
