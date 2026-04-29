@@ -1,0 +1,1 @@
+{'deployment': 'Contenedores Docker sobre Kubernetes con GitHub Actions CI/CD, blue-green/canary', 'observability': 'Logs JSON, métricas Prometheus, Grafana dashboards, trazas OpenTelemetry, alertas SLO'}
