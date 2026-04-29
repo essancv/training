@@ -1,0 +1,1 @@
+flowchart LR; A[GitHub PR Event]-->B[Webhook Receiver]; B-->C[Validate Signature]; C-->D[Fetch Diff]; D-->E[Build Prompt]; E-->F[LLM Worker]; F-->G[Normalize Findings]; G-->H[Publish Comment]; F-->I[Retry/Error]
