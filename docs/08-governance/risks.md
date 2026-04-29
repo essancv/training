@@ -1,0 +1,1 @@
+[{'id': 'R1', 'title': 'Costes elevados de LLM', 'impact': 'Alto', 'probability': 'Alta', 'mitigation': 'Caching y rate limiting'}, {'id': 'R2', 'title': 'Latencia en análisis PR', 'impact': 'Medio', 'probability': 'Media', 'mitigation': 'Procesamiento async y colas'}]
