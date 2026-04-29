@@ -1,0 +1,1 @@
+{'availability': '99.9% uptime mensual', 'performance': 'p95 < 60s por análisis', 'security': 'AES-256 en tránsito lógico + HTTPS obligatorio', 'scalability': 'Soporte de 1000 PRs concurrentes', 'auditability': 'Trazabilidad completa de prompts y versiones'}
