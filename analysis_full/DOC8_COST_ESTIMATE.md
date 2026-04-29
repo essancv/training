@@ -1,22 +1,22 @@
 # Initial Cost Estimate
 
 ## 1. Coste por bloque funcional
-- Integración Git: 20k-35k EUR
-- Motor IA: 40k-70k EUR
-- API/Auth: 20k-30k EUR
-- Configuración: 15k-25k EUR
-- Observabilidad/Billing: 20k-35k EUR
+- Integración Git: 25k - 40k EUR
+- Motor IA: 45k - 80k EUR
+- API y Seguridad: 20k - 35k EUR
+- Configuración y Gobierno: 18k - 30k EUR
+- Observabilidad y Billing: 22k - 38k EUR
 
 ## 2. Coste por arquitectura
-- Monolito Modular: 115k-180k EUR
-- Microservicios: 180k-280k EUR
-- Serverless: 140k-220k EUR
+- Monolito Modular: 130k - 210k EUR
+- Microservicios Event Driven: 210k - 340k EUR
+- Serverless Managed: 160k - 260k EUR
 
 ## 3. Coste de infraestructura
-- MVP mensual: 1k-4k EUR + consumo IA
+- MVP mensual estimado: 1.5k - 5k EUR más consumo IA.
 
 ## 4. Coste de integraciones
-- GitHub marketplace / seguridad / SSO: 10k-40k EUR
+- SSO, Marketplace, proveedores adicionales: 15k - 50k EUR
 
 ## 5. Coste de mantenimiento anual
-- 18% a 25% del coste de implementación
+- Entre 18% y 25% del coste de implementación.
