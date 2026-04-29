@@ -1,0 +1,1 @@
+{'authentication': 'API Key + OAuth GitHub', 'authorization': 'RBAC por organización y repositorio', 'model': 'Zero Trust + Least Privilege'}
