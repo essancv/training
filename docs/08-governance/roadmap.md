@@ -1,0 +1,1 @@
+[{'phase': 'P1 Discovery', 'goal': 'Backlog validado + benchmark LLM + shortlist arquitectura'}, {'phase': 'P2 MVP', 'goal': 'GitHub + Java + comentarios PR + API básica'}, {'phase': 'P3 Growth', 'goal': 'Billing, multi-tech, escalado y SLA reforzado'}]
