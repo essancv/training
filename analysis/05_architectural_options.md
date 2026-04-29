@@ -8,14 +8,14 @@ Este documento presenta varias opciones arquitectónicas para el sistema de revi
 ### ARCH-OPT-001: Monolito Modular
 - Descripción: Arquitectura monolítica estructurada en módulos internos (Git, IA, API, costes, observabilidad) dentro de una única aplicación desplegable.
 - Diagrama textual:
-`mermaid
+```mermaid
 flowchart TD
 A[Monolithic Application] --> B[Git Integration Module]
 A --> C[AI Engine Module]
 A --> D[API Module]
 A --> E[Cost Management Module]
 A --> F[Observability Module]
-`
+```
 - Ventajas:
   - Simplicidad de despliegue
   - Menor complejidad inicial
