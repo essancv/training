@@ -1,0 +1,319 @@
+---
+
+# 1. **Flujo: Análisis automático de una Pull Request**
+
+### Actor principal  
+Desarrollador
+
+### Objetivo  
+Analizar automáticamente el código modificado en una PR y publicar los resultados como comentario.
+
+### Flujo principal  
+1. El desarrollador crea o actualiza una Pull Request.  
+2. GitHub envía un webhook al sistema.  
+3. El sistema valida el evento y obtiene el diff.  
+4. Se verifica si el análisis está activado para el repositorio.  
+5. El Motor de Prompts construye el prompt.  
+6. El Motor de Análisis IA ejecuta el análisis.  
+7. Se genera el informe estructurado.  
+8. El sistema publica un comentario en la PR.  
+9. Se registran logs y trazabilidad.
+
+### Flujos alternativos  
+- **A1:** Repositorio con análisis desactivado → no se ejecuta análisis.  
+- **A2:** Error del proveedor de IA → se publica un comentario de error.  
+- **A3:** Límite de uso/trial superado → se bloquea el análisis y se notifica.
+
+### Eventos clave  
+- Creación/actualización de PR  
+- Recepción de webhook  
+- Publicación del comentario  
+
+### Diagrama Mermaid
+```mermaid
+sequenceDiagram
+    participant Dev as Desarrollador
+    participant GH as GitHub
+    participant SYS as Sistema
+    participant PROMPT as Motor de Prompts
+    participant IA as Motor de Análisis IA
+
+    Dev->>GH: Crea/actualiza PR
+    GH->>SYS: Envía webhook PR
+    SYS->>SYS: Valida evento y obtiene diff
+    SYS->>SYS: Verifica configuración del repo
+    SYS->>PROMPT: Solicita construcción del prompt
+    PROMPT-->>SYS: Prompt generado
+    SYS->>IA: Envía prompt + diff
+    IA-->>SYS: Devuelve análisis
+    SYS->>GH: Publica comentario en PR
+    SYS->>SYS: Registra logs y trazabilidad
+```
+
+---
+
+# 2. **Flujo: Ejecución del análisis desde CI/CD**
+
+### Actor principal  
+Pipeline CI/CD
+
+### Objetivo  
+Ejecutar el análisis de código como parte del pipeline de integración continua.
+
+### Flujo principal  
+1. El pipeline detecta un evento de PR.  
+2. Invoca la API REST del sistema.  
+3. La API valida autenticación y límites de uso.  
+4. El Motor de Prompts genera el prompt.  
+5. El Motor de Análisis IA ejecuta el análisis.  
+6. La API devuelve el informe.  
+7. El pipeline decide si continuar o fallar.
+
+### Flujos alternativos  
+- **A1:** API key inválida → error y pipeline falla.  
+- **A2:** Timeout del análisis → pipeline decide comportamiento.
+
+### Eventos clave  
+- Ejecución del pipeline  
+- Llamada a la API  
+- Respuesta del análisis  
+
+### Diagrama Mermaid
+```mermaid
+sequenceDiagram
+    participant CI as Pipeline CI/CD
+    participant API as API REST
+    participant PROMPT as Motor de Prompts
+    participant IA as Motor de Análisis IA
+
+    CI->>API: Solicita análisis (diff/PR)
+    API->>API: Valida autenticación y límites
+    API->>PROMPT: Solicita prompt
+    PROMPT-->>API: Prompt generado
+    API->>IA: Envía prompt + código
+    IA-->>API: Devuelve análisis
+    API-->>CI: Informe estructurado
+    CI->>CI: Decide continuar o fallar
+```
+
+---
+
+# 3. **Flujo: Análisis bajo demanda vía API**
+
+### Actor principal  
+Consumidor API
+
+### Objetivo  
+Permitir ejecutar análisis de código sin depender de PR o CI/CD.
+
+### Flujo principal  
+1. El consumidor envía una petición POST con código o diff.  
+2. La API valida autenticación y límites.  
+3. El Motor de Prompts genera el prompt.  
+4. El Motor de Análisis IA ejecuta el análisis.  
+5. La API devuelve el informe.  
+6. Se registran logs y trazabilidad.
+
+### Flujos alternativos  
+- **A1:** Código no válido o demasiado grande → error.  
+- **A2:** Límite de uso superado → rechazo.
+
+### Eventos clave  
+- Petición API  
+- Respuesta del análisis  
+
+### Diagrama Mermaid
+```mermaid
+sequenceDiagram
+    participant Client as Consumidor API
+    participant API as API REST
+    participant PROMPT as Motor de Prompts
+    participant IA as Motor de Análisis IA
+
+    Client->>API: POST análisis (código/diff)
+    API->>API: Valida autenticación y límites
+    API->>PROMPT: Solicita prompt
+    PROMPT-->>API: Prompt generado
+    API->>IA: Envía prompt + código
+    IA-->>API: Devuelve análisis
+    API-->>Client: Informe estructurado
+    API->>API: Registra logs
+```
+
+---
+
+# 4. **Flujo: Gestión de costes y periodo de prueba**
+
+### Actor principal  
+Administrador
+
+### Objetivo  
+Controlar el uso del sistema según políticas de coste y trial.
+
+### Flujo principal  
+1. El administrador activa el análisis en un repositorio.  
+2. El sistema inicia el trial o aplica la política de coste.  
+3. Cada análisis incrementa el contador de consumo.  
+4. El sistema evalúa si se alcanzó un límite.  
+5. Si se supera, bloquea análisis y notifica.  
+
+### Flujos alternativos  
+- **A1:** Trial expirado → bloqueo.  
+- **A2:** Límite ampliado → servicio reanudado.
+
+### Eventos clave  
+- Activación del análisis  
+- Registro de consumo  
+- Bloqueo por límite  
+
+### Diagrama Mermaid
+```mermaid
+flowchart TD
+    A[Administrador activa análisis] --> B[Inicia trial o política de coste]
+    B --> C[Se ejecutan análisis]
+    C --> D[Registrar consumo]
+    D --> E{¿Límite alcanzado?}
+    E -- No --> C
+    E -- Sí --> F[Bloquear análisis]
+    F --> G[Notificar a administrador/desarrollador]
+```
+
+---
+
+# 5. **Flujo: Registro de feedback de calidad**
+
+### Actor principal  
+Desarrollador
+
+### Objetivo  
+Registrar feedback sobre la calidad del análisis (ej. falsos positivos).
+
+### Flujo principal  
+1. El desarrollador revisa el comentario del análisis.  
+2. Selecciona un mecanismo de feedback.  
+3. El sistema registra el feedback.  
+4. El feedback queda disponible para análisis posteriores.
+
+### Flujos alternativos  
+- **A1:** Feedback incompleto → rechazo.
+
+### Eventos clave  
+- Envío de feedback  
+- Registro del feedback  
+
+### Diagrama Mermaid
+```mermaid
+sequenceDiagram
+    participant Dev as Desarrollador
+    participant SYS as Sistema
+
+    Dev->>SYS: Envía feedback (falso positivo, utilidad)
+    SYS->>SYS: Valida feedback
+    SYS->>SYS: Registra feedback
+    SYS-->>Dev: Confirmación
+```
+
+---
+
+# 6. **Flujo: Construcción del prompt**
+
+### Actor principal  
+Sistema
+
+### Objetivo  
+Generar un prompt consistente y trazable para el análisis IA.
+
+### Flujo principal  
+1. El sistema identifica la tecnología del repositorio.  
+2. Carga la capa corporativa.  
+3. Carga la capa tecnológica.  
+4. Carga la capa de equipo.  
+5. Combina las capas.  
+6. Registra la versión del prompt.
+
+### Flujos alternativos  
+- **A1:** Falta una capa → se usan las disponibles.
+
+### Eventos clave  
+- Construcción del prompt  
+- Registro de versión  
+
+### Diagrama Mermaid
+```mermaid
+flowchart TD
+    A[Identificar tecnología] --> B[Cargar capa corporativa]
+    B --> C[Cargar capa tecnológica]
+    C --> D[Cargar capa de equipo]
+    D --> E[Combinar capas]
+    E --> F[Registrar versión del prompt]
+```
+
+---
+
+# 7. **Flujo: Publicación de resultados en PR**
+
+### Actor principal  
+Sistema
+
+### Objetivo  
+Publicar el informe del análisis como comentario en la PR.
+
+### Flujo principal  
+1. El sistema recibe el informe del análisis.  
+2. Formatea el informe en Markdown.  
+3. Publica el comentario en la PR.  
+4. Registra logs.
+
+### Flujos alternativos  
+- **A1:** Error al publicar → reintento o error API.
+
+### Eventos clave  
+- Publicación del comentario  
+- Registro de logs  
+
+### Diagrama Mermaid
+```mermaid
+sequenceDiagram
+    participant SYS as Sistema
+    participant GH as GitHub
+
+    SYS->>SYS: Recibe informe IA
+    SYS->>SYS: Formatea informe
+    SYS->>GH: Publica comentario en PR
+    SYS->>SYS: Registra logs
+```
+
+---
+
+# 8. **Flujo: Gestión de errores**
+
+### Actor principal  
+Sistema
+
+### Objetivo  
+Notificar errores de forma clara y consistente.
+
+### Flujo principal  
+1. Ocurre un error en cualquier etapa.  
+2. El sistema clasifica el error.  
+3. Genera un mensaje claro.  
+4. Publica el error en PR o API.  
+5. Registra el error.
+
+### Flujos alternativos  
+- **A1:** Error crítico → proceso detenido.
+
+### Eventos clave  
+- Generación del error  
+- Notificación  
+
+### Diagrama Mermaid
+```mermaid
+flowchart TD
+    A[Error detectado] --> B[Clasificar error]
+    B --> C[Generar mensaje claro]
+    C --> D[Notificar en PR o API]
+    D --> E[Registrar error]
+```
+
+---
