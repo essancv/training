@@ -1,136 +1,158 @@
 # Architecture Options
 
 ## 1. Introducción
-Este documento presenta varias opciones arquitectónicas para el sistema de revisión automática de código basado en IA, derivado de DOC1–DOC4. Se consideran requisitos funcionales, no funcionales, dominios y flujos de negocio.
+Este documento presenta varias alternativas arquitectónicas para el sistema de revisión automática de código basado en inteligencia artificial, considerando los requisitos, dominios funcionales, flujos de negocio y nivel de complejidad definidos en DOC1–DOC4.
 
 ## 2. Arquitecturas propuestas
 
-### ARCH-OPT-001: Monolito Modular
-- Descripción: Arquitectura monolítica estructurada en módulos internos (Git, IA, API, costes, observabilidad) dentro de una única aplicación desplegable.
+### ARCH-OPT-001: Monolito Modular por Dominios
+- Descripción: Aplicación única desplegable organizada internamente en módulos funcionales desacoplados por dominio.
 - Diagrama textual:
 ```mermaid
 flowchart TD
-A[Monolithic Application] --> B[Git Integration Module]
-A --> C[AI Engine Module]
-A --> D[API Module]
-A --> E[Cost Management Module]
-A --> F[Observability Module]
+A[Monolith Application] --> B[Git Integration Module]
+A --> C[Analysis Engine Module]
+A --> D[AI Prompt Module]
+A --> E[API Module]
+A --> F[Cost Control Module]
+A --> G[Observability Module]
 ```
 - Ventajas:
-  - Simplicidad de despliegue
   - Menor complejidad inicial
-  - Menor coste operativo
+  - Despliegue simple
+  - Menor coste operativo inicial
 - Inconvenientes:
-  - Escalabilidad limitada por componente
-  - Acoplamiento interno elevado
-  - Evolución tecnológica más lenta
+  - Escalabilidad limitada
+  - Acoplamiento creciente con el tiempo
+  - Evolución más lenta
 - Riesgos:
-  - Cuello de botella en IA y análisis
-  - Difícil separación futura a microservicios
+  - Saturación del proceso principal
+  - Dificultad de separación futura
 - Adecuación a RF:
-  - Alta para funcionalidad básica (FR-001 a FR-013)
+  - Alta para MVP y primeras fases
 - Adecuación a RNF:
-  - Media (escalabilidad y disponibilidad limitadas)
+  - Media
 - Coste relativo: Bajo
 
----
-
 ### ARCH-OPT-002: Microservicios Event-Driven
-- Descripción: Arquitectura basada en microservicios desacoplados comunicados mediante eventos (PR events, analysis events, feedback events).
+- Descripción: Servicios independientes por dominio comunicados mediante eventos y mensajería asíncrona.
 - Diagrama textual:
-`mermaid
+```mermaid
 flowchart TD
-A[GitHub Events] --> B[Event Bus]
-B --> C[PR Analyzer Service]
-B --> D[AI Prompt Service]
+A[GitHub Webhook] --> B[Event Bus]
+B --> C[PR Analysis Service]
+B --> D[AI Service]
 B --> E[Cost Service]
 B --> F[API Service]
-B --> G[Observability Service]
-C --> B
-D --> B
-`
+B --> G[Notification Service]
+B --> H[Observability Service]
+```
 - Ventajas:
   - Alta escalabilidad
   - Desacoplamiento fuerte
-  - Resiliencia ante fallos
-  - Evolución independiente por dominio
+  - Resiliencia elevada
 - Inconvenientes:
-  - Alta complejidad inicial
-  - Necesidad de infraestructura de eventos
-  - Mayor latencia en flujos
+  - Mayor complejidad operativa
+  - Coste inicial elevado
+  - Debugging distribuido complejo
 - Riesgos:
-  - Complejidad operativa elevada
-  - Debugging distribuido difícil
+  - Inconsistencia eventual
+  - Sobrecoste de infraestructura
 - Adecuación a RF:
-  - Muy alta (especialmente FLOW-001 y FLOW-003)
+  - Muy alta
 - Adecuación a RNF:
-  - Muy alta (escalabilidad, trazabilidad, resiliencia)
+  - Muy alta
 - Coste relativo: Alto
 
----
-
-### ARCH-OPT-003: Arquitectura Hexagonal (Ports & Adapters)
-- Descripción: Núcleo de dominio aislado con adaptadores para Git, IA, API y CI/CD.
+### ARCH-OPT-003: Hexagonal (Ports & Adapters)
+- Descripción: Núcleo de negocio aislado con adaptadores externos para Git, IA, API y CI/CD.
 - Diagrama textual:
-`mermaid
+```mermaid
 flowchart TD
-A[Core Domain: Code Analysis Engine]
+A[Core Domain: Analysis Engine]
 A --> B[Git Adapter]
 A --> C[AI Adapter]
-A --> D[API Adapter]
+A --> D[REST Adapter]
 A --> E[CI/CD Adapter]
 A --> F[Cost Adapter]
-A --> G[Observability Adapter]
-`
+A --> G[Logging Adapter]
+```
 - Ventajas:
-  - Alto desacoplamiento del dominio
-  - Fácil testabilidad
-  - Buena extensibilidad tecnológica
+  - Alta mantenibilidad
+  - Excelente testabilidad
+  - Buen aislamiento del dominio
 - Inconvenientes:
-  - Diseño más complejo inicialmente
-  - Requiere disciplina arquitectónica
+  - Mayor diseño inicial
+  - Curva de aprendizaje técnica
 - Riesgos:
-  - Overengineering si el sistema crece lentamente
+  - Sobreingeniería en MVP pequeño
 - Adecuación a RF:
-  - Alta (especialmente motor de análisis FR-001, FR-012)
+  - Alta
 - Adecuación a RNF:
-  - Alta (mantenibilidad y extensibilidad)
+  - Alta
 - Coste relativo: Medio
 
----
-
-### ARCH-OPT-004: Serverless Event-Driven (Cloud Native)
-- Descripción: Uso de funciones serverless para cada paso del flujo de análisis.
+### ARCH-OPT-004: Serverless Event-Driven
+- Descripción: Flujo compuesto por funciones serverless independientes activadas por eventos.
 - Diagrama textual:
-`mermaid
+```mermaid
 flowchart TD
-A[GitHub Event] --> B[Function: Fetch Diff]
-B --> C[Function: Build Prompt]
-C --> D[Function: Call AI]
-D --> E[Function: Store Result]
-E --> F[Function: Post Comment]
-`
+A[Webhook Event] --> B[Function Fetch Diff]
+B --> C[Function Build Prompt]
+C --> D[Function Invoke AI]
+D --> E[Function Build Report]
+E --> F[Function Publish PR Comment]
+```
 - Ventajas:
-  - Escalabilidad automática
+  - Escalado automático
   - Pago por uso
-  - Alta resiliencia
+  - Alta disponibilidad nativa
 - Inconvenientes:
+  - Dependencia del cloud provider
+  - Latencia por cold starts
   - Debugging complejo
-  - Dependencia de vendor cloud
-  - Latencia entre funciones
 - Riesgos:
-  - Cold starts
-  - Control limitado de ejecución
+  - Costes variables impredecibles
+  - Límites de ejecución runtime
 - Adecuación a RF:
   - Media-Alta
 - Adecuación a RNF:
-  - Alta (escalabilidad, disponibilidad)
-- Coste relativo: Variable (bajo a medio según uso)
+  - Alta
+- Coste relativo: Variable
+
+### ARCH-OPT-005: Híbrida Hexagonal + Event-Driven
+- Descripción: Núcleo hexagonal de negocio combinado con capa de integración basada en eventos.
+- Diagrama textual:
+```mermaid
+flowchart TD
+A[GitHub / API / CI Events] --> B[Event Bus]
+B --> C[Orchestrator]
+C --> D[Hexagonal Core]
+D --> E[AI Adapter]
+D --> F[Cost Adapter]
+D --> G[Security Adapter]
+D --> H[Git Adapter]
+```
+- Ventajas:
+  - Balance entre escalabilidad y mantenibilidad
+  - Núcleo estable y extensible
+  - Buen soporte multi-integración
+- Inconvenientes:
+  - Complejidad media-alta
+  - Mayor esfuerzo de gobierno técnico
+- Riesgos:
+  - Integración entre patrones arquitectónicos
+- Adecuación a RF:
+  - Muy alta
+- Adecuación a RNF:
+  - Muy alta
+- Coste relativo: Medio-Alto
 
 ## 3. Resumen comparativo
-| Arquitectura | Complejidad | Escalabilidad | Coste | Mantenibilidad | Adecuación global |
-|--------------|-------------|---------------|-------|----------------|--------------------|
-| Monolito Modular | Baja | Media | Bajo | Media | Media |
-| Microservicios Event-Driven | Alta | Muy Alta | Alto | Alta | Muy Alta |
-| Hexagonal | Media-Alta | Alta | Medio | Muy Alta | Alta |
-| Serverless Event-Driven | Media | Alta | Variable | Media | Alta |
+| Arquitectura | Complejidad | Escalabilidad | Coste | Mantenibilidad | Time to Market |
+|--------------|-------------|---------------|-------|----------------|----------------|
+| Monolito Modular | Baja | Media | Bajo | Media | Alto |
+| Microservicios Event-Driven | Alta | Muy Alta | Alto | Alta | Medio |
+| Hexagonal | Media | Alta | Medio | Muy Alta | Medio |
+| Serverless Event-Driven | Media | Alta | Variable | Media | Alto |
+| Híbrida Hexagonal + Event-Driven | Alta | Muy Alta | Medio-Alto | Alta | Medio |
