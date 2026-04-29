@@ -1,19 +1,20 @@
 # Project Sizing Report
 
 ## 1. Introducción
-Estimación inicial basada en alcance MVP + escalabilidad futura.
+Sizing preliminar considerando MVP productivo con capacidades enterprise futuras.
 
 ## 2. Tabla de criterios
 | Criterio | Valor | Justificación | Impacto |
-| Usuarios iniciales | Medio | Equipos piloto | Medio |
-| Integraciones | Medio | GitHub + IA + CI/CD | Alto |
-| Complejidad negocio | Media | Reglas y cuotas | Medio |
-| Escalabilidad | Alta | Eventos concurrentes | Alto |
-| Seguridad | Alta | Código fuente sensible | Alto |
-| Extensibilidad | Alta | Multi lenguaje | Alto |
+| Volumen de uso | Medio | Inicio con pilotos | Medio |
+| Integraciones externas | Alto | GitHub + IA + CI/CD | Alto |
+| Seguridad | Alto | Código sensible | Alto |
+| Complejidad funcional | Medio | Reglas y flujos claros | Medio |
+| Escalabilidad | Alto | Concurrencia por eventos | Alto |
+| Extensibilidad | Alto | Nuevos lenguajes futuros | Alto |
+| Observabilidad | Medio | Requerida desde MVP | Medio |
 
 ## 3. Clasificación final
 COMPLEX
 
 ## 4. Observaciones
-MVP viable en fases, pero arquitectura debe soportar crecimiento y costes variables.
+Aunque el MVP puede lanzarse de forma iterativa, la dependencia de terceros y los requisitos de escalado justifican una clasificación compleja.
