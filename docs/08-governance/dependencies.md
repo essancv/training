@@ -1,0 +1,1 @@
+[{'id': 'D1', 'name': 'GitHub API', 'type': 'external', 'impact': 'Crítico para integración PR'}, {'id': 'D2', 'name': 'LLM Provider API', 'type': 'external', 'impact': 'Core del análisis IA'}]
