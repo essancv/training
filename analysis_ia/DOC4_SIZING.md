@@ -1,19 +1,16 @@
 # Project Sizing Report
 
 ## 1. Introducción
-Sizing estimado considerando motor IA, integraciones externas y gobierno del dato.
+Sizing preliminar por integraciones y calidad requerida.
 
 ## 2. Tabla de criterios
 | Criterio | Valor | Justificación | Impacto |
-| Complejidad funcional | Media | Pipeline claro pero amplio | Medio |
-| Integraciones | Alta | IA + GitHub + Jira | Alto |
-| Seguridad | Alta | Tokens y datos sensibles | Alto |
-| Escalabilidad | Media | Uso corporativo concurrente | Medio |
-| Calidad de datos | Alta | JSON válido obligatorio | Alto |
-| Automatización | Alta | Publicación automática | Medio |
+| Integraciones | Alto | IA GitHub Jira | Alto |
+| Complejidad | Media | Reglas claras | Medio |
+| Seguridad | Alta | Secretos | Alto |
 
 ## 3. Clasificación final
 COMPLEX
 
 ## 4. Observaciones
-El mayor esfuerzo reside en robustez del JSON, trazabilidad y conectores empresariales.
+La complejidad principal reside en integraciones y robustez del JSON.
