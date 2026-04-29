@@ -1,0 +1,1 @@
+[{'id': 'Q1', 'question': '¿Pricing por usuario, repositorio o consumo tokens?'}, {'id': 'Q2', 'question': '¿Se exige residencia de datos UE?'}, {'id': 'Q3', 'question': '¿GitHub Enterprise Server debe soportarse en fase 1?'}, {'id': 'Q4', 'question': '¿Qué severidades bloquean merge automáticamente?'}]
