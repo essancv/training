@@ -28,7 +28,7 @@ Este documento describe los principales flujos de negocio del sistema de revisiÃ
 - Analysis Failed
 
 mermaid
-flowchart TD
+graph TD
 A[Pull Request Created/Updated] --> B[Git Provider Event]
 B --> C[Fetch Diff]
 C --> D[Build Prompt]
