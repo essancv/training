@@ -1,0 +1,315 @@
+{
+  "metadata": {
+    "document_id": "DOC1_INITIAL_ANALYSIS",
+    "title": "Initial Requirements Analysis",
+    "generated_by": "LLM",
+    "generated_at": "2026-04-29T00:00:00Z",
+    "source": "RF+RNF"
+  },
+  "executive_summary": {
+    "text": "Se define una plataforma de revisi\u00f3n autom\u00e1tica de c\u00f3digo basada en IA integrada con flujos de Pull Request y CI/CD. El sistema analiza cambios de c\u00f3digo, genera informes explicativos, detecta problemas de calidad y seguridad, y publica resultados directamente en los PR. Est\u00e1 dise\u00f1ado con arquitectura modular y extensible, con soporte inicial para Java Spring Boot y capacidad futura multi-tecnolog\u00eda, incorporando control de costes, trazabilidad, observabilidad y restricciones de seguridad y privacidad."
+  },
+  "project_objectives": [
+    "Automatizar la revisi\u00f3n de c\u00f3digo en Pull Requests mediante IA",
+    "Mejorar la calidad del software mediante detecci\u00f3n de errores, malas pr\u00e1cticas y vulnerabilidades",
+    "Integrar el an\u00e1lisis en pipelines CI/CD existentes",
+    "Proporcionar explicaciones claras y accionables de los hallazgos",
+    "Permitir extensibilidad a m\u00faltiples tecnolog\u00edas y equipos",
+    "Controlar costes de uso de modelos de IA",
+    "Aumentar la homogeneidad del c\u00f3digo entre equipos"
+  ],
+  "scope": {
+    "in_scope": [
+      "An\u00e1lisis autom\u00e1tico de Pull Requests",
+      "Integraci\u00f3n con plataformas Git (ej. GitHub)",
+      "Ejecuci\u00f3n en pipelines CI/CD",
+      "Generaci\u00f3n de informes de an\u00e1lisis de c\u00f3digo",
+      "Publicaci\u00f3n de comentarios en Pull Requests",
+      "API REST para ejecuci\u00f3n de an\u00e1lisis",
+      "Motor de prompts modular (base, tecnolog\u00eda, equipo)",
+      "Soporte inicial para Java Spring Boot",
+      "Detecci\u00f3n de vulnerabilidades de seguridad (OWASP Top 10)",
+      "Sistema de feedback sobre resultados",
+      "Configuraci\u00f3n por repositorio para habilitar/deshabilitar an\u00e1lisis",
+      "Gesti\u00f3n de costes y control de uso de IA",
+      "Trazabilidad de an\u00e1lisis mediante configuraci\u00f3n y versi\u00f3n de prompts"
+    ],
+    "out_of_scope": [
+      "Desarrollo de IDE plugin nativo",
+      "Edici\u00f3n autom\u00e1tica de c\u00f3digo fuente",
+      "Revisi\u00f3n manual humana dentro de la plataforma",
+      "Almacenamiento completo persistente de repositorios de c\u00f3digo",
+      "Gesti\u00f3n completa de repositorios Git",
+      "Sistema de gesti\u00f3n de incidencias tipo Jira completo"
+    ]
+  },
+  "actors_and_stakeholders": [
+    {
+      "id": "A-001",
+      "name": "Developer",
+      "description": "Desarrollador que crea y actualiza Pull Requests y recibe feedback del an\u00e1lisis"
+    },
+    {
+      "id": "A-002",
+      "name": "CI/CD System",
+      "description": "Pipeline de integraci\u00f3n continua que ejecuta an\u00e1lisis autom\u00e1ticamente"
+    },
+    {
+      "id": "A-003",
+      "name": "Git Provider (GitHub)",
+      "description": "Plataforma de repositorios que gestiona Pull Requests y eventos"
+    },
+    {
+      "id": "A-004",
+      "name": "AI Service Provider",
+      "description": "Servicio externo de inteligencia artificial utilizado para an\u00e1lisis"
+    },
+    {
+      "id": "A-005",
+      "name": "Repository Administrator",
+      "description": "Configura reglas de an\u00e1lisis y habilitaci\u00f3n por repositorio"
+    },
+    {
+      "id": "A-006",
+      "name": "Organization Admin",
+      "description": "Gestiona pol\u00edticas de costes, acceso y uso de la plataforma"
+    }
+  ],
+  "assumptions_and_constraints": {
+    "assumptions": [
+      "La IA ser\u00e1 consumida mediante API externa",
+      "La integraci\u00f3n inicial ser\u00e1 con GitHub Actions",
+      "El sistema se enfocar\u00e1 inicialmente en Java Spring Boot",
+      "Los repositorios pueden habilitar o deshabilitar el an\u00e1lisis"
+    ],
+    "constraints": [
+      "Comunicaci\u00f3n segura obligatoria mediante HTTPS",
+      "Autenticaci\u00f3n mediante API keys",
+      "No almacenamiento persistente de c\u00f3digo salvo configuraci\u00f3n expl\u00edcita",
+      "Dependencia de disponibilidad del proveedor de IA",
+      "Control de costes obligatorio por organizaci\u00f3n o repositorio"
+    ]
+  },
+  "functional_requirements": [
+    {
+      "id": "RF-001",
+      "name": "An\u00e1lisis autom\u00e1tico de PR",
+      "description": "Analizar autom\u00e1ticamente el diff de una Pull Request cuando se crea o actualiza"
+    },
+    {
+      "id": "RF-002",
+      "name": "Generaci\u00f3n de informe de an\u00e1lisis",
+      "description": "Generar informe estructurado con problemas, mejoras y buenas pr\u00e1cticas"
+    },
+    {
+      "id": "RF-003",
+      "name": "Integraci\u00f3n con sistemas Git",
+      "description": "Integrarse con plataformas de repositorios Git para recibir eventos y publicar resultados"
+    },
+    {
+      "id": "RF-004",
+      "name": "Ejecuci\u00f3n en CI/CD",
+      "description": "Ejecutar an\u00e1lisis autom\u00e1ticamente en pipelines de integraci\u00f3n continua"
+    },
+    {
+      "id": "RF-005",
+      "name": "Motor de prompts modular",
+      "description": "Construir prompts din\u00e1micamente con capas base, tecnol\u00f3gica y de equipo"
+    },
+    {
+      "id": "RF-006",
+      "name": "Soporte Java Spring Boot",
+      "description": "Soporte inicial para an\u00e1lisis de c\u00f3digo Java con Spring Boot"
+    },
+    {
+      "id": "RF-007",
+      "name": "API REST de an\u00e1lisis",
+      "description": "Exponer API REST para ejecutar an\u00e1lisis de c\u00f3digo program\u00e1ticamente"
+    },
+    {
+      "id": "RF-008",
+      "name": "Publicaci\u00f3n en Pull Request",
+      "description": "Publicar resultados del an\u00e1lisis como comentarios en la PR"
+    },
+    {
+      "id": "RF-009",
+      "name": "Configuraci\u00f3n por repositorio",
+      "description": "Permitir activar o desactivar an\u00e1lisis por repositorio"
+    },
+    {
+      "id": "RF-010",
+      "name": "Gesti\u00f3n de errores",
+      "description": "Notificar errores de an\u00e1lisis en PR o respuesta API"
+    },
+    {
+      "id": "RF-011",
+      "name": "Control de costes y trial",
+      "description": "Habilitar o deshabilitar an\u00e1lisis seg\u00fan pol\u00edticas de costes y periodo de prueba"
+    },
+    {
+      "id": "RF-012",
+      "name": "Explicabilidad de resultados",
+      "description": "Cada issue debe incluir explicaci\u00f3n y recomendaci\u00f3n de soluci\u00f3n"
+    },
+    {
+      "id": "RF-013",
+      "name": "Feedback de calidad",
+      "description": "Permitir registrar feedback sobre falsos positivos o calidad del an\u00e1lisis"
+    },
+    {
+      "id": "RF-014",
+      "name": "Extensibilidad tecnol\u00f3gica",
+      "description": "Permitir a\u00f1adir nuevas tecnolog\u00edas sin redise\u00f1ar el n\u00facleo del sistema"
+    },
+    {
+      "id": "RF-015",
+      "name": "Seguridad en an\u00e1lisis",
+      "description": "Detectar vulnerabilidades y evitar exposici\u00f3n de datos sensibles"
+    }
+  ],
+  "non_functional_requirements": [
+    {
+      "id": "RNF-001",
+      "name": "Escalabilidad",
+      "description": "Soportar m\u00faltiples an\u00e1lisis concurrentes sin degradaci\u00f3n significativa"
+    },
+    {
+      "id": "RNF-002",
+      "name": "Rendimiento",
+      "description": "Tiempo de an\u00e1lisis inferior a 60 segundos para PR est\u00e1ndar (configurable)"
+    },
+    {
+      "id": "RNF-003",
+      "name": "Alta disponibilidad",
+      "description": "Sistema resiliente a fallos del proveedor de IA en entorno cloud"
+    },
+    {
+      "id": "RNF-004",
+      "name": "Seguridad",
+      "description": "Uso de HTTPS, API keys y protecci\u00f3n de datos sensibles"
+    },
+    {
+      "id": "RNF-005",
+      "name": "Privacidad de datos",
+      "description": "No almacenar c\u00f3digo fuente salvo configuraci\u00f3n expl\u00edcita"
+    },
+    {
+      "id": "RNF-006",
+      "name": "Mantenibilidad",
+      "description": "Arquitectura modular separando API, CI/CD, an\u00e1lisis y prompts"
+    },
+    {
+      "id": "RNF-007",
+      "name": "Extensibilidad",
+      "description": "Permitir a\u00f1adir reglas, prompts y tecnolog\u00edas sin cambios en el n\u00facleo"
+    },
+    {
+      "id": "RNF-008",
+      "name": "Observabilidad",
+      "description": "Logging estructurado de ejecuciones, errores y uso de API"
+    },
+    {
+      "id": "RNF-009",
+      "name": "Control de costes",
+      "description": "Limitar consumo de recursos de IA por organizaci\u00f3n o repositorio"
+    },
+    {
+      "id": "RNF-010",
+      "name": "Trazabilidad",
+      "description": "Reproducibilidad de an\u00e1lisis mediante versi\u00f3n de prompts y configuraci\u00f3n"
+    },
+    {
+      "id": "RNF-011",
+      "name": "Compatibilidad",
+      "description": "Integraci\u00f3n inicial con GitHub y extensible a otros proveedores Git"
+    }
+  ],
+  "preliminary_business_flows": [
+    {
+      "id": "FLOW-001",
+      "name": "An\u00e1lisis autom\u00e1tico de Pull Request",
+      "actors": [
+        "A-002",
+        "A-003",
+        "A-004"
+      ],
+      "steps": [
+        "Se crea o actualiza una Pull Request en el repositorio",
+        "Git Provider emite evento hacia CI/CD o sistema integrado",
+        "Se extrae el diff del c\u00f3digo",
+        "Se construye prompt mediante motor modular",
+        "Se invoca servicio de IA",
+        "Se genera informe estructurado",
+        "Se publica comentario en la Pull Request"
+      ]
+    },
+    {
+      "id": "FLOW-002",
+      "name": "An\u00e1lisis v\u00eda API REST",
+      "actors": [
+        "A-001",
+        "A-004"
+      ],
+      "steps": [
+        "Cliente env\u00eda solicitud de an\u00e1lisis a API REST",
+        "Sistema valida autenticaci\u00f3n API key",
+        "Se ejecuta construcci\u00f3n de prompt",
+        "Se invoca modelo de IA",
+        "Se devuelve informe estructurado en la respuesta"
+      ]
+    },
+    {
+      "id": "FLOW-003",
+      "name": "Registro de feedback",
+      "actors": [
+        "A-001",
+        "A-006"
+      ],
+      "steps": [
+        "Usuario revisa resultado de an\u00e1lisis",
+        "Marca issue como falso positivo o aporta feedback",
+        "Sistema registra feedback asociado al an\u00e1lisis",
+        "Feedback se utiliza para mejora futura del motor de prompts"
+      ]
+    },
+    {
+      "id": "FLOW-004",
+      "name": "Control de costes y activaci\u00f3n",
+      "actors": [
+        "A-005",
+        "A-006"
+      ],
+      "steps": [
+        "Administrador configura l\u00edmites de uso o trial",
+        "Sistema valida si el an\u00e1lisis est\u00e1 permitido",
+        "Si est\u00e1 deshabilitado, se omite ejecuci\u00f3n o se devuelve error controlado"
+      ]
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "Q-001",
+      "question": "\u00bfQu\u00e9 proveedores de IA espec\u00edficos se soportar\u00e1n inicialmente?"
+    },
+    {
+      "id": "Q-002",
+      "question": "\u00bfSe requiere persistencia hist\u00f3rica de an\u00e1lisis o solo resultados ef\u00edmeros en PR?"
+    },
+    {
+      "id": "Q-003",
+      "question": "\u00bfCu\u00e1l es el formato est\u00e1ndar del informe de an\u00e1lisis (JSON, Markdown, ambos)?"
+    },
+    {
+      "id": "Q-004",
+      "question": "\u00bfC\u00f3mo se gestionar\u00e1 la autenticaci\u00f3n entre CI/CD y la API (OAuth, tokens firmados, API keys rotables)?"
+    },
+    {
+      "id": "Q-005",
+      "question": "\u00bfSe requiere soporte multi-tenant desde el inicio?"
+    },
+    {
+      "id": "Q-006",
+      "question": "\u00bfQu\u00e9 estrategia se usar\u00e1 para versionado de prompts y compatibilidad hacia atr\u00e1s?"
+    }
+  ]
+}
