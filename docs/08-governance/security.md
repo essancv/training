@@ -1,0 +1,1 @@
+{'authentication': 'API Keys por organización + OAuth/GitHub App para integración GitHub', 'authorization': 'RBAC tenant_admin, maintainer, viewer, service_account', 'model': 'Aislamiento lógico multi-tenant, secretos en vault, auditoría de acciones críticas'}
