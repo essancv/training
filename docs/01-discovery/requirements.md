@@ -1,0 +1,4 @@
+- RF1 Análisis automático PR -> ['EPIC', 'FLOW', 'TASK']
+- RF3 Integración Git -> ['DEP', 'API', 'FLOW']
+- RF5 Motor prompts modular -> ['ARCH-L2', 'SPIKE', 'DATA']
+- RNF4 Seguridad -> ['SEC', 'NFR', 'RISK']
