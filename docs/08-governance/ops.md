@@ -1,0 +1,1 @@
+{'deployment': 'Kubernetes con autoscaling horizontal', 'observability': 'Logs estructurados + tracing + métricas Prometheus'}
