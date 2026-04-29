@@ -1,0 +1,1 @@
+[{'phase': 'M1', 'goal': 'MVP análisis PR básico'}, {'phase': 'M2', 'goal': 'Integración completa GitHub + prompts modular'}]
