@@ -1,129 +1,156 @@
-# Initial Requirements Analysis
+# Functional Domain Map
 
-## 1. Resumen ejecutivo
-Plataforma de revisión automática de código basada en inteligencia artificial integrada con Pull Requests y CI CD, orientada inicialmente a Java Spring Boot y extensible a múltiples tecnologías.
+## 1. Introducción
+Este documento identifica y organiza los bloques funcionales del sistema de revisión automática de código basado en inteligencia artificial, derivado del análisis inicial (DOC1). El objetivo es estructurar el sistema en dominios funcionales coherentes para facilitar diseño, desarrollo y evolución.
 
-## 2. Objetivos del proyecto
-- Automatizar revisión de código en Pull Requests
-- Mejorar calidad del software
-- Detectar vulnerabilidades y malas prácticas
-- Integración con CI CD y Git
-- Proveer explicaciones accionables
-- Control de costes y uso de IA
-- Soportar extensibilidad tecnológica
+## 2. Lista de bloques funcionales
 
-## 3. Alcance (in scope / out scope)
-### In scope
-- Análisis automático de Pull Requests
-- Integración con Git GitHub
-- Integración CI CD
-- API REST de análisis
-- Publicación de comentarios en Pull Requests
-- Motor de prompts modular
-- Soporte inicial Java Spring Boot
-- Detección de seguridad OWASP Top 10
-- Feedback de calidad
-- Configuración por repositorio
-- Control de costes
-- Observabilidad y trazabilidad
-- Extensibilidad tecnológica
+### DOMAIN-001: Motor de Análisis de Pull Requests
+- Descripción: Responsable de analizar automáticamente Pull Requests mediante el procesamiento de diffs y la generación de insights de calidad de código.
+- Requisitos asociados:
+  - FR-001, FR-002, FR-012, FR-015
+  - NFR-002, NFR-010
+- Complejidad: alta
+- Dependencias con otros bloques:
+  - DOMAIN-002 (Git Integration)
+  - DOMAIN-004 (AI Prompt Engine)
 
-### Out of scope
-- Plugins de IDE
-- Edición automática de código
-- Gestión completa de repositorios Git
-- Almacenamiento persistente completo de código fuente
-- Sistema completo de gestión de incidencias
+### DOMAIN-002: Integración con Git
+- Descripción: Gestiona la interacción con proveedores Git (GitHub), incluyendo eventos de Pull Request y publicación de comentarios.
+- Requisitos asociados:
+  - FR-003, FR-008
+  - NFR-011
+- Complejidad: alta
+- Dependencias con otros bloques:
+  - DOMAIN-001
+  - DOMAIN-006
 
-## 4. Actores y stakeholders
-- Developer
-- CI CD System
-- Git Provider GitHub
-- AI Service Provider
-- Repository Administrator
-- Organization Admin
+### DOMAIN-003: Integración CI/CD
+- Descripción: Permite la ejecución del análisis dentro de pipelines de CI/CD.
+- Requisitos asociados:
+  - FR-004
+  - NFR-003
+- Complejidad: media
+- Dependencias con otros bloques:
+  - DOMAIN-001
+  - DOMAIN-005
 
-## 5. Supuestos y restricciones
-### Supuestos
-- Uso de API externa de IA
-- Integración inicial con GitHub Actions
-- Enfoque inicial Java Spring Boot
-- Configuración por repositorio disponible
+### DOMAIN-004: Motor de Prompts e IA
+- Descripción: Construcción, versionado y ejecución de prompts hacia proveedores de IA externos.
+- Requisitos asociados:
+  - FR-005, FR-012, FR-014
+  - NFR-009
+- Complejidad: alta
+- Dependencias con otros bloques:
+  - DOMAIN-001
+  - DOMAIN-007
 
-### Restricciones
-- Uso obligatorio de HTTPS
-- Autenticación mediante API keys
-- No persistencia de código por defecto
-- Dependencia de proveedor de IA
-- Control de costes obligatorio
+### DOMAIN-005: API de Análisis
+- Descripción: Expone endpoints REST para ejecutar análisis fuera del flujo de CI/CD.
+- Requisitos asociados:
+  - FR-007, FR-010
+  - NFR-004
+- Complejidad: media
+- Dependencias con otros bloques:
+  - DOMAIN-001
+  - DOMAIN-012
 
-## 6. Requisitos funcionales reorganizados
-- FR-001: Análisis automático de Pull Requests
-- FR-002: Generación de informe de análisis
-- FR-003: Integración con sistemas Git
-- FR-004: Ejecución en CI CD
-- FR-005: Motor de prompts modular
-- FR-006: Soporte Java Spring Boot
-- FR-007: API REST de análisis
-- FR-008: Publicación de resultados en Pull Requests
-- FR-009: Configuración por repositorio
-- FR-010: Gestión de errores
-- FR-011: Gestión de costes y trial
-- FR-012: Explicabilidad de resultados
-- FR-013: Feedback de calidad
-- FR-014: Extensibilidad tecnológica
-- FR-015: Seguridad en análisis
+### DOMAIN-006: Publicación de Resultados y Feedback
+- Descripción: Gestiona la publicación de resultados en Pull Requests y la captura de feedback del usuario.
+- Requisitos asociados:
+  - FR-008, FR-013
+- Complejidad: media
+- Dependencias con otros bloques:
+  - DOMAIN-002
+  - DOMAIN-001
 
-## 7. Requisitos no funcionales reorganizados
-- NFR-001: Escalabilidad
-- NFR-002: Rendimiento menor a 60 segundos configurable
-- NFR-003: Alta disponibilidad
-- NFR-004: Seguridad HTTPS API keys protección de datos
-- NFR-005: Privacidad de datos
-- NFR-006: Mantenibilidad modular
-- NFR-007: Extensibilidad
-- NFR-008: Observabilidad logs
-- NFR-009: Control de costes
-- NFR-010: Trazabilidad de análisis
-- NFR-011: Compatibilidad GitHub y otros Git
+### DOMAIN-007: Configuración por Repositorio
+- Descripción: Permite definir reglas, límites y comportamiento del sistema a nivel de repositorio.
+- Requisitos asociados:
+  - FR-009, FR-011
+  - NFR-009
+- Complejidad: media
+- Dependencias con otros bloques:
+  - DOMAIN-004
+  - DOMAIN-001
 
-## 8. Flujos de negocio preliminares
+### DOMAIN-008: Gestión de Costes
+- Descripción: Controla el consumo de IA, límites de uso y activación basada en presupuesto.
+- Requisitos asociados:
+  - FR-011
+  - NFR-009
+- Complejidad: media
+- Dependencias con otros bloques:
+  - DOMAIN-004
+  - DOMAIN-007
 
-### FLOW-001: Análisis automático de Pull Request
-Pasos:
-1. Se crea o actualiza Pull Request
-2. Git provider envía evento
-3. Se obtiene diff
-4. Se construye prompt
-5. Se invoca IA
-6. Se genera informe
-7. Se publica comentario en Pull Request
+### DOMAIN-009: Análisis de Seguridad
+- Descripción: Detección de vulnerabilidades y malas prácticas (incluyendo OWASP Top 10).
+- Requisitos asociados:
+  - FR-015
+  - NFR-005
+- Complejidad: alta
+- Dependencias con otros bloques:
+  - DOMAIN-001
+  - DOMAIN-004
 
-### FLOW-002: Análisis vía API REST
-Pasos:
-1. Cliente envía request
-2. Validación de API key
-3. Construcción de prompt
-4. Invocación de IA
-5. Retorno de informe
+### DOMAIN-010: Observabilidad y Trazabilidad
+- Descripción: Registro de logs, métricas y trazas de análisis ejecutados.
+- Requisitos asociados:
+  - NFR-008, NFR-010
+- Complejidad: media
+- Dependencias con otros bloques:
+  - DOMAIN-001
+  - DOMAIN-003
 
-### FLOW-003: Feedback de calidad
-Pasos:
-1. Usuario revisa resultados
-2. Marca issues o feedback
-3. Se almacena feedback
-4. Mejora de prompts futura
+### DOMAIN-011: Extensibilidad Tecnológica
+- Descripción: Permite extender el sistema a nuevas tecnologías más allá de Java Spring Boot.
+- Requisitos asociados:
+  - FR-014
+  - NFR-007
+- Complejidad: media
+- Dependencias con otros bloques:
+  - DOMAIN-004
+  - DOMAIN-001
 
-### FLOW-004: Control de costes y activación
-Pasos:
-1. Admin configura límites
-2. Sistema valida permisos
-3. Ejecuta o bloquea análisis
+### DOMAIN-012: Seguridad y Autenticación
+- Descripción: Manejo de API keys, autenticación y protección de endpoints.
+- Requisitos asociados:
+  - NFR-004
+- Complejidad: media
+- Dependencias con otros bloques:
+  - DOMAIN-005
 
-## 9. Preguntas abiertas
-- Q-001: Proveedores de IA iniciales
-- Q-002: Persistencia de resultados o no
-- Q-003: Formato estándar de informe
-- Q-004: Autenticación CI CD
-- Q-005: Soporte multi tenant
-- Q-006: Versionado de prompts
+### DOMAIN-013: Gestión de Errores y Resiliencia
+- Descripción: Manejo de fallos en integración con IA, Git y CI/CD.
+- Requisitos asociados:
+  - FR-010
+- Complejidad: media
+- Dependencias con otros bloques:
+  - DOMAIN-001
+  - DOMAIN-004
+
+## 3. Mapa general de dominios
+
+| Dominio | Tipo | Dependencias |
+|--------|------|--------------|
+| DOMAIN-001 | Core | DOMAIN-002, DOMAIN-004 |
+| DOMAIN-002 | Integration | DOMAIN-001, DOMAIN-006 |
+| DOMAIN-003 | Execution | DOMAIN-001, DOMAIN-005 |
+| DOMAIN-004 | Core AI | DOMAIN-001, DOMAIN-007 |
+| DOMAIN-005 | API | DOMAIN-012 |
+| DOMAIN-006 | Output | DOMAIN-002, DOMAIN-001 |
+| DOMAIN-007 | Configuration | DOMAIN-004 |
+| DOMAIN-008 | Governance | DOMAIN-004, DOMAIN-007 |
+| DOMAIN-009 | Analysis | DOMAIN-001, DOMAIN-004 |
+| DOMAIN-010 | Observability | DOMAIN-001, DOMAIN-003 |
+| DOMAIN-011 | Architecture | DOMAIN-004, DOMAIN-001 |
+| DOMAIN-012 | Security | DOMAIN-005 |
+| DOMAIN-013 | Resilience | DOMAIN-001, DOMAIN-004 |
+
+## 4. Observaciones
+- El sistema presenta una arquitectura altamente modular con fuerte dependencia del motor de IA.
+- Los dominios críticos son el análisis de Pull Requests y el motor de prompts.
+- La gestión de costes y seguridad son transversales a múltiples dominios.
+- Existen dependencias circulares potenciales entre análisis, prompts y configuración que deben controlarse en diseño técnico.
+- La extensibilidad es un objetivo arquitectónico clave para futuras tecnologías.
