@@ -27,7 +27,7 @@ Este documento describe los principales flujos de negocio del sistema de revisi�
 - Analysis Completed
 - Analysis Failed
 
-`mermaid
+```mermaid
 flowchart TD
 A[Pull Request Created/Updated] --> B[Git Provider Event]
 B --> C[Fetch Diff]
@@ -35,7 +35,7 @@ C --> D[Build Prompt]
 D --> E[Call AI Service]
 E --> F[Generate Analysis Report]
 F --> G[Post Comment in PR]
-`
+```
 
 ### FLOW-002: Análisis vía API REST
 **Actor principal:** Developer / External Client
