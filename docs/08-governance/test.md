@@ -1,0 +1,1 @@
+{'strategy': 'TDD + tests de integración en CI/CD', 'acceptance_model': 'Given-When-Then con validación en PR'}
