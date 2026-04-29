@@ -1,0 +1,7 @@
+- RF1 RF2 RF8 -> ['FLOW', 'EPIC', 'STORY', 'API']
+- RF3 RF4 RNF11 -> ['ARCH_L1', 'API', 'DEP']
+- RF5 RF14 RNF6 RNF7 -> ['ARCH_L2', 'DATA', 'ADR']
+- RF11 RNF9 -> ['DATA', 'STORY', 'RISK']
+- RF15 RNF4 RNF5 -> ['SEC', 'OPS', 'ADR']
+- RNF1 RNF2 RNF3 -> ['NFR', 'ARCH_L1', 'OPS']
+- RNF8 RNF10 -> ['OPS', 'DATA', 'TEST']
