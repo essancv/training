@@ -1,44 +1,35 @@
 # Architecture Options
-
-## 1. Evaluación previa
-- Tamaño: Medium
-- Complejidad: Media-Alta (IA + Git integration)
-- RNF: seguridad, escalabilidad, observabilidad
-- Riesgo de sobrearquitectura: Alto si se usa microservicios
-
-## 2. Arquitecturas propuestas
-
-### ARCH-OPT-001 Monolito Modular Hexagonal
-- Complejidad: Media
-- Justificación: reduce overhead, facilita control costes IA
-
+## Evaluation
+Medium size system with external AI dependency favors modular monolith
+## ARCHOPT001 Modular Monolith Clean Architecture
+### Diagram
 ```mermaid
 flowchart TD
-CLIENT['liente API'] --> API['API REST']
-API --> CORE['Core Analisis']
-CORE --> AI['Servicio IA']
-CORE --> GIT['Integracion GitHub']
-CORE --> OBS['Observabilidad']
+A['API Layer'] --> B['Domain Core']
+B --> C['Integration Git']
+B --> D['AI Service']
+B --> E['Cost Control']
+B --> F['Observability']
 ```
-
-- Ventajas: simple, coste bajo, fácil mantenimiento
-- Inconvenientes: escalado granular limitado
-- Riesgos: crecimiento futuro puede requerir refactor
-- Coste relativo: Bajo-Medio
-- Adecuación: Alta
-
-## 3. Pila tecnológica recomendada
-- Backend: Java Spring Boot
-- Frontend: React
-- DB: PostgreSQL
-- Infra: Docker
-- API: REST
-- Observabilidad: logs estructurados
-- Seguridad: OAuth/API Keys
-
-Justificación: ecosistema maduro y estable
-
-Alternativa más simple: Node.js + Express + PostgreSQL
-
-## 4. Recomendación
-Monolito modular con arquitectura hexagonal
+### Explanation
+Single deployable with internal modules
+### Advantages
+Lower complexity faster delivery lower cost
+### Disadvantages
+Scaling limits under extreme load
+### Risks
+Tight coupling if not well modularized
+### Cost
+Low to medium
+## Tech stack
+Backend Spring Boot or NodeJS
+Frontend React optional dashboard
+DB PostgreSQL
+Infra Docker VM
+API REST
+Observability logs metrics
+Security API keys HTTPS
+## Alternative
+Microservices overkill for current scope
+## Recommendation
+Modular monolith preferred
