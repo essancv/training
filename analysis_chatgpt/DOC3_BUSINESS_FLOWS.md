@@ -1,49 +1,48 @@
 # Business Flows
-
-## FLOW-001 Análisis automático de Pull Request
-- Actor principal: Developer / GitHub
-- Objetivo: Analizar PR automáticamente
-
-### Flujo principal
-1 Evento PR creado
-2 GitHub webhook
-3 Extracción diff
-4 Construcción prompt
-5 Invocación IA
-6 Generación reporte
-7 Comentario en PR
-
-### Alternativas
-- Error API IA -> retry
-- PR demasiado grande -> rechazo
-
-### Eventos clave
-- PullRequestOpened
-- AnalysisCompleted
-
+## FLOW001 PR Analysis Flow
+Actor Developer System Git AI
+Objective Analyze pull request
 ```mermaid
 sequenceDiagram
-participant G as GitHub
-participant S as System
-participant A as AI
-G->>S: PR Event
-S->>S: Extract Diff
-S->>A: Prompt
-A->>S: Analysis
-S->>G: Comment PR
+participant DEV
+participant GIT
+participant SYS
+participant AI
+DEV->>GIT: CREATE PR
+GIT->>SYS: WEBHOOK EVENT
+SYS->>SYS: FETCH DIFF
+SYS->>AI: SEND PROMPT
+AI->>SYS: RETURN ANALYSIS
+SYS->>GIT: POST COMMENT
 ```
-
-## FLOW-002 API REST Analysis
-- Cliente envía request
-- Validación API key
-- IA processing
-- Response JSON
-
-## FLOW-003 Feedback loop
-- Usuario envía feedback
-- Sistema almacena feedback
-- Mejora prompts
-
-## FLOW-004 Control de costes
-- Validación límites
-- Bloqueo si excede
+## FLOW002 REST API Analysis
+```mermaid
+sequenceDiagram
+participant CLI
+participant API
+participant AI
+CLI->>API: REQUEST ANALYSIS
+API->>API: VALIDATE KEY
+API->>AI: SEND PROMPT
+AI->>API: RESPONSE
+API->>CLI: RETURN REPORT
+```
+## FLOW003 Feedback Loop
+```mermaid
+sequenceDiagram
+participant USER
+participant SYS
+participant STORE
+USER->>SYS: SEND FEEDBACK
+SYS->>STORE: SAVE FEEDBACK
+STORE->>SYS: ACK
+```
+## FLOW004 Cost Control
+```mermaid
+sequenceDiagram
+participant ADMIN
+participant SYS
+ADMIN->>SYS: SET LIMITS
+SYS->>SYS: VALIDATE USAGE
+SYS->>ADMIN: APPROVE OR BLOCK
+```
