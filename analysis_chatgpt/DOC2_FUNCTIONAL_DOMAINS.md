@@ -1,49 +1,26 @@
 # Functional Domain Map
-
-## 1. Introducción
-Identificación de dominios funcionales de la plataforma de análisis de código con IA.
-
-## 2. Bloques funcionales
-
-### DOMAIN-001 INGESTA DE EVENTOS GIT
-- Descripción: Captura eventos de Pull Requests desde GitHub
-- Requisitos asociados: FR-001, FR-003
-- Complejidad: Media
-- Dependencias: GitHub API
-
-### DOMAIN-002 MOTOR DE ANALISIS IA
-- Descripción: Generación de análisis de código mediante IA
-- Requisitos asociados: FR-001, FR-012, FR-015
-- Complejidad: Alta
-- Dependencias: AI Provider
-
-### DOMAIN-003 GESTION DE INTEGRACIONES CI CD
-- Descripción: Ejecución en pipelines
-- Requisitos asociados: FR-004
-- Complejidad: Media
-- Dependencias: CI/CD systems
-
-### DOMAIN-004 API Y ORQUESTACION
-- Descripción: API REST para análisis
-- Requisitos asociados: FR-007, FR-010
-- Complejidad: Media
-
-### DOMAIN-005 SEGURIDAD Y CONTROL
-- Descripción: Seguridad, OWASP, autenticación
-- Requisitos asociados: FR-015, NFR-004
-- Complejidad: Alta
-
-### DOMAIN-006 OBSERVABILIDAD Y COSTES
-- Descripción: Logs, métricas, control coste IA
-- Requisitos asociados: FR-011, NFR-009
-- Complejidad: Media-Alta
-
-## 3. Mapa general de dominios
+## Domains
+### DOMAIN001 PR Analysis
+Handles diff ingestion prompt creation AI invocation and result interpretation
+### DOMAIN002 Integration
+GitHub and CI CD event handling webhook processing
+### DOMAIN003 Prompt Engine
+Template management versioning and dynamic prompt assembly
+### DOMAIN004 Reporting
+PR comments structured reports and API responses
+### DOMAIN005 Configuration
+Repository level settings cost limits feature flags
+### DOMAIN006 Security
+Auth encryption OWASP detection and secure processing
+### DOMAIN007 Observability
+Logging metrics tracing and audit trails
+## Domain map
 ```mermaid
 flowchart TD
-GIT_DOMAIN['Ingesta GitHub'] --> AI_DOMAIN['Motor Analisis IA']
-AI_DOMAIN --> API_DOMAIN['API Orquestacion']
-API_DOMAIN --> CI_DOMAIN['CI CD Integracion']
-AI_DOMAIN --> SEC_DOMAIN['Seguridad y Control']
-AI_DOMAIN --> OBS_DOMAIN['Observabilidad y Costes'
+D1['PR Analysis'] --> D2['Integration']
+D2 --> D3['prompt Engine']
+D3 --> D4['Reporting']
+D4 --> D5['Configuration']
+D5 --> D6['Security']
+D6 --> D7['Observability']
 ```
