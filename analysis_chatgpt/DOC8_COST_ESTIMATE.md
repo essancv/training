@@ -1,23 +1,15 @@
-# Initial Cost Estimate
-
-## 1. Coste por bloque funcional
-- Ingesta Git: Medio
-- Motor IA: Alto
-- API: Medio
-- Seguridad: Medio
-- Observabilidad: Medio
-
-## 2. Coste por arquitectura
-- Monolito modular: Bajo-Medio
-- Microservicios: Alto
-
-## 3. Coste infraestructura
-- Docker + VM: Bajo
-- Cloud avanzada: Medio-Alto
-
-## 4. Integraciones
-- GitHub: Bajo
-- IA API: Medio-Alto (variable)
-
-## 5. Mantenimiento anual
-- 20-30% del coste de desarrollo
+# Cost Estimate
+## Functional blocks
+PR analysis 40 percent cost
+Integration 20 percent
+Prompt engine 15 percent
+Security 10 percent
+Observability 10 percent
+## Architecture cost
+Monolith low infrastructure cost
+## Infrastructure
+Cloud VM API hosting logging storage minimal
+## Integrations
+GitHub and AI provider API costs dominant
+## Maintenance
+Annual 25 percent of development cost
