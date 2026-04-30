@@ -1,1 +1,51 @@
-# Initial Requirements Analysis\n## 1. Resumen ejecutivo\nPlataforma SaaS para análisis automático de Pull Requests mediante IA integrada con GitHub y CI/CD.\n\n## 2. Objetivos del proyecto\n- Automatizar revisión de código\n- Mejorar calidad y seguridad\n- Integración CI/CD\n- Reducción de coste de revisión manual\n\n## 3. Alcance\n### In scope\n- Análisis PR\n- Integración GitHub\n- API REST\n- Motor de prompts\n\n### Out of scope\n- IDE plugins\n- Reescritura automática de código\n\n## 4. Actores y stakeholders\n- Developers\n- DevOps\n- Admins\n- CI/CD systems\n\n## 5. Supuestos y restricciones\n- Dependencia de API IA externa\n- Latencia controlada <60s\n- Seguridad por API keys\n\n## 6. Requisitos funcionales reorganizados\nFR-001 a FR-015 estructurados\n\n## 7. Requisitos no funcionales reorganizados\nNFR-001 a NFR-011\n\n## 8. Flujos de negocio preliminares\nFLOW-001 a FLOW-004\n\n## 9. Preguntas abiertas\n- Persistencia\n- Multi-tenant\n- Formato de reporte
+# Initial Requirements Analysis
+
+## 1. Resumen ejecutivo
+Plataforma SaaS de análisis automático de Pull Requests mediante IA, integrada con GitHub y CI/CD, enfocada en calidad, seguridad y eficiencia.
+
+## 2. Objetivos del proyecto
+- Automatizar revisión de código
+- Detectar vulnerabilidades
+- Integración CI/CD
+- Feedback accionable
+- Control de costes IA
+
+## 3. Alcance
+### In scope
+- Análisis PR
+- Integración GitHub
+- API REST
+- Motor prompts
+- Seguridad OWASP
+
+### Out of scope
+- IDE plugins
+- Gestión completa repositorios
+
+## 4. Actores y stakeholders
+- Developer
+- Repo Admin
+- CI/CD System
+- GitHub
+- AI Provider
+
+## 5. Supuestos y restricciones
+- API IA externa
+- GitHub inicial
+- HTTPS obligatorio
+- API keys auth
+
+## 6. Requisitos funcionales reorganizados
+FR-001 a FR-015 estructurados en análisis, integración, seguridad, costes
+
+## 7. Requisitos no funcionales reorganizados
+NFR-001 a NFR-011: escalabilidad, seguridad, observabilidad, rendimiento
+
+## 8. Flujos de negocio preliminares
+FLOW-001 a FLOW-004 definidos en base a eventos GitHub y API
+
+## 9. Preguntas abiertas
+- Multi-tenant
+- Persistencia
+- Formato estándar informe
+- IA provider inicial
