@@ -1,14 +1,6 @@
 # Architecture Comparison Matrix
-
-## 1. Matriz comparativa
-| Arquitectura | Complejidad | Stack | Coste | Riesgo | Adecuación RNF |
-|--------------|------------|-------|-------|--------|-----------------|
-| Monolito modular | Media | Spring Boot | Bajo | Bajo | Alta |
-| Microservicios | Alta | Kubernetes + Kafka | Alto | Alto | Media |
-| Serverless | Alta | Cloud functions | Medio-Alto | Medio | Media |
-
-## 2. Recomendación
-Se recomienda Monolito Modular debido a:
-- Control de costes IA
-- Menor complejidad operativa
-- Menor riesgo de sobreingeniería
+| Architecture | Complexity | Stack | Cost | Risk | RNF Fit |
+| Monolith Modular | Medium | Spring Boot | Low | Low | High |
+| Microservices | High | Kubernetes Kafka | High | High | Medium |
+## Recommendation
+Modular monolith is optimal due to cost control simplicity and latency constraints
