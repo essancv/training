@@ -1,51 +1,26 @@
 # Initial Requirements Analysis
-
-## 1. Resumen ejecutivo
-Plataforma SaaS de análisis automático de Pull Requests mediante IA, integrada con GitHub y CI/CD, enfocada en calidad, seguridad y eficiencia.
-
-## 2. Objetivos del proyecto
-- Automatizar revisión de código
-- Detectar vulnerabilidades
-- Integración CI/CD
-- Feedback accionable
-- Control de costes IA
-
-## 3. Alcance
+## Summary
+Platform for automated AI code review integrated with GitHub PRs and CI CD pipelines focusing on Java Spring Boot extensibility
+## Objectives
+Automate PR review
+Improve code quality
+Detect vulnerabilities
+Provide actionable feedback
+Control AI cost usage
+## Scope
 ### In scope
-- Análisis PR
-- Integración GitHub
-- API REST
-- Motor prompts
-- Seguridad OWASP
-
+PR analysis Git integration CI CD API report generation security detection cost control extensibility
 ### Out of scope
-- IDE plugins
-- Gestión completa repositorios
-
-## 4. Actores y stakeholders
-- Developer
-- Repo Admin
-- CI/CD System
-- GitHub
-- AI Provider
-
-## 5. Supuestos y restricciones
-- API IA externa
-- GitHub inicial
-- HTTPS obligatorio
-- API keys auth
-
-## 6. Requisitos funcionales reorganizados
-FR-001 a FR-015 estructurados en análisis, integración, seguridad, costes
-
-## 7. Requisitos no funcionales reorganizados
-NFR-001 a NFR-011: escalabilidad, seguridad, observabilidad, rendimiento
-
-## 8. Flujos de negocio preliminares
-FLOW-001 a FLOW-004 definidos en base a eventos GitHub y API
-
-## 9. Preguntas abiertas
-- Multi-tenant
-- Persistencia
-- Formato estándar informe
-- IA provider inicial
+IDE plugins automatic code editing full repo management issue tracker replacement
+## Actors
+Developer CI system Git provider AI service admin
+## Assumptions
+External AI API usage GitHub Actions integration stateless processing default
+## Constraints
+HTTPS only API key auth no full code persistence cost control mandatory
+## Functional requirements
+FR001 PR analysis FR002 report generation FR003 Git integration FR004 CI execution FR005 prompt engine FR006 REST API FR007 PR commenting FR008 repo config FR009 error handling FR010 cost control FR011 explainability FR012 feedback FR013 extensibility FR014 security
+## Non functional requirements
+NFR001 scalability NFR002 performance under 60 seconds NFR003 availability NFR004 security NFR005 privacy NFR006 maintainability NFR007 extensibility NFR008 observability NFR009 cost control NFR010 traceability NFR011 Git compatibility
+## Open questions
+AI provider selection persistence strategy multi tenancy authentication CI CD format standard
