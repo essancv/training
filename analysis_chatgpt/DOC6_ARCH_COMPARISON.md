@@ -1,10 +1,1 @@
-# Architecture Comparison Matrix
-## 1. Matriz comparativa
-| Arquitectura | Complejidad | Stack | Coste | Riesgo | Adecuación RNF |
-| --- | --- | --- | --- | --- | --- |
-| ARCH-OPT-001 Monolito modular 3-tier | Media | Spring Boot, React, PostgreSQL, Docker en VM | Media | Bajo-Medio (riesgo de crecimiento del monolito) | Alta (rendimiento, seguridad, observabilidad, costes) |
-
-*Nota:* No se propone una opción de microservicios ni serverless por las guardrails y el tamaño MEDIUM del proyecto.
-
-## 2. Recomendación razonada
-ARCH-OPT-001 ofrece el mejor equilibrio entre simplicidad, coste y cumplimiento de NFR. Permite modularidad interna, control de costes y observabilidad sin introducir la complejidad operativa de arquitecturas distribuidas. Se recomienda adoptarla como base, dejando abierta una futura evolución hacia servicios separados solo si el volumen de tráfico, la diversidad tecnológica o los requisitos de aislamiento lo justifican.
+# Architecture Comparison Matrix\n## 1. Matriz comparativa\n| Arquitectura | Complejidad | Stack | Coste | Riesgo | Adecuación RNF |\n| Modular Monolith | Media | Spring Boot | Medio | Bajo | Alta |\n| Minimal Monolith | Baja | Node/Express | Bajo | Bajo | Media |\n\n## 2. Recomendación\nSe recomienda ARCH-OPT-001 Modular Monolith por equilibrio entre extensibilidad y control de costes.
