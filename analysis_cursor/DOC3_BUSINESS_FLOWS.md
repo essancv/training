@@ -47,6 +47,7 @@ REP->>PR: Post comment
  - Si faltan reglas por tecnologia se usa solo prompt base
 - Eventos clave: Prompt build Analysis run
 
+```mermaid
 sequenceDiagram
 participant ORC as 'Orchestrator'
 participant CFG as 'Repo Config'
@@ -60,7 +61,7 @@ ORC->>STA: Run static checks
 ORC->>LLM: Run reasoning review
 STA->>SUM: Provide findings
 LLM->>SUM: Provide findings
-
+```
 
 ### FLOW-003
 - Actor principal: Reviewer
@@ -73,6 +74,7 @@ LLM->>SUM: Provide findings
  - Si el reporte indica severidad alta se recomienda cambios obligatorios
 - Eventos clave: Review gate Decision
 
+```mermaid
 sequenceDiagram
 participant REV as 'Reviewer'
 participant PR as 'Pull Request'
@@ -82,4 +84,4 @@ REV->>PR: Read report
 REV->>CHK: Apply checklist
 CHK->>DEC: Recommend decision
 DEC->>PR: Approve or request changes
-
+```
