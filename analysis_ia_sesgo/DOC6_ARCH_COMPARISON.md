@@ -2,14 +2,14 @@
 
 ## 1. Matriz comparativa
 
-| Arquitectura | Escalabilidad | Coste | Complejidad | Seguridad | Integraciones | Time-to-market | Adecuación RNF |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| ARCH-OPT-001 – Monolito modular en capas | Media (escalado vertical, posible replicación) | Bajo | Baja-media | Buena (pocos puntos de fallo, control centralizado) | Buena (conectores en un solo servicio) | Rápido (implementación directa) | Alta (NFR-001, NFR-002, NFR-005, NFR-006) |
-| ARCH-OPT-002 – Monolito Clean/Hexagonal | Media (similar a ARCH-OPT-001) | Medio | Media | Muy buena (separación clara de capas y adaptadores) | Muy buena (adaptadores reemplazables) | Medio (más diseño inicial) | Muy alta (extensibilidad y mantenibilidad) |
-| ARCH-OPT-003 – Microservicios | Alta (escalado independiente) | Alto | Alta | Variable (más superficie de ataque, requiere disciplina) | Alta pero compleja (APIs entre servicios) | Lento (mayor esfuerzo de diseño y DevOps) | Baja para RNF-006 (simplicidad), potencialmente excesiva para NFR actuales |
+| Arquitectura | Complejidad | Stack | Coste | Riesgo | Adecuación RNF |
+| --- | --- | --- | --- | --- | --- |
+| ARCH-OPT-001 – Monolito modular Python/FastAPI | Baja-media | Backend Python/FastAPI, DB ligera (SQLite/PostgreSQL), script Python | Bajo | Bajo-medio (pocos componentes, dependencia de IA y APIs) | Alta (cumple NFR-001, NFR-002, NFR-003, NFR-006) |
+| ARCH-OPT-002 – Monolito Clean Architecture Python/FastAPI | Media | Igual que ARCH-OPT-001, con capas de dominio y adaptadores más definidos | Medio | Medio (mayor esfuerzo de diseño, pero mejor mantenibilidad) | Muy alta (mejor extensibilidad y testabilidad) |
+| ARCH-OPT-003 – SPA React + API REST Python/FastAPI | Media | Frontend React, Backend Python/FastAPI, DB ligera | Medio | Medio (más componentes, más superficie de fallo en frontend) | Media-alta (mejor UX, pero más complejidad) |
 
 ## 2. Recomendación razonada
 
-Considerando el tamaño MEDIUM del proyecto, la complejidad funcional moderada, la ausencia de requisitos de escalabilidad extrema y la necesidad explícita de evitar sobredimensionamiento, la opción más adecuada es **ARCH-OPT-001 – Monolito modular en capas**, con la posibilidad de aplicar principios de Clean/Hexagonal (ARCH-OPT-002) de forma incremental.
+Considerando el tamaño MEDIUM del proyecto, el número limitado de usuarios, la dependencia de IA y la necesidad explícita de evitar sobredimensionamiento, la opción más adecuada es **ARCH-OPT-001 – Monolito modular Python/FastAPI**, complementada con buenas prácticas de diseño que acerquen el modelo a Clean Architecture sin introducir complejidad innecesaria.
 
-ARCH-OPT-001 ofrece un equilibrio óptimo entre simplicidad, coste y capacidad de integración con IA, GitHub y Jira, cumpliendo los RNF de rendimiento, seguridad y extensibilidad sin introducir complejidad innecesaria. ARCH-OPT-003 se considera sobredimensionada para el contexto actual y solo debería contemplarse si, en el futuro, el sistema se convierte en una plataforma de uso masivo con múltiples equipos y cargas altamente variables.
+ARCH-OPT-002 es una evolución natural si se prevé una vida útil larga y múltiples extensiones, mientras que ARCH-OPT-003 solo se justifica si se requiere una experiencia de usuario web más rica. Todas las opciones mantienen una pila tecnológica simple y madura, evitando stacks complejos como Kubernetes, Kafka o microservicios, en línea con los guardrails establecidos.
