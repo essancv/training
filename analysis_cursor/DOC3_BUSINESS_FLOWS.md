@@ -19,6 +19,7 @@ Los flujos describen el comportamiento desde la apertura o actualizacion de una 
  - Si falla el proveedor LLM se publica fallo controlado y se sugiere reintento
 - Eventos clave: Pull Request opened Pull Request synchronize
 
+```mermaid
 sequenceDiagram
 participant DEV as 'Developer'
 participant GHA as 'Github Actions'
@@ -30,7 +31,7 @@ PR->>GHA: Trigger workflow
 GHA->>API: Send diff and context
 API->>REP: Build report
 REP->>PR: Post comment
-
+```
 
 ### FLOW-002
 - Actor principal: System
