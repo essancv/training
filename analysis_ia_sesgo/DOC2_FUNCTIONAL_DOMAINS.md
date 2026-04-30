@@ -1,40 +1,38 @@
-# Dominios funcionales
-## DOMAIN-001 Gestión de Entrada
-Descripción: Captura requisitos y metadatos.
-RF asociados: FR-001.
-Complejidad: Baja.
+# Functional Domain Map
+## 1. Introducción
+Este documento agrupa los requisitos en dominios funcionales para facilitar el diseño, el sizing y el backlog.
 
-## DOMAIN-002 Gestión de Prompt
-Descripción: Versionado y selección de prompt.
-RF asociados: FR-002.
-Complejidad: Media.
+## 2. Bloques funcionales
+### DOMAIN-001 CorePullRequestAnalysis
+- Descripción: Núcleo de análisis automático de Pull Requests y generación de informes.
+- Requisitos asociados: FR-001, FR-002, FR-006, FR-007, FR-008, FR-015; NFR-001, NFR-002, NFR-004, NFR-005, NFR-010.
+- Complejidad: Alta (uso de IA, rendimiento, seguridad).
+- Dependencias: AI Service Provider, Git Provider, CI CD System.
 
-## DOMAIN-003 Orquestación IA
-Descripción: Construcción request, llamada modelo, retries.
-RF asociados: FR-003 FR-004.
-Complejidad: Media.
+### DOMAIN-002 GitAndCICDIntegration
+- Descripción: Integración con proveedores Git y sistemas CI/CD.
+- Requisitos asociados: FR-003, FR-004, FR-010; NFR-003, NFR-011.
+- Complejidad: Media.
+- Dependencias: GitHub, GitHub Actions u otros CI/CD.
 
-## DOMAIN-004 Validación y Trazabilidad
-Descripción: JSON Schema, referencias cruzadas.
-RF asociados: FR-005 FR-010.
-Complejidad: Alta.
+### DOMAIN-003 ConfigurationCostAndGovernance
+- Descripción: Configuración por repositorio, control de costes, políticas y activación.
+- Requisitos asociados: FR-009, FR-011, FR-014; NFR-009.
+- Complejidad: Media.
+- Dependencias: Organization Admin, Repository Administrator, sistemas de facturación.
 
-## DOMAIN-005 Integraciones Externas
-Descripción: GitHub y Jira.
-RF asociados: FR-006 FR-007 FR-008.
-Complejidad: Media.
+### DOMAIN-004 ExplainabilityFeedbackAndObservability
+- Descripción: Explicabilidad, feedback de calidad, observabilidad y trazabilidad.
+- Requisitos asociados: FR-012, FR-013, FR-005; NFR-006, NFR-007, NFR-008, NFR-010.
+- Complejidad: Media.
+- Dependencias: AI Service Provider, sistemas de logging y métricas.
 
-## DOMAIN-006 Observabilidad y Seguridad
-Descripción: Logs, secretos, auditoría.
-RF asociados: FR-009.
-Complejidad: Media.
-
+## 3. Mapa general de dominios
 ```mermaid
-flowchart LR
-NODE1[Entrada] --> NODE2[Prompt]
-NODE2 --> NODE3[IA]
-NODE3 --> NODE4[Validacion]
-NODE4 --> NODE5[GitHub]
-NODE4 --> NODE6[Jira]
-NODE3 --> NODE7[Logs]
+flowchart TD
+DOMAIN_001["CorePullRequestAnalysis"] --> DOMAIN_002["GitAndCICDIntegration"]
+DOMAIN_001["CorePullRequestAnalysis"] --> DOMAIN_004["ExplainabilityFeedbackAndObservability"]
+DOMAIN_003["ConfigurationCostAndGovernance"] --> DOMAIN_001["CorePullRequestAnalysis"]
+DOMAIN_003["ConfigurationCostAndGovernance"] --> DOMAIN_004["ExplainabilityFeedbackAndObservability"]
+DOMAIN_002["GitAndCICDIntegration"] --> DOMAIN_003["ConfigurationCostAndGovernance"]
 ```
