@@ -1,1 +1,31 @@
-# Initial Product Backlog\n## EPICS\n- EPIC-001 PR Analysis Engine\n- EPIC-002 Git Integration\n- EPIC-003 AI Prompt Engine\n- EPIC-004 Observability & Cost Control\n- EPIC-005 Security & Compliance\n\n## FEATURES\n- FEAT-001 PR diff analysis\n- FEAT-002 GitHub integration\n- FEAT-003 Prompt orchestration\n\n## STORIES\n- STORY-001 Analyze PR automatically\n- STORY-002 Post comments to PR\n- STORY-003 Control AI cost limits\n\n## DEPENDENCIES\n- GitHub API\n- AI Provider\n\n## MoSCoW\n- Must: PR analysis\n- Should: cost control\n- Could: multi repo config\n\n## JIRA\nJIRA-ITEM-001 Clarify persistence strategy
+# Initial Product Backlog
+
+## 1. Épicas
+- EPIC-001 Sistema de análisis PR
+- EPIC-002 Integración GitHub
+- EPIC-003 Motor IA
+- EPIC-004 Control de costes
+
+## 2. Features
+- FEAT-001 Análisis automático PR
+- FEAT-002 Comentarios en PR
+- FEAT-003 Seguridad OWASP
+
+## 3. Historias de usuario
+- STORY-001 Analizar PR automáticamente
+- STORY-002 Ver informe análisis
+- STORY-003 Configurar repo
+
+## 4. Priorización MoSCoW
+- Must: análisis PR, integración GitHub
+- Should: feedback
+- Could: extensibilidad avanzada
+
+## 5. JIRA ITEMS
+### JIRA-ITEM-001
+- Origen: DOC1 DOC2 DOC3
+- Tipo: aclaración
+- Descripción: definir persistencia resultados
+- Impacto: medio
+- Prioridad: alta
+- Propuesta: decidir almacenamiento mínimo metadata
