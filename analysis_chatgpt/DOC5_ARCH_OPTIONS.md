@@ -1,1 +1,44 @@
-# Architecture Options\n## 1. Evaluación previa\n- Tamaño: MEDIUM\n- Complejidad: Media-Alta\n- RNF: latencia <60s, seguridad, observabilidad\n- Riesgo sobredimensionamiento: Alto si se usan microservicios\n\n## 2. Arquitecturas propuestas\n### ARCH-OPT-001 Modular Monolith (Clean Architecture)\n- Complejidad: Media\n- Justificación: Reduce overhead, suficiente para MEDIUM project\n\n```mermaid\nflowchart TD\nAPI["API Layer"] --> APP["Application Layer"]\nAPP --> DOMAIN["Domain Layer"]\nAPP --> INFRA["Infrastructure Layer"]\nINFRA --> GIT["Git Integration"]\nINFRA --> AI["AI Provider"]\n```\n\n- Ventajas: simplicidad, mantenimiento, coste bajo\n- Inconvenientes: escalado horizontal limitado\n- Riesgos: acoplamiento si no se respeta arquitectura\n- Coste relativo: Bajo-Medio\n- Adecuación: Alta\n\n## 3. Pila tecnológica recomendada\n- Backend: Java Spring Boot\n- Frontend: React\n- DB: PostgreSQL\n- Infra: Docker VM\n- API: REST\n- Observabilidad: logs + métricas básicas\n- Seguridad: API keys + HTTPS\n\nJustificación: alineado con requisitos empresariales MEDIUM\nAlternativa simple: Node.js Express monolítico\n\n## 4. Recomendación\nMonolito modular obligatorio
+# Architecture Options
+
+## 1. Evaluación previa
+- Tamaño: Medium
+- Complejidad: Media-Alta (IA + Git integration)
+- RNF: seguridad, escalabilidad, observabilidad
+- Riesgo de sobrearquitectura: Alto si se usa microservicios
+
+## 2. Arquitecturas propuestas
+
+### ARCH-OPT-001 Monolito Modular Hexagonal
+- Complejidad: Media
+- Justificación: reduce overhead, facilita control costes IA
+
+```mermaid
+flowchart TD
+CLIENT['liente API'] --> API['API REST']
+API --> CORE['Core Analisis']
+CORE --> AI['Servicio IA']
+CORE --> GIT['Integracion GitHub']
+CORE --> OBS['Observabilidad']
+```
+
+- Ventajas: simple, coste bajo, fácil mantenimiento
+- Inconvenientes: escalado granular limitado
+- Riesgos: crecimiento futuro puede requerir refactor
+- Coste relativo: Bajo-Medio
+- Adecuación: Alta
+
+## 3. Pila tecnológica recomendada
+- Backend: Java Spring Boot
+- Frontend: React
+- DB: PostgreSQL
+- Infra: Docker
+- API: REST
+- Observabilidad: logs estructurados
+- Seguridad: OAuth/API Keys
+
+Justificación: ecosistema maduro y estable
+
+Alternativa más simple: Node.js + Express + PostgreSQL
+
+## 4. Recomendación
+Monolito modular con arquitectura hexagonal
