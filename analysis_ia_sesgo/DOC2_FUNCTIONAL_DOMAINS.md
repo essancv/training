@@ -1,56 +1,63 @@
 # Functional Domain Map
 
 ## 1. Introducción
-
-Este documento descompone la solución en dominios funcionales coherentes, alineados con los requisitos FR-001 a FR-007 y los NFR definidos. El objetivo es facilitar la comprensión del sistema, la asignación de responsabilidades y la trazabilidad entre requisitos, componentes y artefactos generados por la IA.
+Este documento descompone el sistema en dominios funcionales principales para estructurar el análisis, la trazabilidad y la futura implementación. Cada dominio agrupa requisitos funcionales relacionados y sirve de base para el sizing, la arquitectura y el backlog.
 
 ## 2. Bloques funcionales
 
-### DOMAIN-001 – Captura y validación de requisitos
-- Descripción: Gestión de la entrada de requisitos funcionales del usuario, validación básica (campos obligatorios, formato) y normalización a un modelo interno.
-- Requisitos asociados: FR-001, NFR-005.
-- Complejidad: Baja-media.
-- Dependencias: Ninguna externa directa; puede depender de almacenamiento interno si se persisten requisitos.
+### DOMAIN-001 – Ingesta y gestión de requisitos
+- **Descripción:** Domina la captura, almacenamiento y gestión de los requisitos funcionales proporcionados por el usuario, incluyendo su identificación y formato.
+- **Requisitos asociados:** FR-001, FR-004, NFR-005.
+- **Complejidad:** Media (requiere modelado de requisitos y trazabilidad básica).
+- **Dependencias:** DOMAIN-002 (para preparar la entrada a la IA), DOMAIN-004 (para trazabilidad en el JSON).
 
-### DOMAIN-002 – Gestión de prompt manual
-- Descripción: Soporte para introducir, editar y validar un prompt manual basado en una plantilla, incluyendo guardrails de arquitectura y anti-sesgo.
-- Requisitos asociados: FR-002, FR-007, NFR-006.
-- Complejidad: Media (plantillas, validaciones, versionado ligero).
-- Dependencias: DOMAIN-001 (para asociar prompt a requisitos).
+### DOMAIN-002 – Orquestación de IA y generación de análisis
+- **Descripción:** Se encarga de construir el prompt, invocar la IA con los requisitos y recibir el análisis inicial estructurado.
+- **Requisitos asociados:** FR-002, FR-003, NFR-001, NFR-002.
+- **Complejidad:** Media-alta (interacción con IA, control de formato JSON, manejo de errores).
+- **Dependencias:** DOMAIN-001 (requisitos de entrada), DOMAIN-003 (reglas anti-sobredimensionamiento), DOMAIN-004 (esquema JSON).
 
-### DOMAIN-003 – Orquestación de llamada a la IA
-- Descripción: Composición de la entrada a la IA (requisitos + prompt), invocación al modelo y gestión de respuestas y errores.
-- Requisitos asociados: FR-003, NFR-003, NFR-004.
-- Complejidad: Media.
-- Dependencias: DOMAIN-001, DOMAIN-002, proveedor de IA (API externa).
+### DOMAIN-003 – Motor de reglas de arquitectura y anti-sobredimensionamiento
+- **Descripción:** Aplica reglas para seleccionar arquitecturas y stacks proporcionales al tamaño y complejidad del proyecto, evitando sobredimensionamiento.
+- **Requisitos asociados:** NFR-001, FR-002 (como condicionante del análisis), FR-003.
+- **Complejidad:** Media (reglas de decisión, parámetros de tamaño, RNF).
+- **Dependencias:** DOMAIN-002 (análisis de requisitos), DOMAIN-005 (sizing), DOMAIN-006 (costes).
 
-### DOMAIN-004 – Ensamblado del JSON y trazabilidad
-- Descripción: Construcción del JSON unificado con los documentos DOC00–DOC10, aplicación del esquema versionado y generación de enlaces de trazabilidad entre requisitos y artefactos.
-- Requisitos asociados: FR-004, FR-005, NFR-001, NFR-003, NFR-005.
-- Complejidad: Media.
-- Dependencias: DOMAIN-003 (salida de IA), definición de esquema JSON.
+### DOMAIN-004 – Modelo de datos y generación de JSON unificado
+- **Descripción:** Define y aplica el esquema JSON de salida, consolidando todos los documentos DOC00–DOC10 en un único artefacto.
+- **Requisitos asociados:** FR-003, FR-004, FR-007, NFR-002.
+- **Complejidad:** Media (diseño de esquema, validación, versionado).
+- **Dependencias:** DOMAIN-001, DOMAIN-002, DOMAIN-003, DOMAIN-005, DOMAIN-006, DOMAIN-007.
 
-### DOMAIN-005 – Integración con GitHub y Jira
-- Descripción: Script en Python que consume el JSON y crea/actualiza artefactos en GitHub y Jira, gestionando autenticación, errores y logging.
-- Requisitos asociados: FR-006, NFR-002, NFR-004.
-- Complejidad: Media.
-- Dependencias: DOMAIN-004 (JSON final), APIs de GitHub y Jira.
+### DOMAIN-005 – Sizing y estimación de esfuerzo
+- **Descripción:** Calcula el tamaño del proyecto y las estimaciones de esfuerzo, incluyendo la relación con Story Points.
+- **Requisitos asociados:** FR-002 (información de análisis), FR-003, NFR-001.
+- **Complejidad:** Media (modelo de sizing, criterios de clasificación SMALL/MEDIUM/LARGE).
+- **Dependencias:** DOMAIN-002 (análisis funcional), DOMAIN-004 (inclusión en JSON), DOMAIN-006 (costes).
 
-### DOMAIN-006 – Configuración, seguridad y observabilidad
-- Descripción: Gestión de configuración (proyectos destino, URLs de APIs, parámetros), credenciales, logging y auditoría básica.
-- Requisitos asociados: NFR-002, NFR-003, NFR-004, NFR-005.
-- Complejidad: Media.
-- Dependencias: Todos los dominios que consumen configuración y credenciales.
+### DOMAIN-006 – Estimación de costes y riesgos
+- **Descripción:** Estima costes por bloque funcional, arquitectura, infraestructura, integraciones y mantenimiento, y registra riesgos y dependencias.
+- **Requisitos asociados:** FR-003, NFR-001, NFR-002.
+- **Complejidad:** Media.
+- **Dependencias:** DOMAIN-002, DOMAIN-003, DOMAIN-005, DOMAIN-004.
+
+### DOMAIN-007 – Backlog y exportación a herramientas externas
+- **Descripción:** Genera el backlog inicial (épicas, historias, tareas, spikes) y soporta la exportación a GitHub y Jira mediante el script en Python.
+- **Requisitos asociados:** FR-005, FR-006, FR-007, NFR-003, NFR-004.
+- **Complejidad:** Media-alta (mapeo a estructuras de Jira, convenciones de GitHub).
+- **Dependencias:** DOMAIN-004 (JSON unificado), DOMAIN-006 (riesgos y costes), DOMAIN-001 (trazabilidad a requisitos).
 
 ## 3. Mapa general de dominios
-
 ```mermaid
 flowchart TD
-  DOMAIN-001[DOMAIN-001\nCaptura y validación de requisitos] --> DOMAIN-003[DOMAIN-003\nOrquestación IA]
-  DOMAIN-002[DOMAIN-002\nGestión de prompt manual] --> DOMAIN-003
-  DOMAIN-003 --> DOMAIN-004[DOMAIN-004\nEnsamblado JSON y trazabilidad]
-  DOMAIN-004 --> DOMAIN-005[DOMAIN-005\nIntegración GitHub/Jira]
-  DOMAIN-006[DOMAIN-006\nConfig, seguridad y observabilidad] --> DOMAIN-003
-  DOMAIN-006 --> DOMAIN-004
-  DOMAIN-006 --> DOMAIN-005
+  DOMAIN_001["Ingesta y gestion de requisitos"] --> DOMAIN_002["Orquestacion de IA y analisis"]
+  DOMAIN_002["Orquestacion de IA y analisis"] --> DOMAIN_003["Motor de reglas de arquitectura"]
+  DOMAIN_002["Orquestacion de IA y analisis"] --> DOMAIN_005["Sizing y esfuerzo"]
+  DOMAIN_003["Motor de reglas de arquitectura"] --> DOMAIN_006["Costes y riesgos"]
+  DOMAIN_005["Sizing y esfuerzo"] --> DOMAIN_006["Costes y riesgos"]
+  DOMAIN_002["Orquestacion de IA y analisis"] --> DOMAIN_004["Modelo de datos JSON"]
+  DOMAIN_003["Motor de reglas de arquitectura"] --> DOMAIN_004["Modelo de datos JSON"]
+  DOMAIN_005["Sizing y esfuerzo"] --> DOMAIN_004["Modelo de datos JSON"]
+  DOMAIN_006["Costes y riesgos"] --> DOMAIN_004["Modelo de datos JSON"]
+  DOMAIN_004["Modelo de datos JSON"] --> DOMAIN_007["Backlog y exportacion"]
 ```
