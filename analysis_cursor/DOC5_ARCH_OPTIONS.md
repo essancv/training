@@ -12,7 +12,6 @@
 - Justificación basada en requisitos: Encaja con MEDIUM minimiza operacion facilita despliegue y gobierno. Permite modularidad interna por dominios y extensiones de reglas.
 - Diagrama visual:
 
-```mermaid
 flowchart TD
 GITHUB['Github Pull Request'] --> ACTIONS['Github Actions']
 ACTIONS --> ORCH['Analysis Orchestrator']
@@ -23,7 +22,6 @@ TOOLS --> REPORT['Structured Report']
 LLM --> REPORT['Structured Report']
 REPORT --> COMMENT['Pull Request Comment']
 ORCH --> METRICS['Metrics And Audit']
-```
 
 - Explicación del diagrama
  - GitHub Actions actua como disparador y ejecutor de pipeline
@@ -49,7 +47,6 @@ ORCH --> METRICS['Metrics And Audit']
 - Justificación basada en requisitos: Aislar el analisis en un servicio dedicado mejora control de secretos y escalado. Sigue siendo simple si es un unico servicio.
 - Diagrama visual:
 
-```mermaid
 flowchart TD
 ACTIONS['Github Actions'] --> API['Review Service Api']
 API --> CFG['Repo Config']
@@ -58,7 +55,6 @@ API --> LLM['Llm Model']
 API --> REPORT['Structured Report']
 REPORT --> ACTIONS['Github Actions']
 ACTIONS --> COMMENT['Pull Request Comment']
-```
 
 - Explicación del diagrama
  - GitHub Actions solo orquesta y delega el analisis
