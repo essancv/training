@@ -2,55 +2,54 @@
 
 ## 1. Coste por bloque funcional
 
-Estimación de esfuerzo (personas-mes) para una primera versión funcional (MVP), asumiendo un equipo de 3–5 desarrolladores y un enfoque ARCH-OPT-001/002.
+Estimación de esfuerzo (personas-mes) para un MVP basado en ARCH-OPT-001 (monolito modular Python/FastAPI), sin incluir gestión de proyecto ni QA dedicados.
 
-- DOMAIN-001 – Captura y normalización de requisitos: ~0.5 personas-mes.
-- DOMAIN-002 – Orquestación de prompt y reglas: ~0.75 personas-mes.
-- DOMAIN-003 – Motor de análisis IA (integración con API): ~0.75 personas-mes.
-- DOMAIN-004 – Ensamblado y trazabilidad del JSON: ~0.75 personas-mes.
-- DOMAIN-005 – Integración con GitHub y Jira (script Python + conectores): ~1.0 personas-mes.
-- DOMAIN-006 – Gobernanza, configuración y seguridad: ~0.5 personas-mes.
+- DOMAIN-001 – Captura y validación de requisitos: ~0.4 personas-mes.
+- DOMAIN-002 – Gestión de prompt manual: ~0.5 personas-mes.
+- DOMAIN-003 – Orquestación de llamada a la IA: ~0.6 personas-mes.
+- DOMAIN-004 – Ensamblado del JSON y trazabilidad: ~0.7 personas-mes.
+- DOMAIN-005 – Integración con GitHub y Jira (script Python + conectores): ~0.8 personas-mes.
+- DOMAIN-006 – Configuración, seguridad y observabilidad: ~0.4 personas-mes.
 
-**Total aproximado MVP**: 4.25 personas-mes (sin incluir QA y gestión de proyecto).
+Total aproximado MVP: **3.4 personas-mes**.
 
 ## 2. Coste por arquitectura
 
-- **ARCH-OPT-001 – Monolito modular en capas**:
-  - Esfuerzo de implementación: Base (4.25 personas-mes) + 0.5 personas-mes de diseño y pruebas → ~4.75 personas-mes.
-  - Coste relativo: Bajo.
+- ARCH-OPT-001 – Monolito modular Python/FastAPI:
+  - Esfuerzo base: ~3.4 personas-mes.
+  - Overhead de diseño y pruebas: ~0.4 personas-mes.
+  - Total estimado: ~3.8 personas-mes.
 
-- **ARCH-OPT-002 – Monolito Clean/Hexagonal**:
-  - Esfuerzo adicional de diseño y refactorización: +0.5–1.0 personas-mes sobre ARCH-OPT-001.
-  - Coste relativo: Medio.
+- ARCH-OPT-002 – Monolito Clean Architecture:
+  - Esfuerzo adicional de diseño y refactorización: +0.5–0.8 personas-mes.
+  - Total estimado: ~4.3–4.6 personas-mes.
 
-- **ARCH-OPT-003 – Microservicios** (no recomendada):
-  - Esfuerzo adicional significativo (diseño de servicios, infraestructura, observabilidad): +2–3 personas-mes.
-  - Coste relativo: Alto.
+- ARCH-OPT-003 – SPA React + API REST:
+  - Esfuerzo adicional de frontend: +0.6–0.8 personas-mes.
+  - Total estimado: ~4.4–4.6 personas-mes.
 
 ## 3. Coste de infraestructura
 
-- Entorno de ejecución (servidor o servicio cloud para el monolito):
-  - Coste mensual estimado: Bajo-medio, dependiendo del proveedor (por ejemplo, una instancia pequeña/mediana en cloud).
-- Coste de almacenamiento:
-  - Bajo, dado el volumen limitado de JSONs y logs.
-- Coste de monitorización y logging:
-  - Bajo-medio, si se utilizan servicios gestionados o herramientas existentes.
+- Backend monolítico (Python/FastAPI) en una VM o contenedor:
+  - Coste mensual: Bajo, dependiendo del proveedor cloud (instancia pequeña/mediana).
+- Base de datos (PostgreSQL o similar):
+  - Coste bajo para el volumen de datos previsto.
+- Almacenamiento de logs y JSONs:
+  - Coste bajo.
 
 ## 4. Coste de integraciones
 
-- Integración con IA:
-  - Coste variable por uso (tokens/llamadas), dependiente del proveedor.
-  - Para un uso moderado (análisis por proyecto), el coste se mantiene en rango bajo-medio.
-
-- Integración con GitHub y Jira:
-  - Coste principalmente en esfuerzo de desarrollo (incluido en DOMAIN-005).
-  - Posibles costes de licencias de Jira/GitHub Enterprise si aplica (fuera del alcance de esta estimación técnica).
+- IA:
+  - Coste variable por uso (tokens/llamadas). Para un uso moderado (análisis por proyecto), el coste se considera bajo-medio.
+- GitHub y Jira:
+  - Coste de desarrollo incluido en DOMAIN-005.
+  - Posibles costes de licencias (fuera del alcance de esta estimación técnica).
 
 ## 5. Coste de mantenimiento anual
 
-- Mantenimiento correctivo y evolutivo (nuevos tipos de documentos, ajustes de prompt, cambios en APIs):
-  - Estimación: 10–20% del esfuerzo inicial por año → ~0.5–1.0 personas-mes/año.
-- Monitorización de cambios en APIs de IA, GitHub y Jira y adaptación:
-  - Estimación: 0.25–0.5 personas-mes/año.
+- Mantenimiento correctivo y evolutivo (ajustes de esquema, cambios en prompts, nuevas integraciones):
+  - Estimación: 15–20% del esfuerzo inicial por año → ~0.6–0.8 personas-mes/año.
+- Adaptación a cambios en APIs de IA, GitHub y Jira:
+  - Estimación: 0.3–0.5 personas-mes/año.
 
-En conjunto, el coste de mantenimiento anual se considera **bajo-medio**, coherente con un producto especializado de tamaño MEDIUM.
+Coste de mantenimiento anual global: **~0.9–1.3 personas-mes/año**, considerado bajo-medio para un producto de este tamaño.
