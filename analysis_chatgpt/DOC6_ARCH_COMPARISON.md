@@ -1,1 +1,14 @@
-# Architecture Comparison Matrix\n## 1. Matriz comparativa\n| Arquitectura | Complejidad | Stack | Coste | Riesgo | Adecuación RNF |\n| Modular Monolith | Media | Spring Boot | Medio | Bajo | Alta |\n| Minimal Monolith | Baja | Node/Express | Bajo | Bajo | Media |\n\n## 2. Recomendación\nSe recomienda ARCH-OPT-001 Modular Monolith por equilibrio entre extensibilidad y control de costes.
+# Architecture Comparison Matrix
+
+## 1. Matriz comparativa
+| Arquitectura | Complejidad | Stack | Coste | Riesgo | Adecuación RNF |
+|--------------|------------|-------|-------|--------|-----------------|
+| Monolito modular | Media | Spring Boot | Bajo | Bajo | Alta |
+| Microservicios | Alta | Kubernetes + Kafka | Alto | Alto | Media |
+| Serverless | Alta | Cloud functions | Medio-Alto | Medio | Media |
+
+## 2. Recomendación
+Se recomienda Monolito Modular debido a:
+- Control de costes IA
+- Menor complejidad operativa
+- Menor riesgo de sobreingeniería
