@@ -1,11 +1,12 @@
-# Initial Cost Estimate
-## 1. Coste por bloque
-- Prompt Generator: 40h.
-## 2. Coste por arquitectura
-- Monolito: 80h.
-## 3. Infraestructura
-- Docker: 10h.
-## 4. Integraciones
-- API IA: 20h.
-## 5. Mantenimiento
-- 10% anual.
+| Bloque | Persona semana |
+|---|---|
+| Backend API | 3 |
+| Frontend básico | 2 |
+| Integraciones | 2 |
+| Validación schema | 1 |
+| Seguridad y despliegue | 1 |
+| QA | 1 |
+
+Total estimado: 10 persona-semana.
+Infra mensual: bajo.
+Coste IA variable por uso.
