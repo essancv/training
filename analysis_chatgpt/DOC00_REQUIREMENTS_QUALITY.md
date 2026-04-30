@@ -1,1 +1,30 @@
-# Requirements Quality Assessment (DOC00)\n## 1. Introducción\nEvaluación de calidad de requisitos para plataforma de revisión de código con IA.\n\n## 2. Evaluación global de calidad\n- Claridad: Media-Alta\n- Completitud: Media\n- Consistencia: Alta\n- Testabilidad: Media\n- Ambigüedad: Media (especialmente en IA outputs y persistencia)\n\n## 3. Análisis individual de requisitos\n- FR-001 a FR-015 bien estructurados pero sin criterios de aceptación detallados\n- NFRs adecuados pero sin métricas completas (SLA, SLO)\n\n## 4. Ambigüedades y contradicciones\n- Persistencia de datos no definida claramente\n- Formato de informe no especificado\n- Alcance multi-tenant no definido\n\n## 5. Preguntas de refinamiento\n- ¿Se almacenan resultados de análisis?\n- ¿Formato estándar del reporte?\n- ¿Soporte multi-tenant requerido?\n\n## 6. Recomendaciones de mejora\n- Definir contratos de API de análisis\n- Definir esquema de reporte estructurado\n- Añadir SLAs de tiempo de respuesta
+# Requirements Quality Assessment (DOC00)
+
+## 1. Introducción
+Evaluación de la calidad de requisitos para una plataforma de revisión automática de código basada en IA integrada con Pull Requests y CI/CD.
+
+## 2. Evaluación global de calidad
+- Claridad: Media (algunos FR son amplios)
+- Completitud: Alta
+- Consistencia: Media-Alta
+- Trazabilidad: Media
+- Testabilidad: Media
+
+## 3. Análisis individual de requisitos
+- FR-001 a FR-015: Correctamente definidos pero requieren mayor granularidad en criterios de aceptación
+- NFR-002: Falta definición exacta de carga y volumen
+- NFR-009: Control de costes necesita métricas cuantificables
+
+## 4. Ambigüedades y contradicciones
+- Persistencia de datos no definida claramente (Out of scope vs trazabilidad)
+- Extensibilidad tecnológica sin límites claros
+
+## 5. Preguntas de refinamiento
+- ¿Nivel de retención de datos de análisis?
+- ¿Se requiere multi-tenancy desde fase 1?
+- ¿SLAs de respuesta por tipo de repositorio?
+
+## 6. Recomendaciones de mejora
+- Descomponer FR-001 en subcapacidades
+- Definir métricas de coste por análisis
+- Definir SLA explícito para NFR-002
