@@ -19,7 +19,6 @@ Los flujos describen el comportamiento desde la apertura o actualizacion de una 
  - Si falla el proveedor LLM se publica fallo controlado y se sugiere reintento
 - Eventos clave: Pull Request opened Pull Request synchronize
 
-```mermaid
 sequenceDiagram
 participant DEV as 'Developer'
 participant GHA as 'Github Actions'
@@ -31,7 +30,7 @@ PR->>GHA: Trigger workflow
 GHA->>API: Send diff and context
 API->>REP: Build report
 REP->>PR: Post comment
-```
+
 
 ### FLOW-002
 - Actor principal: System
@@ -47,7 +46,6 @@ REP->>PR: Post comment
  - Si faltan reglas por tecnologia se usa solo prompt base
 - Eventos clave: Prompt build Analysis run
 
-```mermaid
 sequenceDiagram
 participant ORC as 'Orchestrator'
 participant CFG as 'Repo Config'
@@ -61,7 +59,7 @@ ORC->>STA: Run static checks
 ORC->>LLM: Run reasoning review
 STA->>SUM: Provide findings
 LLM->>SUM: Provide findings
-```
+
 
 ### FLOW-003
 - Actor principal: Reviewer
@@ -74,7 +72,6 @@ LLM->>SUM: Provide findings
  - Si el reporte indica severidad alta se recomienda cambios obligatorios
 - Eventos clave: Review gate Decision
 
-```mermaid
 sequenceDiagram
 participant REV as 'Reviewer'
 participant PR as 'Pull Request'
@@ -84,4 +81,4 @@ REV->>PR: Read report
 REV->>CHK: Apply checklist
 CHK->>DEC: Recommend decision
 DEC->>PR: Approve or request changes
-```
+
