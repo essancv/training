@@ -1,116 +1,101 @@
 # Story Point Costing (DOC10)
 
 ## 1. Relación entre sizing (horas) y Story Points
-
-- Explicación del modelo:
-  - Se utilizará un modelo de Story Points (SP) relativo basado en complejidad, esfuerzo e incertidumbre.
-  - Para facilitar la planificación inicial, se establece una conversión aproximada entre horas ideales y SP, sabiendo que no es una equivalencia exacta sino una guía.
-- Conversión propuesta:
-  - 1 SP ≈ 4 horas de trabajo efectivo de un desarrollador.
-  - Tareas muy pequeñas (< 2 horas) se agrupan o se consideran 0.5–1 SP según el criterio del equipo.
-  - Tareas grandes (> 5 SP) deben dividirse en historias más pequeñas.
+- **Explicación del modelo:**
+  - Se adopta un modelo de Story Points relativo basado en complejidad, esfuerzo y riesgo.
+  - Para facilitar la planificación inicial, se establece una equivalencia aproximada entre horas y Story Points, sin perder la naturaleza relativa de los puntos.
+- **Conversión propuesta:**
+  - 1 SP ≈ 4 horas de trabajo efectivo.
+  - Tareas muy pequeñas (≤ 4 horas) se consideran 1 SP.
+  - Tareas medianas (entre 8 y 12 horas) se consideran 2–3 SP.
+  - Tareas grandes (16–24 horas) se consideran 5–6 SP y se recomienda dividirlas si superan ese rango.
 
 ## 2. Estimación por historia
 
-A continuación se presentan estimaciones iniciales para algunas historias clave del backlog (DOC9). Estas estimaciones son orientativas y deberán refinarse en sesiones de planning con el equipo.
+### STORY-001 – Captura de requisitos
+- **Horas estimadas:** 40 horas.
+- **SP estimados:** 10 SP.
+- **Justificación:** Incluye diseño del modelo de requisitos, interfaz de captura y asignación de identificadores.
+- **Complejidad técnica:** Media.
+- **Dependencias:** Ninguna previa.
 
-### STORY-001 – Introducir requisitos estructurados
-- Horas estimadas: 8 horas.
-- SP estimados: 2 SP.
-- Justificación: Desarrollo de formulario/API sencillo, validaciones básicas, pruebas.
-- Complejidad técnica: Baja.
-- Dependencias: Ninguna.
+### STORY-002 – Construcción de prompt estándar
+- **Horas estimadas:** 32 horas.
+- **SP estimados:** 8 SP.
+- **Justificación:** Definición de estructura del prompt, reglas anti-sobredimensionamiento y pruebas con la IA.
+- **Complejidad técnica:** Media.
+- **Dependencias:** STORY-001.
 
-### STORY-002 – Validar requisitos
-- Horas estimadas: 8 horas.
-- SP estimados: 2 SP.
-- Justificación: Reglas de validación, mensajes de error, pruebas.
-- Complejidad técnica: Baja-media.
-- Dependencias: STORY-001.
+### STORY-003 – Generación de JSON unificado
+- **Horas estimadas:** 64 horas.
+- **SP estimados:** 16 SP.
+- **Justificación:** Implementación del motor de consolidación DOC00–DOC10 y manejo de versiones.
+- **Complejidad técnica:** Media-alta.
+- **Dependencias:** STORY-001, STORY-002.
 
-### STORY-003 – Gestionar plantillas de prompt
-- Horas estimadas: 16 horas.
-- SP estimados: 4 SP.
-- Justificación: CRUD de plantillas, almacenamiento, versionado ligero.
-- Complejidad técnica: Media.
-- Dependencias: Ninguna fuerte (puede ir en paralelo con STORY-001/002).
+### STORY-004 – Validación de esquema JSON
+- **Horas estimadas:** 32 horas.
+- **SP estimados:** 8 SP.
+- **Justificación:** Definición de JSON Schema, validación y manejo de errores.
+- **Complejidad técnica:** Media.
+- **Dependencias:** STORY-003.
 
-### STORY-004 – Introducir prompt manual
-- Horas estimadas: 12 horas.
-- SP estimados: 3 SP.
-- Justificación: UI/API para seleccionar/editar plantillas, validaciones de guardrails.
-- Complejidad técnica: Media.
-- Dependencias: STORY-003.
+### STORY-005 – Sizing y clasificación del proyecto
+- **Horas estimadas:** 24 horas.
+- **SP estimados:** 6 SP.
+- **Justificación:** Implementación de criterios de tamaño y lógica de clasificación.
+- **Complejidad técnica:** Media.
+- **Dependencias:** STORY-003.
 
-### STORY-005 – Ejecutar análisis IA
-- Horas estimadas: 20 horas.
-- SP estimados: 5 SP.
-- Justificación: Orquestación de llamada a IA, manejo de errores, timeouts.
-- Complejidad técnica: Media-alta.
-- Dependencias: STORY-001, STORY-004.
+### STORY-006 – Estimación de costes y riesgos
+- **Horas estimadas:** 24 horas.
+- **SP estimados:** 6 SP.
+- **Justificación:** Modelo de costes, registro de riesgos y dependencias.
+- **Complejidad técnica:** Media.
+- **Dependencias:** STORY-005.
 
-### STORY-006 – Validar respuesta de IA
-- Horas estimadas: 16 horas.
-- SP estimados: 4 SP.
-- Justificación: Implementación de validación contra esquema JSON, gestión de errores.
-- Complejidad técnica: Media.
-- Dependencias: STORY-005.
+### STORY-007 – Script de integración con GitHub
+- **Horas estimadas:** 32 horas.
+- **SP estimados:** 8 SP.
+- **Justificación:** Desarrollo del script, manejo de credenciales y pruebas de subida.
+- **Complejidad técnica:** Media.
+- **Dependencias:** STORY-003, STORY-004.
 
-### STORY-007 – Ensamblar JSON unificado
-- Horas estimadas: 16 horas.
-- SP estimados: 4 SP.
-- Justificación: Construcción del JSON final, metadatos, estructura DOC00–DOC10.
-- Complejidad técnica: Media.
-- Dependencias: STORY-006.
-
-### STORY-008 – Trazabilidad entre requisitos y artefactos
-- Horas estimadas: 20 horas.
-- SP estimados: 5 SP.
-- Justificación: Modelo de IDs, referencias cruzadas, validaciones de consistencia.
-- Complejidad técnica: Media-alta.
-- Dependencias: STORY-001, STORY-007.
-
-### STORY-009 – Publicación en GitHub
-- Horas estimadas: 16 horas.
-- SP estimados: 4 SP.
-- Justificación: Script Python, llamadas a API, manejo de errores.
-- Complejidad técnica: Media.
-- Dependencias: STORY-007, STORY-011.
-
-### STORY-010 – Publicación en Jira
-- Horas estimadas: 20 horas.
-- SP estimados: 5 SP.
-- Justificación: Script Python, mapeo de backlog a épicas/historias/tareas/spikes.
-- Complejidad técnica: Media-alta.
-- Dependencias: STORY-007, STORY-011.
-
-### STORY-011 – Gestión de credenciales y configuración
-- Horas estimadas: 12 horas.
-- SP estimados: 3 SP.
-- Justificación: Lectura de variables de entorno, ficheros de configuración, validaciones.
-- Complejidad técnica: Media.
-- Dependencias: Ninguna.
-
-### STORY-012 – Logging y auditoría
-- Horas estimadas: 12 horas.
-- SP estimados: 3 SP.
-- Justificación: Configuración de logging, formatos, almacenamiento básico.
-- Complejidad técnica: Media.
-- Dependencias: Puede apoyarse en la infraestructura básica del backend.
+### STORY-008 – Script de integración con Jira
+- **Horas estimadas:** 48 horas.
+- **SP estimados:** 12 SP.
+- **Justificación:** Mapeo de backlog a issues, manejo de errores y pruebas.
+- **Complejidad técnica:** Media-alta.
+- **Dependencias:** STORY-003, STORY-004.
 
 ## 3. Coste total del backlog
+- **SP totales:**
+  - STORY-001: 10
+  - STORY-002: 8
+  - STORY-003: 16
+  - STORY-004: 8
+  - STORY-005: 6
+  - STORY-006: 6
+  - STORY-007: 8
+  - STORY-008: 12
+  - **Total:** 74 SP.
 
-- SP totales (historias STORY-001 a STORY-012):
-  - 2 + 2 + 4 + 3 + 5 + 4 + 4 + 5 + 4 + 5 + 3 + 3 = **40 SP**.
-- Horas totales estimadas:
-  - 8 + 8 + 16 + 12 + 20 + 16 + 16 + 20 + 16 + 20 + 12 + 12 = **176 horas**.
-- Coste estimado (ejemplo):
-  - Suponiendo una tarifa media de 60 €/hora:
-  - 176 horas × 60 €/hora = **10.560 €** (desarrollo puro, sin incluir gestión de proyecto, QA adicional ni contingencias).
+- **Horas totales:**
+  - STORY-001: 40
+  - STORY-002: 32
+  - STORY-003: 64
+  - STORY-004: 32
+  - STORY-005: 24
+  - STORY-006: 24
+  - STORY-007: 32
+  - STORY-008: 48
+  - **Total:** 296 horas.
+
+- **Coste estimado:**
+  - Dependerá de la tarifa por hora. Por ejemplo, a 60 EUR/hora, el coste aproximado sería 296 × 60 ≈ 17 760 EUR.
 
 ## 4. Observaciones y riesgos
-
-- Las estimaciones son de alta incertidumbre y deben refinarse en sesiones de planning con el equipo real.
-- Algunas historias (por ejemplo, STORY-005, STORY-008, STORY-010) pueden verse afectadas por la complejidad real de las APIs de IA, GitHub y Jira.
-- El modelo 1 SP ≈ 4 horas es una aproximación inicial; el equipo puede ajustar esta relación según su velocidad histórica.
-- Es recomendable añadir un margen de contingencia (por ejemplo, 20%) sobre el coste total para cubrir riesgos técnicos y cambios de alcance.
+- Las estimaciones son iniciales y deberán refinarse tras las primeras iteraciones y prototipos.
+- La relación horas–Story Points es una guía; el equipo puede ajustar la escala según su experiencia.
+- Riesgo de subestimación en las integraciones con Jira si el modelo de issues es complejo.
+- Se recomienda revisar periódicamente la velocidad del equipo (SP por iteración) para ajustar la planificación.
