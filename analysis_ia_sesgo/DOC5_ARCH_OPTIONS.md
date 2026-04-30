@@ -1,27 +1,27 @@
-# Architecture Options
-## 1. Evaluación previa
-Proyecto SMALL.
-## 2. Arquitecturas
-### ARCH-OPT-001 Monolito Modular
-- Complejidad: Baja.
-- Justificación: Simplicidad.
-- Diagrama:
+# Evaluación previa
+Tamaño SMALL/MEDIUM, integraciones externas moderadas, baja necesidad de procesamiento masivo.
+
+# ARCH-OPT-001 Monolito Clean Architecture
+Backend FastAPI, Frontend React, PostgreSQL, Docker.
+Ventajas: rapidez, bajo coste, mantenible.
+Riesgos: crecimiento futuro requiere modularización.
+Coste relativo: Bajo.
 ```mermaid
-flowchart TD
-NODE1["Frontend"] --> NODE2["Backend"]
-NODE2 --> NODE3["DB"]
+flowchart LR
+NODE1[React] --> NODE2[API]
+NODE2 --> NODE3[DB]
+NODE2 --> NODE4[IA]
+NODE2 --> NODE5[GitHub Jira]
 ```
-- Explicación: Arquitectura clásica 3-tier.
-- Ventajas: Simple.
-- Inconvenientes: Escalado limitado.
-- Riesgos: Ninguno relevante.
-- Coste: Bajo.
-- Adecuación: Alta.
-## 3. Pila tecnológica
-- Backend: Python/FastAPI.
-- Frontend: React.
-- DB: PostgreSQL.
-- Infra: Docker.
-- Justificación: Simplicidad.
-## 4. Recomendación
-Usar monolito modular.
+
+# ARCH-OPT-002 Monolito Spring Boot
+Más robusto enterprise, mayor coste inicial.
+
+# ARCH-OPT-003 .NET Web API
+Buen encaje corporativo Microsoft.
+
+# Riesgos de sobredimensionamiento
+Microservicios generarían coste innecesario.
+
+# Recomendación final
+ARCH-OPT-001 por velocidad y simplicidad.
