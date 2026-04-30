@@ -2,78 +2,144 @@
 
 ## 1. Evaluación previa de necesidad arquitectónica
 
-- Tamaño del proyecto: Clasificado como MEDIUM, con complejidad funcional y técnica moderadas.
-- Complejidad funcional: Media, con 6 dominios claramente identificados y reglas de trazabilidad y construcción de prompt.
+- Tamaño del proyecto: MEDIUM (baja), con un número limitado de usuarios y ejecuciones.
+- Complejidad funcional: Media, con 6 dominios bien definidos y varias integraciones externas.
 - RNF relevantes:
-  - NFR-001 Rendimiento moderado (tiempos de respuesta aceptables, no en tiempo real masivo).
-  - NFR-002 Seguridad en gestión de credenciales y acceso a APIs.
-  - NFR-003 Trazabilidad y auditoría.
-  - NFR-005 Extensibilidad para nuevos tipos de artefactos e integraciones.
-  - NFR-006 Priorizar simplicidad arquitectónica.
+  - NFR-001: Estabilidad del esquema JSON.
+  - NFR-002: Seguridad en gestión de credenciales y acceso a APIs.
+  - NFR-003: Rendimiento razonable, sin requisitos de tiempo real.
+  - NFR-004: Robustez frente a errores de IA y APIs.
+  - NFR-005: Extensibilidad.
+  - NFR-006: Simplicidad arquitectónica y tecnológica.
 - Riesgos de sobredimensionamiento:
-  - Introducir microservicios, orquestadores complejos o infraestructuras distribuidas podría aumentar costes y complejidad operativa sin beneficios claros, dado el volumen de uso y datos.
+  - Introducir microservicios, Kubernetes, mensajería compleja o stacks avanzados (Kafka, NoSQL distribuido) aumentaría el coste y la complejidad operativa sin beneficios claros para el volumen de uso previsto.
 
 ## 2. Arquitecturas propuestas
 
-### ARCH-OPT-001 – Monolito modular en capas (recomendada)
+### ARCH-OPT-001 – Monolito modular en capas (Backend Python/FastAPI + CLI/script)
 - Nivel de complejidad: Bajo-medio.
 - Justificación basada en requisitos:
-  - Adecuada para tamaño MEDIUM y equipo de 3–6 desarrolladores.
-  - Permite separar claramente dominios (captura, orquestación, IA, ensamblado, integraciones) mediante módulos internos.
-  - Facilita la trazabilidad y el control del flujo de datos en un único despliegue.
-- Diagrama textual:
-  - Capa de Presentación/API (REST o CLI) → Capa de Aplicación (orquestación de flujos, casos de uso) → Capa de Dominio (lógica de construcción de prompt, trazabilidad, ensamblado JSON) → Capa de Infraestructura (conectores IA, GitHub, Jira, almacenamiento).
+  - Adecuado para tamaño MEDIUM y equipo pequeño.
+  - Python ya es requerido para el script de integración, lo que facilita reutilizar lenguaje y librerías.
+  - Permite agrupar dominios en módulos internos (captura, prompt, IA, JSON, integraciones).
+- Diagrama visual:
+
+```mermaid
+flowchart TD
+  UI[UI sencilla / CLI] --> APP[Aplicación Backend (FastAPI)]
+  APP --> MOD1[Modulo DOMAIN-001/002\nRequisitos y prompt]
+  APP --> MOD2[Modulo DOMAIN-003\nOrquestación IA]
+  APP --> MOD3[Modulo DOMAIN-004\nJSON y trazabilidad]
+  APP --> MOD4[Modulo DOMAIN-005\nIntegración GitHub/Jira]
+  APP --> MOD5[Modulo DOMAIN-006\nConfig y seguridad]
+  MOD2 --> IA[API IA]
+  MOD4 --> GH[API GitHub]
+  MOD4 --> JI[API Jira]
+```
+
+- Explicación del diagrama:
+  - Una aplicación backend monolítica (por ejemplo, FastAPI) expone una API o interfaz mínima para gestionar análisis.
+  - Los módulos internos implementan los dominios funcionales.
+  - El script Python de integración puede reutilizar parte de la lógica o ser un cliente de la API.
 - Ventajas:
-  - Simplicidad de despliegue y operación.
-  - Menor coste de infraestructura.
-  - Facilidad de depuración y trazabilidad end-to-end.
-  - Alineado con NFR-006 (simplicidad).
+  - Simplicidad de despliegue (un solo servicio).
+  - Coste de infraestructura bajo (una VM o contenedor simple).
+  - Reutilización de lenguaje (Python) para backend y script.
 - Inconvenientes:
-  - Escalado principalmente vertical; menos flexible si el uso creciera mucho.
+  - Escalado principalmente vertical.
   - Despliegues acoplados (todo el sistema se despliega junto).
 - Riesgos:
-  - Si el producto crece mucho en funcionalidades y usuarios, podría requerir refactorización futura.
+  - Si el producto crece mucho, podría requerir modularización más estricta o separación futura.
 - Coste relativo: Bajo.
-- Adecuación al tamaño del proyecto: Alta para MEDIUM.
+- Adecuación al tamaño del proyecto: Alta.
 
-### ARCH-OPT-002 – Monolito modular con Clean Architecture / Hexagonal
+### ARCH-OPT-002 – Monolito modular con Clean Architecture (Backend Python/FastAPI + posible UI web ligera)
 - Nivel de complejidad: Medio.
 - Justificación basada en requisitos:
-  - Refuerza la separación entre lógica de dominio (trazabilidad, construcción de prompt) y detalles de infraestructura (IA, GitHub, Jira).
-  - Facilita la extensibilidad (NFR-005) y pruebas unitarias.
-- Diagrama textual:
-  - Núcleo de Dominio (entidades, servicios de dominio, reglas de trazabilidad) rodeado por Capa de Aplicación (casos de uso) y adaptadores de entrada (API/CLI) y salida (IA, GitHub, Jira, almacenamiento).
+  - Refuerza la separación entre lógica de dominio (trazabilidad, ensamblado JSON) y detalles de infraestructura (IA, GitHub, Jira).
+  - Facilita la extensibilidad (NFR-005) y pruebas.
+- Diagrama visual:
+
+```mermaid
+flowchart TD
+  UI[UI Web ligera / CLI] --> APP[Aplicación (Capa de Aplicación)]
+  APP --> DOM[Dominio (reglas, entidades, trazabilidad)]
+  APP --> AD_IN[Adaptadores de entrada (REST, CLI)]
+  APP --> AD_OUT[Adaptadores de salida (IA, GitHub, Jira, DB)]
+  AD_OUT --> IA[API IA]
+  AD_OUT --> GH[API GitHub]
+  AD_OUT --> JI[API Jira]
+```
+
+- Explicación del diagrama:
+  - El núcleo de dominio contiene las reglas de negocio y el modelo de trazabilidad.
+  - La capa de aplicación orquesta casos de uso.
+  - Adaptadores de entrada/salida encapsulan detalles técnicos.
 - Ventajas:
   - Alta mantenibilidad y testabilidad.
-  - Facilidad para cambiar proveedores de IA o herramientas de ALM.
+  - Facilidad para cambiar proveedores de IA o herramientas ALM.
 - Inconvenientes:
-  - Mayor esfuerzo inicial de diseño y disciplina de implementación.
+  - Mayor esfuerzo inicial de diseño y disciplina.
 - Riesgos:
-  - Sobrecarga conceptual si el equipo no está familiarizado con estos patrones.
+  - Sobrecarga conceptual si el equipo no está familiarizado con Clean Architecture.
 - Coste relativo: Medio.
-- Adecuación al tamaño del proyecto: Alta, especialmente si se prevé evolución del producto.
+- Adecuación al tamaño del proyecto: Alta, especialmente si se prevé evolución.
 
-### ARCH-OPT-003 – Arquitectura de microservicios (no recomendada en esta fase)
-- Nivel de complejidad: Alto.
+### ARCH-OPT-003 – SPA + API REST simple (Frontend React + Backend Python/FastAPI monolítico)
+- Nivel de complejidad: Medio.
 - Justificación basada en requisitos:
-  - Podría separar dominios (captura, IA, integraciones) en servicios independientes, pero no hay requisitos de escalabilidad extrema ni equipos grandes que lo justifiquen.
-- Diagrama textual:
-  - Servicio de Captura de Requisitos ↔ Servicio de Orquestación de Prompt ↔ Servicio de Análisis IA ↔ Servicio de Ensamblado JSON ↔ Servicio de Integración GitHub/Jira.
+  - Aporta una experiencia de usuario más rica para introducir requisitos y prompt, revisar análisis y lanzar publicaciones.
+  - Mantiene un backend monolítico simple.
+- Diagrama visual:
+
+```mermaid
+flowchart TD
+  FE[SPA React] --> API[API REST FastAPI]
+  API --> MOD1[Dominios internos]
+  MOD1 --> IA[API IA]
+  MOD1 --> GH[API GitHub]
+  MOD1 --> JI[API Jira]
+```
+
+- Explicación del diagrama:
+  - Una SPA en React consume la API REST del backend monolítico.
+  - El backend implementa los dominios y la integración con IA y ALM.
 - Ventajas:
-  - Escalado independiente por dominio.
-  - Despliegues independientes.
+  - Mejor UX para usuarios frecuentes.
 - Inconvenientes:
-  - Complejidad operativa (orquestación, observabilidad, comunicación entre servicios).
-  - Mayor coste de infraestructura y DevOps.
+  - Aumenta el esfuerzo de frontend.
 - Riesgos:
-  - Sobredimensionamiento claro para un proyecto MEDIUM.
-  - Mayor probabilidad de fallos distribuidos.
-- Coste relativo: Alto.
-- Adecuación al tamaño del proyecto: Baja.
+  - Puede ser excesivo si el uso es esporádico o interno.
+- Coste relativo: Medio.
+- Adecuación al tamaño del proyecto: Media.
 
-## 3. Recomendación basada en simplicidad
+## 3. Pila tecnológica recomendada
 
-Siguiendo la regla de priorizar arquitecturas simples para proyectos SMALL/MEDIUM y dado que no existen requisitos de escalabilidad extrema ni equipos grandes, se recomienda:
+- Backend:
+  - Opción recomendada: Python + FastAPI (alineado con el script Python, simple, maduro, buen soporte para APIs).
+- Frontend:
+  - Para ARCH-OPT-001/002: UI mínima (por ejemplo, plantillas HTML simples o CLI).
+  - Para ARCH-OPT-003: React como SPA si se justifica una UX más rica.
+- Base de datos:
+  - PostgreSQL o SQLite (según necesidades de persistencia). Para un MVP, SQLite puede ser suficiente; PostgreSQL para entornos más formales.
+- Infraestructura:
+  - VM o contenedor Docker simple; no se requiere Kubernetes.
+- Integración:
+  - API REST para interacción con la aplicación.
+  - Librerías oficiales o bien soportadas para GitHub y Jira.
+- Observabilidad:
+  - Logging estructurado (por ejemplo, con Python logging) y métricas básicas.
+- Seguridad:
+  - Gestión de credenciales mediante variables de entorno o vault.
+- Justificación:
+  - La pila propuesta es madura, ampliamente soportada, simple de desplegar y suficiente para el tamaño MEDIUM del proyecto.
+- Alternativa más simple:
+  - Un servicio Python monolítico con CLI y sin frontend web dedicado, si el uso es principalmente por usuarios técnicos.
 
-- **Opción preferente**: ARCH-OPT-001 (Monolito modular en capas) o, si el equipo tiene experiencia, ARCH-OPT-002 (Monolito modular con Clean/Hexagonal) como evolución natural.
-- **Opción a evitar en esta fase**: ARCH-OPT-003 (microservicios), salvo que futuros requisitos introduzcan cargas impredecibles, integraciones distribuidas complejas o un crecimiento significativo del equipo y del uso.
+## 4. Recomendación basada en simplicidad
+
+Dado el tamaño MEDIUM, la complejidad moderada y la ausencia de requisitos de escalabilidad extrema, se recomienda:
+
+- Adoptar **ARCH-OPT-001** como opción base (monolito modular en Python/FastAPI), con posibilidad de incorporar principios de Clean Architecture (ARCH-OPT-002) de forma incremental.
+- Considerar **ARCH-OPT-003** solo si se justifica una necesidad clara de una UI rica para usuarios no técnicos.
+- Evitar arquitecturas de microservicios, serverless distribuido, event-driven o stacks complejos (Kubernetes, Kafka, NoSQL avanzado) en esta fase, en línea con los guardrails definidos.
