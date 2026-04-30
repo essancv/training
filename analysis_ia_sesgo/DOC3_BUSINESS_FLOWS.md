@@ -1,79 +1,92 @@
 # Business Flows
 
 ## 1. Introducción
-
-Este documento describe los flujos de negocio principales del sistema: la ejecución del análisis mediante IA a partir de requisitos y prompt manual, y la publicación del resultado en GitHub y Jira. Cada flujo se vincula a los dominios funcionales y requisitos relevantes.
+Este documento describe los flujos de negocio clave del sistema, desde la introducción de requisitos hasta la publicación del JSON en GitHub y la creación del backlog en Jira. Los flujos se apoyan en los dominios funcionales definidos en DOC2 y mantienen trazabilidad con los requisitos funcionales.
 
 ## 2. Flujos
 
-### FLOW-001 – Ejecución de análisis IA
-- Actor principal: Analista funcional / Product Owner.
-- Objetivo: Generar un análisis completo de la solución (DOC00–DOC10) en un único JSON trazable, a partir de requisitos y un prompt manual.
-- Flujo principal:
-  1. El analista accede al sistema y selecciona "Nuevo análisis".
-  2. El analista introduce o carga los requisitos funcionales (FR-001, DOMAIN-001).
-  3. El analista introduce o selecciona un prompt manual basado en la plantilla definida (FR-002, FR-007, DOMAIN-002).
-  4. El sistema valida requisitos y prompt (formato, campos mínimos, coherencia básica).
-  5. El sistema compone la petición a la IA con requisitos y prompt (DOMAIN-003).
-  6. El sistema invoca a la IA y espera la respuesta (FR-003).
-  7. El sistema recibe los documentos DOC00–DOC10 y verifica su estructura.
-  8. El sistema ensambla el JSON unificado, aplica el esquema y genera enlaces de trazabilidad (FR-004, FR-005, DOMAIN-004).
-  9. El sistema presenta un resumen del análisis al analista para revisión.
-- Alternativas:
-  - 4A: La validación de requisitos o prompt falla → el sistema muestra errores y solicita correcciones.
-  - 6A: La llamada a la IA falla (timeout, error de API) → el sistema reintenta o informa del fallo.
-  - 7A: La respuesta de la IA no cumple el esquema → el sistema intenta corregir o solicita una nueva generación.
-- Eventos clave:
-  - E1: Requisitos y prompt validados.
-  - E2: Respuesta de IA recibida.
-  - E3: JSON unificado generado.
+### FLOW-001 – Generación de análisis y JSON unificado
+- **Actor principal:** ACT-001 – Usuario analista / Product Owner.
+- **Objetivo:** Obtener un análisis inicial completo de la solución en un único JSON estructurado.
+- **Flujo principal:**
+  1. El usuario prepara los requisitos funcionales y los introduce en el sistema (FR-001).
+  2. El sistema asigna identificadores únicos a cada requisito.
+  3. El sistema construye el prompt estándar, incorporando los requisitos y las reglas anti-sobredimensionamiento.
+  4. El sistema envía el prompt y los requisitos a la IA (FR-002).
+  5. La IA genera el análisis inicial, incluyendo DOC00–DOC10.
+  6. El sistema valida que la salida cumple el esquema JSON definido (FR-007).
+  7. El sistema consolida la salida en un único JSON versionado (FR-003).
+- **Alternativas:**
+  - Si la validación de esquema falla, se registra un error y se notifica al usuario para revisar el prompt o los requisitos.
+- **Eventos clave:**
+  - Generación de identificadores de requisitos.
+  - Validación de esquema JSON.
+  - Versión del JSON generada.
 
 ```mermaid
 sequenceDiagram
-  participant A as Analista
-  participant S as Sistema
-  participant IA as Motor IA
+  participant USER as "Usuario"
+  participant SYSTEM as "Sistema"
+  participant IA as "IA"
 
-  A->>S: 1. Inicia nuevo análisis
-  A->>S: 2. Introduce requisitos
-  A->>S: 3. Introduce prompt manual
-  S->>S: 4. Valida requisitos y prompt
-  S->>IA: 5. Envía petición (requisitos + prompt)
-  IA-->>S: 6. Devuelve DOC00–DOC10
-  S->>S: 7. Ensambla JSON y trazabilidad
-  S-->>A: 8. Muestra resumen del análisis
+  USER->>SYSTEM: "Introduce requisitos funcionales"
+  SYSTEM->>SYSTEM: "Asigna identificadores FR"
+  SYSTEM->>SYSTEM: "Construye prompt estandar"
+  SYSTEM->>IA: "Envio de prompt y requisitos"
+  IA-->>SYSTEM: "Analisis y JSON preliminar"
+  SYSTEM->>SYSTEM: "Valida esquema JSON"
+  SYSTEM-->>USER: "Entrega JSON unificado DOC00 a DOC10"
 ```
 
-### FLOW-002 – Publicación del análisis en GitHub y Jira
-- Actor principal: Analista funcional / Product Owner.
-- Objetivo: Publicar el análisis generado en GitHub y Jira para que el equipo de desarrollo pueda trabajar con los artefactos.
-- Flujo principal:
-  1. El analista revisa el análisis y aprueba el JSON generado.
-  2. El analista ejecuta el script en Python, proporcionando la ruta o referencia al JSON (FR-006, DOMAIN-005).
-  3. El script lee y valida el JSON contra el esquema.
-  4. El script crea o actualiza artefactos en GitHub (por ejemplo, ficheros de documentación, issues para tareas clave).
-  5. El script crea o actualiza épicas, historias, tareas y spikes en Jira a partir del backlog (DOC9).
-  6. El script registra resultados (IDs creados, errores) en logs o en un informe.
-- Alternativas:
-  - 3A: El JSON no pasa la validación → el script aborta y notifica el problema.
-  - 4A/5A: Error de autenticación o permisos en GitHub/Jira → el script registra el error y no continúa con esa parte.
-- Eventos clave:
-  - E4: JSON validado para publicación.
-  - E5: Artefactos creados/actualizados en GitHub.
-  - E6: Artefactos creados/actualizados en Jira.
+### FLOW-002 – Publicación del JSON en GitHub
+- **Actor principal:** ACT-003 – Administrador de herramientas / DevOps.
+- **Objetivo:** Subir el JSON generado a un repositorio GitHub como artefacto versionado.
+- **Flujo principal:**
+  1. El administrador configura las credenciales de GitHub para el script en Python (FR-005, NFR-003).
+  2. El script recibe la ruta del JSON validado.
+  3. El script crea o actualiza el archivo en el repositorio (por ejemplo, en una rama o carpeta específica).
+  4. El script registra el resultado de la operación (éxito o error).
+- **Alternativas:**
+  - Si la subida falla, el script devuelve un mensaje de error y no modifica el repositorio.
+- **Eventos clave:**
+  - Ejecución del script.
+  - Confirmación de subida en GitHub.
 
 ```mermaid
 sequenceDiagram
-  participant A as Analista
-  participant P as Script Python
-  participant GH as GitHub
-  participant JI as Jira
+  participant DEVOPS as "Administrador"
+  participant SCRIPT as "Script Python"
+  participant GITHUB as "GitHub"
 
-  A->>P: 1. Ejecuta script con JSON
-  P->>P: 2. Lee y valida JSON
-  P->>GH: 3. Crea/actualiza artefactos
-  GH-->>P: 4. Respuesta de GitHub
-  P->>JI: 5. Crea/actualiza épicas e historias
-  JI-->>P: 6. Respuesta de Jira
-  P-->>A: 7. Informe de publicación
+  DEVOPS->>SCRIPT: "Ejecuta script con JSON"
+  SCRIPT->>GITHUB: "Sube archivo JSON"
+  GITHUB-->>SCRIPT: "Resultado de la operacion"
+  SCRIPT-->>DEVOPS: "Log de exito o error"
+```
+
+### FLOW-003 – Creación de backlog en Jira
+- **Actor principal:** ACT-003 – Administrador de herramientas / DevOps.
+- **Objetivo:** Crear o actualizar issues en Jira a partir del backlog contenido en el JSON.
+- **Flujo principal:**
+  1. El administrador configura las credenciales y parámetros de Jira (proyecto, tipos de issue).
+  2. El script en Python lee la sección de backlog del JSON (DOC9).
+  3. El script crea o actualiza épicas, historias y tareas en Jira, manteniendo la trazabilidad con los identificadores de requisitos.
+  4. El script registra los identificadores de issues creados/actualizados.
+- **Alternativas:**
+  - Si algún issue no puede crearse por validación de Jira, se registra el error y se continúa con el resto.
+- **Eventos clave:**
+  - Creación de épicas.
+  - Creación de historias y tareas.
+  - Asociación de issues a requisitos.
+
+```mermaid
+sequenceDiagram
+  participant DEVOPS as "Administrador"
+  participant SCRIPT as "Script Python"
+  participant JIRA as "Jira"
+
+  DEVOPS->>SCRIPT: "Ejecuta script con JSON"
+  SCRIPT->>JIRA: "Crea o actualiza epicas e historias"
+  JIRA-->>SCRIPT: "Ids de issues creados"
+  SCRIPT-->>DEVOPS: "Resumen de backlog creado"
 ```
