@@ -1,30 +1,11 @@
-# Risk & Dependency Register
-
-## 1. Riesgos
-
-### RISK-001 Dependencia de proveedor IA
-- Probabilidad: Alta
-- Impacto: Alto
-- Mitigación: fallback providers
-- Responsable: Tech Lead
-
-### RISK-002 Sobrecoste por uso IA
-- Probabilidad: Media
-- Impacto: Alto
-- Mitigación: límites token + caching
-
-### RISK-003 Overengineering arquitectura
-- Probabilidad: Media
-- Impacto: Medio
-- Mitigación: monolito modular
-
-## 2. Dependencias
-
-### DEP-001 GitHub API
-- Criticidad: Alta
-
-### DEP-002 AI Provider API
-- Criticidad: Alta
-
-### DEP-003 CI/CD systems
-- Criticidad: Media
+# Risk Register
+### RISK001 AI cost explosion
+Probability High Impact High Mitigation rate limiting caching fallback models
+### RISK002 latency variability
+Probability Medium Impact High Mitigation async processing
+### RISK003 GitHub API limits
+Probability Medium Impact Medium Mitigation retries throttling
+### RISK004 security exposure
+Probability Medium Impact High Mitigation encryption audit logging
+## Dependencies
+DEP001 GitHub API DEP002 AI provider API DEP003 CI CD system
