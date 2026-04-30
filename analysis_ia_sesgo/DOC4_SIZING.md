@@ -1,32 +1,29 @@
 # Project Sizing Report
 
 ## 1. Introducción
-
-Este informe estima el tamaño y la complejidad del proyecto en función de los dominios funcionales identificados, los requisitos funcionales y no funcionales, y el alcance descrito. La clasificación resultante se utilizará para seleccionar opciones de arquitectura y pila tecnológica acordes con los guardrails de simplicidad.
+Este informe estima el tamaño del proyecto en función de los dominios funcionales, la complejidad del análisis requerido y las integraciones con GitHub y Jira. El objetivo es clasificar el proyecto como SMALL, MEDIUM o LARGE para orientar las decisiones de arquitectura y stack tecnológico.
 
 ## 2. Tabla de criterios
 
 | Criterio | Valor | Justificación | Impacto |
 | --- | --- | --- | --- |
-| Número de dominios funcionales | 6 | DOMAIN-001 a DOMAIN-006 cubren captura, prompt, IA, JSON, integraciones y configuración/seguridad. | Complejidad funcional moderada. |
-| Integraciones externas | 3 | Proveedor de IA, GitHub, Jira. | Aumenta complejidad técnica y riesgos de integración. |
-| Volumen de usuarios | Bajo-medio | Principalmente analistas, POs y algunos desarrolladores. | No requiere alta escalabilidad. |
-| Frecuencia de uso | Media | Uso por proyecto o iteración, no continuo masivo. | Carga predecible. |
-| Volumen de datos por ejecución | Bajo | Un conjunto de requisitos y un JSON de análisis por ejecución. | No requiere almacenamiento masivo. |
-| Complejidad de lógica de negocio | Media | Validaciones, trazabilidad, ensamblado de JSON, integración con APIs. | Justifica modularidad, no arquitecturas distribuidas complejas. |
-| Dependencia de IA | Alta | El valor depende de la calidad del modelo y del prompt manual. | Requiere robustez en manejo de errores y validación de resultados. |
-| Requisitos de rendimiento | Moderados | Respuesta en < 1–2 minutos aceptable. | No se requiere escalado extremo. |
-| Tamaño del equipo esperado | 3–6 devs | Proyecto típico de herramienta interna o producto especializado. | No justifica equipos grandes ni microservicios. |
-| Horizonte temporal | Medio | Producto con evolución, pero no plataforma masiva. | Arquitectura extensible pero simple. |
+| Numero de dominios funcionales | 7 | DOMAIN-001 a DOMAIN-007, todos de complejidad media. | Indica un alcance moderado. |
+| Complejidad de integracion externa | Media | Integraciones con dos sistemas bien conocidos (GitHub, Jira) mediante APIs. | Aumenta esfuerzo pero no lo hace critico. |
+| Volumen de datos por ejecucion | Bajo-medio | Principalmente texto de requisitos y un JSON de salida por proyecto. | No requiere infra compleja. |
+| Frecuencia de ejecucion | Baja-media | Se espera uso por analistas en momentos clave de proyectos, no en tiempo real masivo. | No justifica escalabilidad extrema. |
+| Numero de usuarios concurrentes | Bajo | Pocos analistas y equipo tecnico. | Permite soluciones monoliticas simples. |
+| Complejidad de reglas de negocio | Media | Reglas de trazabilidad, anti-sobredimensionamiento y mapeo a backlog. | Requiere buen diseño pero no distribucion compleja. |
+| Criticidad del sistema | Media | Soporta decisiones de proyecto, pero no es sistema de produccion de negocio final. | No requiere alta disponibilidad extrema. |
 
 ## 3. Clasificación final
+En base a los criterios anteriores, el proyecto se clasifica como **MEDIUM**:
+- Alcance funcional moderado con varios dominios.
+- Integraciones externas acotadas y bien definidas.
+- Volumen de datos y concurrencia bajos.
 
-- Clasificación de tamaño global: MEDIUM (baja).
-- Complejidad funcional: Media.
-- Complejidad técnica: Media (por integraciones y uso de IA, pero con volumen de uso limitado).
+Esta clasificación respalda el uso de una **arquitectura simple** (monolito modular o arquitectura en capas) y un stack tecnológico estándar.
 
 ## 4. Observaciones
-
-- El proyecto tiene una complejidad suficiente para requerir una arquitectura modular clara, pero no presenta requisitos de escalabilidad extrema ni equipos grandes.
-- La principal fuente de complejidad reside en la correcta definición del esquema JSON, la trazabilidad y la robustez frente a errores de IA y APIs externas.
-- La clasificación MEDIUM respalda la elección de una arquitectura monolítica modular o en capas, con una pila tecnológica simple y madura.
+- No se identifican requisitos que exijan escalabilidad extrema ni alta disponibilidad distribuida.
+- La complejidad principal reside en el diseño del esquema JSON, la trazabilidad y la correcta orquestación con la IA.
+- La clasificación MEDIUM permite mantener el foco en la calidad del modelo de datos y la robustez del script de integración, evitando sobredimensionar la infraestructura.
