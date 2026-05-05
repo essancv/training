@@ -1,0 +1,18 @@
+# HTTP client (para Gemini REST)
+requests>=2.31.0
+
+# Variables de entorno (.env opcional)
+python-dotenv>=1.0.0
+
+# (Opcional) SDK oficial de Gemini
+google-generativeai>=0.7.0
+
+# Logging estructurado (recomendado para evolución)
+structlog>=24.1.0
+
+# Validación de datos (para futura evolución)
+pydantic>=2.6.0
+
+# (Opcional - si conviertes a API en siguiente paso)
+fastapi>=0.110.0
+uvicorn>=0.27.0

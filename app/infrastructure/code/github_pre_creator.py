@@ -1,0 +1,227 @@
+"""
+Git-based PR creator with auto-commit + auto-push support.
+
+Flow:
+1. Detect modified/new .py files
+2. Ask user for commit message
+3. Stage files
+4. Commit
+5. Push branch
+6. Create PR in GitHub
+"""
+
+import subprocess
+import requests
+
+
+class GitHubPreCreator:
+
+    def __init__(self, token: str, repo: str, base_branch: str = "main"):
+        self.token = token
+        self.repo = repo
+        self.base_branch = base_branch
+        self.base_url = "https://api.github.com"
+
+    # ==================================================
+    # GIT UTILITIES
+    # ==================================================
+
+    def _run(self, cmd):
+        return subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            check=True
+        ).stdout.strip()
+
+    def _get_current_branch(self):
+        return self._run(["git", "branch", "--show-current"])
+
+    def _get_py_changes(self):
+        """
+        Returns modified + untracked .py files
+        """
+
+        modified = self._run(
+            ["git", "diff", "--name-only", "HEAD"]
+        ).splitlines()
+
+        untracked = self._run(
+            ["git", "ls-files", "--others", "--exclude-standard"]
+        ).splitlines()
+
+        files = set(modified + untracked)
+
+        return [f for f in files if f.endswith(".py")]
+
+    def _stage_files(self, files):
+        if not files:
+            raise Exception("No Python files to stage")
+
+        subprocess.run(["git", "add"] + files, check=True)
+
+    def _commit(self, message):
+        subprocess.run(
+            ["git", "commit", "-m", message],
+            check=True
+        )
+
+    def _push(self, branch):
+        subprocess.run(
+            ["git", "push", "-u", "origin", branch],
+            check=True
+        )
+
+    # --------------------------------------------------
+    # Ensure commits ahead
+    # --------------------------------------------------
+    
+    def _ensure_commits_ahead(self):
+        diff = subprocess.run(
+            ["git", "diff", "HEAD~1..HEAD", "--name-only"],
+            capture_output=True,
+            text=True
+        ).stdout.strip()
+
+        if not diff:
+            raise Exception("No changes in last commit")
+    # ==================================================
+    # GITHUB API
+    # ==================================================
+
+    def _headers(self):
+        return {
+            "Authorization": f"Bearer {self.token}",
+            "Accept": "application/vnd.github+json"
+        }
+
+    # ==================================================
+    # MAIN FLOW
+    # ==================================================
+
+    def create_pr(self, title: str = "AI Generated PR") -> int:
+
+        branch = self._get_current_branch()
+        files = self._get_py_changes()
+
+        if not files:
+            raise Exception("No Python file changes detected")
+
+        print("\n📄 Python changes detected:")
+        for f in files:
+            print(f" - {f}")
+
+        # -----------------------------
+        # Commit message
+        # -----------------------------
+
+        default_msg = f"AI update: {', '.join(files)}"
+
+        commit_message = input(
+            f"\n✏️ Commit message [{default_msg}]: "
+        ) or default_msg
+
+        # -----------------------------
+        # Git operations
+        # -----------------------------
+
+        print("\n📦 Staging files...")
+        self._stage_files(files)
+
+        print("💾 Committing changes...")
+        self._commit(commit_message)
+
+        print("🚀 Pushing branch...")
+        self._push(branch)
+
+        # -----------------------------
+        # Validate state
+        # -----------------------------
+
+        self._ensure_commits_ahead()
+
+        # -----------------------------
+        # Create PR
+        # -----------------------------
+
+        print("🔀 Creating PR on GitHub...")
+
+        existing_pr = self._get_existing_pr(branch)
+
+        if existing_pr:
+            pr_number = existing_pr["number"]
+            print(f"⚠️ PR already exists: #{pr_number}")
+            self._update_pr_body(pr_number, self._build_body(files))
+            print(f"🔀 PR updated: #{pr_number}")       
+            return pr_number
+
+
+        url = f"{self.base_url}/repos/{self.repo}/pulls"
+
+        payload = {
+            "title": title,
+            "head": branch,
+            "base": self.base_branch,
+            "body": self._build_body(files)
+        }
+
+        response = requests.post(url, headers=self._headers(), json=payload)
+
+        if response.status_code not in [200, 201]:
+            raise Exception(f"Error creating PR: {response.text}")
+
+        pr_number = response.json()["number"]
+
+        print(f"🚀 PR created: #{pr_number}")
+
+        return pr_number
+
+    # ==================================================
+
+    def _build_body(self, files):
+        body = "## AI Generated PR\n\n"
+        body += "### Modified/New Python files:\n"
+
+        for f in files:
+            body += f"- `{f}`\n"
+
+        body += "\n---\nGenerated by AI Code Review System"
+
+        return body
+
+    # ==================================================
+    # Get existing PR
+    # ==================================================
+
+    def _get_existing_pr(self, branch):
+        url = f"{self.base_url}/repos/{self.repo}/pulls"
+
+        params = {
+            "head": f"{self.repo.split('/')[0]}:{branch}",
+            "state": "open"
+        }
+
+        response = requests.get(url, headers=self._headers(), params=params)
+
+        if response.status_code != 200:
+            raise Exception(f"Error checking existing PR: {response.text}")
+
+        prs = response.json()
+
+        return prs[0] if prs else None
+
+    # ==================================================
+    # Update PR body
+    # ==================================================
+
+    def _update_pr_body(self, pr_number, body):
+        url = f"{self.base_url}/repos/{self.repo}/pulls/{pr_number}"
+
+        response = requests.patch(
+            url,
+            headers=self._headers(),
+            json={"body": body}
+        )
+
+        if response.status_code not in [200]:
+            raise Exception(f"Error updating PR: {response.text}")
