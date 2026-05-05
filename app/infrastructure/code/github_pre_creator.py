@@ -73,22 +73,15 @@ class GitHubPreCreator:
         )
 
     def _ensure_commits_ahead(self):
-        """
-        More reliable check: ensures diff exists between branches
-        """
-
         diff = subprocess.run(
-            ["git", "diff", "main...HEAD", "--name-only"],
+            ["git", "diff", "HEAD~1..HEAD", "--name-only"],
             capture_output=True,
-            text=True,
-            check=True
+            text=True
         ).stdout.strip()
 
         if not diff:
-            raise Exception(
-                "No file differences between branch and main"
-            )
-        # ==================================================
+            raise Exception("No changes in last commit")
+    # ==================================================
     # GITHUB API
     # ==================================================
 
