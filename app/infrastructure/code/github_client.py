@@ -46,7 +46,7 @@ class GitHubClient:
 
         diff = response.text
 
-        print(f"🔍 Diff: {diff}")
+        print(f"🔍 Differencia obtenida: {diff}")
         if not diff.strip():
             raise Exception("Diff vacío")
 
