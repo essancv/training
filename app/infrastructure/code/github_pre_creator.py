@@ -74,17 +74,21 @@ class GitHubPreCreator:
 
     def _ensure_commits_ahead(self):
         """
-        Ensures HEAD has commits not present in base branch
+        More reliable check: ensures diff exists between branches
         """
 
-        count = self._run(
-            ["git", "rev-list", "--count", f"{self.base_branch}..HEAD"]
-        )
+        diff = subprocess.run(
+            ["git", "diff", "main...HEAD", "--name-only"],
+            capture_output=True,
+            text=True,
+            check=True
+        ).stdout.strip()
 
-        if int(count) == 0:
-            raise Exception("No commits ahead of base branch")
-
-    # ==================================================
+        if not diff:
+            raise Exception(
+                "No file differences between branch and main"
+            )
+        # ==================================================
     # GITHUB API
     # ==================================================
 
