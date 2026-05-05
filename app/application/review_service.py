@@ -29,6 +29,7 @@ class ReviewService:
         # 4. Validar
         self.validator.validate_ai_json(parsed)
 
+    
         return ReviewResult(
             raw_text=raw,
             parsed_json=parsed
