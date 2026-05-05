@@ -83,7 +83,7 @@ def main():
     else:
         raise Exception(f"Unknown LLM provider: {LLM_PROVIDER}")
     # --------------------------------------------------
-    # 3. Dependencias
+    # 3. Dependencias . Están en el archivo response_parser.py
     # --------------------------------------------------
     parser = ResponseParser()
 
