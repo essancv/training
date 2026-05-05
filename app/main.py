@@ -45,7 +45,7 @@ def main():
         creator = GitHubPreCreator(
             token=GITHUB_TOKEN,
             repo=GITHUB_REPO,
-            base_branch="pr_ia_validator"
+            base_branch="main"
         )
         pr_number = creator.create_pr()
     # --------------------------------------------------
