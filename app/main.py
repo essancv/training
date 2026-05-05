@@ -42,6 +42,7 @@ def main():
         creator = GitHubMockPRCreator(GITHUB_TOKEN, GITHUB_REPO)
         pr_number = creator.create_test_pr()
     else:
+        print("🧪 Creando PR base clase GitHubPreCreator...")
         creator = GitHubPreCreator(
             token=GITHUB_TOKEN,
             repo=GITHUB_REPO,
