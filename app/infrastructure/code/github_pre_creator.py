@@ -72,6 +72,10 @@ class GitHubPreCreator:
             check=True
         )
 
+    # --------------------------------------------------
+    # Ensure commits ahead
+    # --------------------------------------------------
+    
     def _ensure_commits_ahead(self):
         diff = subprocess.run(
             ["git", "diff", "HEAD~1..HEAD", "--name-only"],
