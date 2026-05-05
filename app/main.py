@@ -37,6 +37,9 @@ def main():
 
     print("🚀 AI Code Review (GitHub POC)")
 
+    # --------------------------------------------------
+    # 1. Crear PR
+    # --------------------------------------------------
     if USE_TEST_PR:
         print("🧪 Creando PR de test...")
         creator = GitHubMockPRCreator(GITHUB_TOKEN, GITHUB_REPO)
