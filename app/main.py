@@ -25,7 +25,9 @@ from config.settings import (
 
 
 from infrastructure.code.github_mock_pr_creator import GitHubMockPRCreator
-USE_TEST_PR = True
+from infrastructure.code.github_pre_creator import GitHubPreCreator
+
+USE_TEST_PR = False
 
 from infrastructure.code.github_pr_publisher import GitHubPRPublisher
 from infrastructure.code.pr_comment_formatter import format_comment
@@ -40,8 +42,12 @@ def main():
         creator = GitHubMockPRCreator(GITHUB_TOKEN, GITHUB_REPO)
         pr_number = creator.create_test_pr()
     else:
-        pr_number = GITHUB_PR_NUMBER
-
+        creator = GitHubPreCreator(
+            token=GITHUB_TOKEN,
+            repo=GITHUB_REPO,
+            base_branch="pr_ia_validator"
+        )
+        pr_number = creator.create_pr()
     # --------------------------------------------------
     # 1. Obtener diff real desde GitHub
     # --------------------------------------------------

@@ -8,7 +8,9 @@ PROJECT_TYPE = "COMPLEX"
 
 # GitHub
 
-
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GITHUB_PR_NUMBER = 1
+GITHUB_REPO = "essancv/training"
 # config/settings.py
 
 
