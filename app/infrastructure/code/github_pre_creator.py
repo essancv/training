@@ -1,14 +1,13 @@
-# infrastructure/code/github_pre_creator.py
-
 """
-Git-based PR creator with auto-commit support.
+Git-based PR creator with auto-commit + auto-push support.
 
 Flow:
 1. Detect modified/new .py files
 2. Ask user for commit message
 3. Stage files
 4. Commit
-5. Create PR via GitHub API
+5. Push branch
+6. Create PR in GitHub
 """
 
 import subprocess
@@ -23,48 +22,37 @@ class GitHubPreCreator:
         self.base_branch = base_branch
         self.base_url = "https://api.github.com"
 
-    # --------------------------------------------------
-    # GIT DETECTION
-    # --------------------------------------------------
+    # ==================================================
+    # GIT UTILITIES
+    # ==================================================
 
-    def _get_py_changes(self):
-        """
-        Returns modified + untracked .py files.
-        """
-
-        modified = subprocess.run(
-            ["git", "diff", "--name-only", "HEAD"],
-            capture_output=True,
-            text=True,
-            check=True
-        ).stdout.splitlines()
-
-        untracked = subprocess.run(
-            ["git", "ls-files", "--others", "--exclude-standard"],
-            capture_output=True,
-            text=True,
-            check=True
-        ).stdout.splitlines()
-
-        all_files = modified + untracked
-
-        py_files = [f for f in all_files if f.endswith(".py")]
-
-        return list(set(py_files))
-
-    # --------------------------------------------------
-
-    def _get_current_branch(self):
+    def _run(self, cmd):
         return subprocess.run(
-            ["git", "branch", "--show-current"],
+            cmd,
             capture_output=True,
             text=True,
             check=True
         ).stdout.strip()
 
-    # --------------------------------------------------
-    # GIT OPERATIONS
-    # --------------------------------------------------
+    def _get_current_branch(self):
+        return self._run(["git", "branch", "--show-current"])
+
+    def _get_py_changes(self):
+        """
+        Returns modified + untracked .py files
+        """
+
+        modified = self._run(
+            ["git", "diff", "--name-only", "HEAD"]
+        ).splitlines()
+
+        untracked = self._run(
+            ["git", "ls-files", "--others", "--exclude-standard"]
+        ).splitlines()
+
+        files = set(modified + untracked)
+
+        return [f for f in files if f.endswith(".py")]
 
     def _stage_files(self, files):
         if not files:
@@ -72,17 +60,33 @@ class GitHubPreCreator:
 
         subprocess.run(["git", "add"] + files, check=True)
 
-    # --------------------------------------------------
-
     def _commit(self, message):
         subprocess.run(
             ["git", "commit", "-m", message],
             check=True
         )
 
-    # --------------------------------------------------
+    def _push(self, branch):
+        subprocess.run(
+            ["git", "push", "-u", "origin", branch],
+            check=True
+        )
+
+    def _ensure_commits_ahead(self):
+        """
+        Ensures HEAD has commits not present in base branch
+        """
+
+        count = self._run(
+            ["git", "rev-list", "--count", f"{self.base_branch}..HEAD"]
+        )
+
+        if int(count) == 0:
+            raise Exception("No commits ahead of base branch")
+
+    # ==================================================
     # GITHUB API
-    # --------------------------------------------------
+    # ==================================================
 
     def _headers(self):
         return {
@@ -90,16 +94,11 @@ class GitHubPreCreator:
             "Accept": "application/vnd.github+json"
         }
 
-    # --------------------------------------------------
+    # ==================================================
+    # MAIN FLOW
+    # ==================================================
 
     def create_pr(self, title: str = "AI Generated PR") -> int:
-        """
-        Full automated flow:
-        - detect files
-        - ask commit message
-        - commit
-        - create PR
-        """
 
         branch = self._get_current_branch()
         files = self._get_py_changes()
@@ -107,35 +106,44 @@ class GitHubPreCreator:
         if not files:
             raise Exception("No Python file changes detected")
 
-        print("\n📄 Python files detected:")
+        print("\n📄 Python changes detected:")
         for f in files:
             print(f" - {f}")
 
-        # --------------------------------------------------
-        # USER INPUT (commit message)
-        # --------------------------------------------------
+        # -----------------------------
+        # Commit message
+        # -----------------------------
 
         default_msg = f"AI update: {', '.join(files)}"
 
         commit_message = input(
-            f"\n✏️ Enter commit message [{default_msg}]: "
+            f"\n✏️ Commit message [{default_msg}]: "
         ) or default_msg
 
-        # --------------------------------------------------
-        # GIT FLOW
-        # --------------------------------------------------
+        # -----------------------------
+        # Git operations
+        # -----------------------------
 
         print("\n📦 Staging files...")
         self._stage_files(files)
 
-        print("💾 Creating commit...")
+        print("💾 Committing changes...")
         self._commit(commit_message)
 
-        # --------------------------------------------------
-        # CREATE PR
-        # --------------------------------------------------
+        print("🚀 Pushing branch...")
+        self._push(branch)
 
-        print("🔀 Creating PR...")
+        # -----------------------------
+        # Validate state
+        # -----------------------------
+
+        self._ensure_commits_ahead()
+
+        # -----------------------------
+        # Create PR
+        # -----------------------------
+
+        print("🔀 Creating PR on GitHub...")
 
         url = f"{self.base_url}/repos/{self.repo}/pulls"
 
@@ -157,7 +165,7 @@ class GitHubPreCreator:
 
         return pr_number
 
-    # --------------------------------------------------
+    # ==================================================
 
     def _build_body(self, files):
         body = "## AI Generated PR\n\n"
@@ -167,4 +175,5 @@ class GitHubPreCreator:
             body += f"- `{f}`\n"
 
         body += "\n---\nGenerated by AI Code Review System"
+
         return body
