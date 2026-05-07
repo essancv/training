@@ -21,3 +21,7 @@ class PolicyResult:
 
     def has_blockers(self) -> bool:
         return any(v.severity == "BLOCKER" for v in self.violations)
+
+
+    def metodoParaBorrar (self) -> bool:
+        return True

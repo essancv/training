@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Request
 
+from domain.models.pullrequest_context import PullRequestContext
+
 router = APIRouter()
 
 
@@ -22,6 +24,18 @@ def create_github_webhook_controller(trigger_use_case):
 
         pr_id = payload["pull_request"]["number"]
 
+        print ("WEbhook payload ==============================")
+        print (f"PR number : {pr_id}")
+        print (f"Repo name : { payload["repository"]["full_name"]}")
+        print ("==============================")
+        pr_context = PullRequestContext (
+            pr_id ,
+            payload["repository"]["full_name"] ,
+            payload["repository"]["owner"]["login"] ,
+            payload["pull_request"]["user"]["login"] ,
+            payload["pull_request"]["head"]["repo"]["full_name"]
+        )
+  
         result = trigger_use_case.execute(pr_id)
 
         return {

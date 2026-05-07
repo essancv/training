@@ -1,0 +1,9 @@
+repositories:
+
+  essancv/pr_ia_analysis:
+    team: architecture
+    technology: python
+
+  company/payment-api:
+    team: backend
+    technology: java

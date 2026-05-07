@@ -104,3 +104,11 @@ class Settings:
         "OLLAMA_BASE_URL",
         "http://localhost:11434"
     )
+
+    # ==========================================================
+    # Dynamic resolution of team and technologie
+    # ==========================================================
+
+    REPOSITORY_CONFIG_FILE = (
+    "app/infrastructure/configuration/repositories.yaml"
+)
